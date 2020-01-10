@@ -1,0 +1,17 @@
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Eliminar Vivienda</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form role="form" method="post" action="{% url 'vivienda_remove' vivienda.id %}"> {% csrf_token %}
+            <div class="modal-body">
+                <h5>¿Seguro desea eliminar la vivienda {{vivienda.numero}} del local {{vivienda.local_dado}}?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                <button type="submit" class="btn btn-danger" >Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

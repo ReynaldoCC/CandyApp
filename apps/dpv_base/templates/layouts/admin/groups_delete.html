@@ -1,0 +1,22 @@
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Eliminar Grupo</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form role="form" method="post" action="{% url 'admin_group_remove' grupo.id %}"> {% csrf_token %}
+            <div class="modal-body">
+                {% if grupo.user_set.count > 0 %}
+                <h5 class="text-center">No puede eliminar el grupo {{ grupo.name }} porque tiene {{ grupo.user_set.count }} {% if grupo.user_set.count == 1 %} usuario {% else %} usuarios {% endif %}</h5>
+                <p class="help-text text-center">Para borrar el grupo debe desasociar todos los usuario unidos al mismo.</p>
+                {% else %}
+                <h5 class="text-center">¿Seguro desea eliminar el grupo {{grupo.name}}?</h5>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                <button type="submit" class="btn btn-danger" {% if grupo.user_set.count > 0 %} disabled="true" {% endif %}>Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

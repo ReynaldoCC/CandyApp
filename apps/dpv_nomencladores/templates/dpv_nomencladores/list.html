@@ -1,0 +1,227 @@
+{% extends 'layouts/dashboard.html' %}
+{% block page_title %} | Nomencladores {% endblock page_title %}
+{% block breadcrumb_title %} Nomencladores {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/nomenclador/' == request.path %}
+    <li class="active">Nomenclador</li>
+    {% else %}
+    <li>
+        <a href="{% url 'nomenclador_index' %}">
+            Nomenclador
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right">
+                        <a href="{% url 'nomenclador_provincia' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{provincias}}</span>
+                    </h1>
+                    <h3 class="text-light">Provincias Registradas</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-1 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_municipio' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{municipios}}</span>
+                    </h1>
+                    <h3 class="text-light">Municipios Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-2 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_consejopopular' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{consejos}}</span>
+                    </h1>
+                    <h3 class="text-light">Consejos Populares Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-3 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_concepto' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{conceptos}}</span>
+                    </h1>
+                    <h3 class="text-light">Conceptos Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-4 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_destino' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{destinos}}</span>
+                    </h1>
+                    <h3 class="text-light">Destinos Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-5 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_organismo' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{organismos}}</span>
+                    </h1>
+                    <h3 class="text-light">Organismos Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-6 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_genero' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{generos}}</span>
+                    </h1>
+                    <h3 class="text-light">Géneros Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-7 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_piso' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{pisos}}</span>
+                    </h1>
+                    <h3 class="text-light">Pisos Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-8 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_calle' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{calles}}</span>
+                    </h1>
+                    <h3 class="text-light">Calles Registradas</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card text-white bg-flat-color-9 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_centrab' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{unidades}}</span>
+                    </h1>
+                    <h3 class="text-light">Unidades Registradas</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_areatrab' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{deptos}}</span>
+                    </h1>
+                    <h3 class="text-light">Departamentos Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right">
+                        <a href="{% url 'nomenclador_codificadorasunto' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{codifasunto}}</span>
+                    </h1>
+                    <h3 class="text-light">Codificadores de Asuntos Registrados</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right">
+                        <a href="{% url 'nomenclador_tipoqueja' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{tqueja}}</span>
+                    </h1>
+                    <h3 class="text-light">Tipos de Quejas Registradas</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right">
+                        <a href="{% url 'nomenclador_procedencia' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{procedencia}}</span>
+                    </h1>
+                    <h3 class="text-light">Procedencias Registradas</h3>
+                </div>
+            </div>
+        </div>
+{% endblock content_page %}

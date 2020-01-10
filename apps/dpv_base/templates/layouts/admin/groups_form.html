@@ -1,0 +1,70 @@
+{% extends 'layouts/admin/groups.html' %}
+{% block page_title %} {{ block.super }} -> Formulario {% endblock page_title %}
+{% load static %}
+{% block breadcrumb_title %} Formulario {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/admin/groups/form' == request.path %}
+    <li class="active">Crear</li>
+    {% else %}
+    <li>
+        <a href="{% url 'admin_group_add' %}">
+            Crear
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="animated fadeIn">
+        <div class="row padding-short">
+            <div class="col-md-12">
+                <form novalidate method="POST">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Por favor, corrija {% if form.errors|length == 1 %}"el error señalado"{% else %}"los errores señalados"{% endif %} a continuación.
+                    </div>
+                    {% endif %}
+                    <div class="card">
+                        <div class="card-header">
+                            Grupo
+                        </div>
+                        <div class="card-body">
+                                {% for field in form %}
+                                <div class="form-group" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                                    {% if field.name == 'permissions' %}
+                                    <span>
+                                        <input id="filter_permissions" class="pull-right" type="text" placeholder="Filtrar por:">
+                                        <label><input id="check_all_permissions" type="checkbox"> Marcar todos los </label>
+                                    </span>
+                                    {% endif %}
+                                    {{field.errors}}
+                                    <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                                    {{field}}
+                                    {{field.required }}
+                                </div>
+                                {% endfor %}
+                        </div>
+                        <div class="card-footer">
+                            <a type="button" class="btn btn-default" href="{% url 'admin_group' %}">
+                                <i class="fa fa-reply"></i>
+                                Volver
+                            </a>
+                            <button type="submit" class="pull-right btn btn-primary">
+                                <i class="fa fa-check"></i>
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+{{block.super}}
+<script src="{% static 'dpv_base/js/groups.js' %}"></script>
+{% endblock extra_scripts %}
+

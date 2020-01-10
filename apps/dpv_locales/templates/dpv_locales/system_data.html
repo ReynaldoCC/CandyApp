@@ -1,0 +1,17 @@
+{% load static %}
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Detalles del Local</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+            <div class="modal-body">
+                <div class="alert {% if local.data_ok == 0 %}alert-success{% elif local.data_ok == 1 %}alert-warning{% elif local.data_ok == 2 %}alert-danger{% endif %}" role="alert">
+                    {{local.system_info}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cerrar</button>
+            </div>
+    </div>
+</div>

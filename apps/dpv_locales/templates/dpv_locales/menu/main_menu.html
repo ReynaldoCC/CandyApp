@@ -1,0 +1,21 @@
+{% load static i18n %}
+{% if perms.dpv_locales.view_local %}
+    <li class="{% if '/local/' in request.path %} active show {% endif %} menu-item-has-children dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="menu-icon fa fa-building-o"></i>
+            Locales
+        </a>
+        <ul class="sub-menu children dropdown-menu">
+            {% if perms.dpv_viviendas.view_vivienda %}
+            <li class="{% if '/local/' == request.path %} active {% endif %}">
+                <a href="{% url 'locales_list' %}"><i class="fa fa-building-o"></i>Locales </a>
+            </li>
+            {% endif %}
+            {% if perms.dpv_viviendas.view_vivienda %}
+            <li class="{% if '/local/estadistico/' == request.path %} active {% endif %}">
+                <a href="{% url 'locales_stats' %}"><i class="fa fa-building-o"></i>Estadístico </a>
+            </li>
+            {% endif %}
+        </ul>
+    </li>
+{% endif %}

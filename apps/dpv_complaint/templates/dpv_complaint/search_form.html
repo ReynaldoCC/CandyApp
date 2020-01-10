@@ -1,0 +1,107 @@
+{% extends 'dpv_complaint/complaint_main_page.html' %}
+
+{% block page_title %} | Buscando {% endblock page_title %}
+
+{% load static %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+{% endblock breadcrumbs %}
+
+{% block extra_style %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+{% endblock extra_style %}
+
+{% block content_page %}
+
+
+    <form method="POST" class="post-form">
+        {% csrf_token %}
+        <div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ form_name }}</h4>
+                    <div class="actions">
+                        <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form class="row" role="form" method="post">
+                        <div class="col-md-12">
+                            <div class="form-control-sm">
+                                <label for="">Fecha de inicio</label>
+                                <p>
+                                </p>
+                                {{ form.non_field_errors }}
+                                {{ form.initial_time }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Fecha de Finalización</label>
+                                <p>
+                                </p>
+                                {{ form.non_field_errors }}
+                                {{ form.final_time }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Municipio</label>
+                                <p>
+                                </p>
+                                {{ form.non_field_errors }}
+                                {{ form.municipality }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Días</label>
+                                <p>
+                                </p>
+                                {{ form.non_field_errors }}
+                                {{ form.days }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Estado</label>
+                                <p>
+                                </p>
+                                {{ form.non_field_errors }}
+                                {{ form.status }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" href={% url 'main_complaint' %}>Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#bootstrap-data-table-export').DataTable();
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".datepicker").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "1900:2012",
+                // You can put more options here.
+
+            });
+        });
+    </script>
+{% endblock extra_scripts %}

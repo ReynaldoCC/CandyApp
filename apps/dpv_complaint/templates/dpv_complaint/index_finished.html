@@ -1,0 +1,83 @@
+{% extends 'dpv_complaint/complaint_main_page.html' %}
+
+{% block content_page %}
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <a role="button" class="pull-right btn btn-success btn-sm" href={% url 'add_natural_person' %}>
+                    <i class="fa fa-plus">Agregar queja natural</i></a>
+                <a role="button" class="pull-right btn btn-success btn-sm" href={% url 'add_juridic_person' %}>
+                    <i class="fa fa-plus">Agregar queja jurídica</i></a>
+
+            </div>
+            <div class="card-body">
+                {% if index %}
+                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Número de la queja</th>
+                            <th>Nombre</th>
+                            <th>Asunto</th>
+                            <th>Cuerpo</th>
+                            <th>Resuelta por el técnico</th>
+                            <th>Argumentos del técnico</th>
+                            <th>Datos de la queja</th>
+                            <th>Operaciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for finished in index %}
+                            <tr>
+                                <td>
+                                    <a href={% url 'watch_complaint' complaint_id=finished.complaint.id %}> {{ finished.complaint.number }}</a>
+                                </td>
+                                {% if finished.complaint.is_natural %}
+                                    <td>{{ finished.complaint.person_natural.nombre }} {{ finished.complaint.person_natural.apellidos }}</td>
+                                {% else %}
+                                    <td>{{ finished.complaint.person_juridic.nombre }}</td>
+                                {% endif %}
+                                <td>{{ finished.complaint.topic }}</td>
+                                <td>{{ finished.complaint.body }}</td>
+                                <td>{{ finished.technical.profile.datos_personales.nombre }} {{ finished.technical.profile.datos_personales.apellidos }}</td>
+                                <td>{{ finished.technical_args }}</td>
+                                <td><a href={% url 'watch_complaint' complaint_id=finished.complaint.id %}> Ver
+                                    datos </a></td>
+                                <td>
+                                    <p>
+                                        {% if finished.technical.id %}
+                                            <a href={% url 'trans_Finished_to_Accepted' complaint_id=finished.complaint.id technical_id=finished.technical.id %}>
+                                                Aceptar </a>
+                                        {% else %}
+                                            Ocurrió un error
+                                        {% endif %}
+
+                                    </p>
+                                    <p>
+                                        {% if finished.complaint.is_natural %}
+                                            <a href={% url 'trans_wait_to_assigned' complaint_id=finished.complaint.id department_id=finished.complaint.department.id municipality_id=finished.complaint.person_natural.municipio.id %}>Reasignar
+                                                técnico</a>
+
+                                        {% else %}
+                                            <a href={% url 'trans_wait_to_assigned' complaint_id=finished.complaint.id department_id=finished.complaint.department.id municipality_id=finished.complaint.person_juridic.municipio.id %}>Reasignar
+                                                técnico</a>
+
+                                        {% endif %}
+                                    </p>
+                                    <p><a href={% url 'assign_department' complaint_id=finished.complaint.id %}>Reasignar
+                                        departamento</a></p>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info">
+                        <h2 class="text-center">No existen quejas Finalizadas.</h2>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

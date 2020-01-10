@@ -1,0 +1,128 @@
+{% extends 'dpv_complaint/complaint_main_page.html' %}
+{% block page_title %} | Quejas {% endblock page_title %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Gestión de Quejas {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/quejas/natural/' == request.path %}
+        <a class="active" href={% url 'main_complaint' %}>Persona natural</a>
+    {% elif '/quejas/juridic/' == request.path %}
+        <a class="active" href={% url 'main_complaint' %}>Persona jurídica</a>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <link rel="stylesheet" href={% static 'dpv_complaint/css/jquery-ui.css' %}>
+    <script src={% static 'dpv_complaint/js/jquery-ui.min.js' %}></script>
+    <script src={% static 'dpv_complaint/js/jquery.min.js' %}></script>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Quejas</strong>
+                {% if natural %}
+                    <a role="button" class="pull-right btn btn-success btn-sm"
+                       href={% url 'search' type_complaint=1 %}><i class="fa fa-plus">
+                        Filtrado Parcial</i></a>
+                {% else %}
+                    <a role="button" class="pull-right btn btn-success btn-sm"
+                       href={% url 'search' type_complaint=0 %}><i class="fa fa-plus">
+                        Filtrado Parcial</i></a>
+                {% endif %}
+                <a role="button" class="pull-right btn btn-success btn-sm"
+                   href={% url 'search' type_complaint=0 %}><i class="fa fa-plus">
+                    Filtrado Completo</i></a>
+
+                <a role="button" class="pull-right btn btn-success btn-sm"
+                   href={% url 'add_natural_person' %}><i class="fa fa-plus">
+                    Agregar Queja Natural</i></a>
+                <a role="button" class="pull-right
+                   btn btn-success btn-sm" href={% url 'add_juridic_person' %}><i class="fa fa-plus">
+                    Agregar Queja Juridica</i></a>
+
+            </div>
+            <div class="card-body">
+                {% if index %}
+                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Municipio</th>
+                            <th>Asunto</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Operaciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for complaint in index %}
+                            <tr>
+                                <td>
+                                    <a href={% url 'watch_complaint' complaint_id=complaint.id %}>{{ complaint.number }}</a>
+                                </td>
+                                {% if complaint.is_natural %}
+                                    <td>{{ complaint.person_natural.nombre }} {{ complaint.person_natural.apellidos }}</td>
+                                    <td>{{ complaint.person_natural.direccion_calle }},
+                                        Número {{ complaint.person_natural.direccion_numero }}</td>
+                                    <td>{{ complaint.person_natural.municipio }}</td>
+                                {% else %}
+                                    <td>{{ complaint.person_juridic.nombre }}</td>
+                                    <td>{{ complaint.person_juridic.direccion_calle }} ,
+                                        Número {{ complaint.person_juridic.direccion_numero }}</td>
+                                    <td>{{ complaint.person_juridic.municipio }}</td>
+                                {% endif %}
+                                <td>{{ complaint.topic }}</td>
+                                <td>{{ complaint.status }}</td>
+                                <td>{{ complaint.enter_date }}</td>
+                                <td>
+                                    {#                                    <a href={% url 'watch_complaint' complaint_id=complaint.id %}> Ver Todos los#}
+                                    {#                                        Datos </a>#}
+                                    <a class="js-popup-link" href={% url 'watch_complaint' complaint_id=complaint.id %}>Mostrar
+                                        Datos</a>
+                                    <div id="popup"></div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info">
+                        <h2 class="text-center">No hay Quejas registradas que mostrar</h2>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#bootstrap-data-table-export').DataTable();
+        });
+    </script>
+
+    <script>
+        $(function () {
+            $('.js-popup-link').click(function (e) {
+                e.preventDefault();
+                $('#popup').dialog({modal: true}).dialog('open').load(this.href)
+            })
+        })
+    </script>
+
+{% endblock extra_scripts %}
+{% block init_jquery %} {% endblock init_jquery %}

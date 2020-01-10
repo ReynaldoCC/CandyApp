@@ -1,0 +1,25 @@
+{% if perms.dpv_events.view_frecuencia or perms.dpv_events.view_tipoevento or perms.dpv_events.view_evento %}
+<li class="{% if '/dpv_events/' in request.path %}active show {% endif %} menu-item-has-children dropdown">
+    <a href="#"  class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="menu-icon fa fa-coffee"></i>
+        <span class="title">{% with name="Consejos y Reuniones" %}{{ name|truncatechars:20 }}{% endwith %}</span>
+    </a>
+    <ul class="sub-menu children dropdown-menu">
+        {% if perms.dpv_events.view_frecuencia %}
+        <li class="{% if '/dpv_events/frecuencia/' in request.path %}active{% endif %}">
+            <a href="{% url 'dpv_events:frecuencia' %}"><i class="fa fa-calendar"></i>Frecuencias de Eventos</a>
+        </li>
+        {% endif %}
+        {% if perms.dpv_events.view_tipoevento %}
+        <li class="{% if '/dpv_events/tipoevento/' in request.path %}active{% endif %}">
+            <a href="{% url 'dpv_events:tipoevento' %}"><i class="fa fa-bookmark"></i>Tipos de Eventos</a>
+        </li>
+        {% endif %}
+        {% if perms.dpv_events.view_evento %}
+        <li class="{% if '/dpv_events/eventos/' in request.path or '/evento/' in request.path %}active{% endif %}">
+            <a href="{% url 'dpv_events:eventos' %}"><i class="fa fa-coffee"></i>Eventos</a>
+        </li>
+        {% endif %}
+    </ul>
+</li>
+{% endif %}

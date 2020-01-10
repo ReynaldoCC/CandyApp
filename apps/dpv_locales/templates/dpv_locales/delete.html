@@ -1,0 +1,23 @@
+{% load static %}
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Eliminar Local</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form role="form" method="post" action="{% url 'locales_delete' local.id %}"> {% csrf_token %}
+            <div class="modal-body">
+                {% if local.vivienda_local.count > 0 %}
+                <h5 class="text-center">No puede eliminar el local con dirección {{ local.direccion_calle.nombre }} # {{ local.direccion_numero }} porque tiene {{ local.vivienda_local.count }} {% if local.vivienda_local.count == 1 %} vivienda asociada. {% else %} viviendas asociadas. {% endif %}</h5>
+                <p class="help-text text-center">Para borrar el local debe desasociar todas las viviendas del mismo.</p>
+                {% else %}
+                <h5 class="text-center">¿Seguro desea eliminar el local sito en Calle {{ local.direccion_calle.nombre }} # {{ local.direccion_numero }} del municipio {{local.municipio}}?</h5>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                <button type="submit" class="btn btn-danger" {% if local.vivienda_local.count > 0 %} disabled="true" {% endif %}>Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,71 @@
+{% extends 'dpv_locales/list.html' %}
+{% block page_title %} | Estadístico Locales {% endblock page_title %}
+{% load static base_tags %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Estadístico de Locales {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/local/estadistico/' == request.path %}
+    <li class="active">Estadístico</li>
+    {% else %}
+    <li>
+        <a href="{% url 'locales_stats' %}">
+            Estadístico
+        </a>
+    </li>
+    <li class="active">
+        Municipal
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Estadístico de Locales</strong>
+            </div>
+            <div class="card-body">
+                {% if result %}
+                <div class="table-responsive">
+                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Cantidad Locales</th>
+                                <th>Estatales</th>
+                                <th>Esfuerzo Propio</th>
+                                <th>Cantidad Viviendas</th>
+                                <th>Viviendas Pend. Aprobacion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for res in result %}
+                            <tr>
+                                <td>
+                                {% if res.tipo == 'municpio' %}
+                                    <a class="text-primary" href="{% url 'locales_stats_mun' res.id %}">{{res.nombre}}</a>
+                                {% else %}
+                                    {{res.nombre}}
+                                {% endif %}
+                                </td>
+                                <td>{{res.cant_loc|valuetoint}}</td>
+                                <td>{{res.statales|valuetoint}}</td>
+                                <td>{{res.cant_loc|tosub:res.statales}}</td>
+                                <td>{{res.cant_viv|valuetoint}}</td>
+                                <td>{{res.cant_pend_viv|valuetoint}}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <h2 class="text-center">No hay Estadisticas que mostrar</h2>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content_page %}

@@ -1,0 +1,42 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if clasificacionrespuesta %}
+        <form role="form" action="{% url 'clasificacionrespuesta_edit' clasificacionrespuesta.id %}" method="post" id="form_clasificacionrespuesta">
+        {% else %}
+        <form role="form" action="{% url 'clasificacionrespuesta_new' %}" method="post" id="form_clasificacionrespuesta">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Clasificación de Respuesta</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-control-sm">
+                    <label for="">Código</label>
+                    {{ form.non_field_errors }}
+                    {{ form.codigo }}
+                </div>
+                <div class="form-control-sm">
+                    <label for="">Nombre</label>
+                    {{ form.non_field_errors }}
+                    {{ form.nombre }}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    var id_element = '{{clasificacionrespuesta}}';
+    if (id_element != '0')
+        id_element = '{{clasificacionrespuesta.id}}';
+    $('#form_clasificacionrespuesta').validate();
+    {#validateUniqForm.init();#}
+</script>

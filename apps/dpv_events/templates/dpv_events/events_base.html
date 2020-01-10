@@ -1,0 +1,15 @@
+{% extends 'layouts/dashboard.html' %}
+{% block page_title %} | Eventos y Reuniones {% endblock page_title %}
+{% block breadcrumb_title %} Eventos y Reuniones {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/dpv_events/' == request.path %}
+    <li class="active">Eventos y Reuniones</li>
+    {% else %}
+    <li>
+        <a href="{% url 'base_dashboard' %}">
+            Eventos y Reuniones
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}

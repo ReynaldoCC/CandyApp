@@ -1,0 +1,21 @@
+<div class="modal-dialog modal-md">
+    <div class="modal-content">
+       <div class="modal-header" >
+            <h4 class="modal-title">Piso</h4>
+            <div class="actions">
+                <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            </div>
+       </div>
+        <div class="modal-body">
+            <form class="row" role="form" method="post" action="{% url 'piso_delete' piso.id %}"> {% csrf_token %}
+                <div class="col-sm-10">
+                        <h5>¿Seguro desea borrar el piso {{piso.nombre}}?</h5>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

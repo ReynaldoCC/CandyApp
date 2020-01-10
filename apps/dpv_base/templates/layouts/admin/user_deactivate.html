@@ -1,0 +1,26 @@
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Desactivar Usuario</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form role="form" method="post" action="{% url 'admin_user_deactive' usr.id %}"> {% csrf_token %}
+            <div class="modal-body">
+                {% if usr.is_active %}
+                <h5>¿Seguro desea desactivar el usuario {{usr.username}} con nombre {{usr.first_name}} {{usr.last_name}}?</h5>
+                {% else %}
+                <h5>¿Seguro desea activar el usuario {{usr.username}} con nombre {{usr.first_name}} {{usr.last_name}}?</h5>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                {% if usr.is_active %}
+                <button type="submit" class="btn btn-danger">Desactivar</button>
+                {% else %}
+                <button type="submit" class="btn btn-primary">Activar</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+{% extends 'layouts/bashboard.html' %}
+{% block page_title %} | Registros {% endblock page_title %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Visualización de Trazas {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if 'admin/logs/' in request.path %}
+    <li class="active">Registros</li>
+    {% else %}
+    <li>
+        <a href="{% url 'admin_logs' %}">
+            Registros
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Trazas</strong>
+            </div>
+            <div class="card-body">
+                {% if logs %}
+                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre de usuario</th>
+                            <th>Fecha-Hora</th>
+                            <th>Acción</th>
+                            <th>Objeto</th>
+                            <th>Campos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{log.user.username}}</td>
+                            <td>{{log.date}}</td>
+                            <td>{{log.action.name}}</td>
+                            <td>{{log.item}}</td>
+                            <td>{{log.detail}}</td>
+                            <td>
+                                <ul>
+                                    {% if perms.auth.view_logentry %}
+                                    <li>
+                                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
+                                    </li>
+                                    {% endif %}
+                                    {% if perms.auth.change_logentry %}
+                                    <li>
+                                        <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></button>
+                                    </li>
+                                    {% endif %}
+                                    {% if perms.auth.delete_logentry %}
+                                    <li>
+                                        <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="alert alert-info">
+                    <h2>No hay registros que mostrar</h2>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $('#bootstrap-data-table-export').DataTable();
+        } );
+    </script>
+{% endblock extra_scripts %}

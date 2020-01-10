@@ -1,0 +1,12 @@
+{% autoescape off %}
+
+Para iniciar el procesos de recuperación de tu contraseña {{ user.get_full_name }} en el sistema CandyApp,
+de un clic en el enlace que esta debajo:
+
+{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+Si haciendo clic en el enlace no funciona, por favor en su lugar copielo y peguelo en la barra de direciones de su navegador web.
+
+Gracias,
+Administración de CandyApp
+{% endautoescape %}

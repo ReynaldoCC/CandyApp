@@ -1,0 +1,98 @@
+{% load static %}
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Detalles del Usuario</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+            <div class="modal-body">
+                <div class="media">
+                    <div class="bg-secundary pull-right el-rounded media-left media-middle">
+                        {% if usuario.perfil_usuario.avatar %}
+                        <img class="img-circle media-object" src="/media/{{usuario.perfil_usuario.avatar}}" height="100px">
+                        {% else %}
+                        <img class="img-circle media-object" src="{% static 'dpv_base/images/noavatar.png' %}" height="100px">
+                        {% endif %}
+                    </div>
+                    <div class="media-body offset-md-1">
+                        <div><span class="text-muted">Nombre de Usuario:</span>  {{usuario.username}}</div>
+                        <div><span class="text-muted">Nombre: </span>    {{usuario.first_name}} {{usuario.last_name}}</div>
+                        <div><span class="text-muted">Email Laboral: </span>     {{usuario.email}}</div>
+                        <div><span class="text-muted">Última entrada:</span>     {{usuario.last_login}}</div>
+                    </div>
+                 </div>
+                <div>
+                    <table class="table table-striped table-bordered table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Activo</th>
+                                <th>Administrador</th>
+                                <th>Notificación Email</th>
+                                <th>Documentación Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center">
+                                <td>
+                                    {% if usuario.is_active %}
+                                    <i class="fa fa-check-square text-success"></i>
+                                    {% else %}
+                                    <i class="fa fa-square text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if usuario.is_staff %}
+                                    <i class="fa fa-check-square text-success"></i>
+                                    {% else %}
+                                    <i class="fa fa-square text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if usuario.perfil_usuario.notificacion_email %}
+                                    <i class="fa fa-check-square text-success"></i>
+                                    {% else %}
+                                    <i class="fa fa-square text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if usuario.perfil_usuario.documentacion_email %}
+                                    <i class="fa fa-check-square text-success"></i>
+                                    {% else %}
+                                    <i class="fa fa-square text-danger"></i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12"><span class="text-muted">Unidad:</span>  {{usuario.perfil_usuario.centro_trabajo}}</div>
+                <div class="col-md-12"><span class="text-muted">Departamento:</span> {{usuario.perfil_usuario.depto_trabajo}}</div>
+                <div class="col-md-12"><span class="text-muted">Dirección Particular:</span></div>
+                <div class="col-md-12">Calle {{usuario.perfil_usuario.datos_personales.direccion_calle}} # {{usuario.perfil_usuario.datos_personales.direccion_numero}} entre {{usuario.perfil_usuario.datos_personales.direccion_entrecalle1}} y {{usuario.perfil_usuario.datos_personales.direccion_entrecalle2}}, Municipio {{usuario.perfil_usuario.datos_personales.municipio}}</div>
+                <div class="col-md-6"><span class="text-muted">No. de Identidad:</span> {{usuario.perfil_usuario.datos_personales.ci}}</div>
+                <div class="col-md-6"><span class="text-muted">Sexo:</span> {{usuario.perfil_usuario.datos_personales.genero}}</div>
+                <div class="col-md-12"><span class="text-muted">Email Personal:</span> {{usuario.perfil_usuario.datos_personales.email_address}}</div>
+                <div class="col-md-6"><span class="text-muted">Movil:</span> {{usuario.perfil_usuario.datos_personales.movil}}</div>
+                <div class="col-md-6"><span class="text-muted">Teléfono:</span>{{usuario.perfil_usuario.datos_personales.telefono}}</div>
+                <div class="col-md-12"><span class="text-muted">Grupos:</span></div>
+                <div>
+                    {% for grp in usuario.groups.all %}
+                    <span>{{grp}}</span>
+                    {% empty %}
+                    <span>Ninguno</span>
+                    {% endfor %}
+                </div>
+                <div class="col-md-12"><span class="text-muted">Permisos:</span></div>
+                <div>
+                    {% for permi in usuario.user_permissions.all %}
+                    <span>{{permi}}</span>
+                    {% empty %}
+                    <span>Ninguno</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cerrar</button>
+            </div>
+    </div>
+</div>

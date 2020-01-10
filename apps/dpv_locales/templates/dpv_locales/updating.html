@@ -1,0 +1,21 @@
+{% extends 'dpv_locales/list.html' %}
+{% block page_title %} | Revisión de locales {% endblock page_title %}
+{% load static %}
+{% block breadcrumb_title %} Revisión Estado de los locales {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/local/updt/' == request.path %}
+    <li class="active">Revisión</li>
+    {% else %}
+    <li class="active">Revisión</li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/js/lib/jquery-ui/css/jquery-ui.css' %}">
+{% endblock extra_style %}
+{% block content_page %}
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
+    <script src="{% static 'dpv_locales/js/locales.js' %}"></script>
+{% endblock extra_scripts %}

@@ -1,0 +1,37 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if areatrabajo %}
+        <form role="form" action="{% url 'areatrabajo_edit' areatrabajo.id %}" method="post" id="form_areatrab">
+        {% else %}
+        <form role="form" action="{% url 'areatrabajo_new' %}" method="post" id="form_areatrab">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Departamento</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-control-sm">
+                    <label>Nombre</label>
+                    {{ form.non_field_errors }}
+                    {{ form.nombre }}
+                </div>
+                <div class="form-control-sm">
+                    <label>Número</label>
+                    {{ form.non_field_errors }}
+                    {{ form.numero }}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('#form_areatrab').validate();
+</script>

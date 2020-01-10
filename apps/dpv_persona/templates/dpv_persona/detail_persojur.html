@@ -1,0 +1,25 @@
+{% load static %}
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Detalles de Entidad</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+            <div class="modal-body">
+                <div class="col-md-12"><span class="text-muted">Nombre:</span>  {{persojur.nombre}}</div>
+                <div class="col-md-6"><span class="text-muted">Siglas:</span> {{persojur.sigla}}</div>
+                <div class="col-md-6"><span class="text-muted">Municipio:</span> {{persojur.municipio| upper}}</div>
+                <div class="col-md-12"><span class="text-muted">Dirección:</span></div>
+                <div class="col-md-12">Calle {{persojur.direccion_calle}} # {{persojur.direccion_numero}} entre {{persojur.direccion_entrecalle1}} y {{persojur.direccion_entrecalle2}}, Municipio {{persojur.municipio}}</div>
+                <div class="col-md-6"><span class="text-muted">Código NiT:</span> {{persojur.codigo_nit}}</div>
+                <div class="col-md-6"><span class="text-muted">Código Reeup:</span> {{persojur.codigo_reuup}}</div>
+                <div class="col-md-12"><span class="text-muted">Nombre Contacto:</span> {{persojur.nombre_contacto}}</div>
+                <div class="col-md-12"><span class="text-muted">Email Contacto:</span> {{persojur.email_address}}</div>
+                <div class="col-md-6"><span class="text-muted">Movil Contacto:</span> {{persojur.movil}}</div>
+                <div class="col-md-6"><span class="text-muted">Teléfono Contacto:</span>{{persojur.telefono}}</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cerrar</button>
+            </div>
+    </div>
+</div>

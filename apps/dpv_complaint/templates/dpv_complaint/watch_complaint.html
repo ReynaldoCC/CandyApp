@@ -1,0 +1,55 @@
+{% extends 'dpv_complaint/complaint_main_page.html' %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+
+{% endblock breadcrumbs %}
+
+{% block content_page %}
+    {% if complaint_for_dist %}
+        <p><strong>Número de la Queja:</strong> {{ complaint_for_dist.number }}</p>
+        <p><strong>Procedencia:</strong> {{ complaint_for_dist.origin }}</p>
+        <p><strong>Asunto:</strong> {{ complaint_for_dist.topic }}</p>
+        <p><strong>Cuerpo:</strong> {{ complaint_for_dist.body }}</p>
+        <p><strong>Estado:</strong> {{ complaint_for_dist.status }}</p>
+        <p><strong>Fecha de Entrada:</strong> {{ complaint_for_dist.enter_date }}</p>
+        {% if complaint_for_dist.is_natural %}
+            <p><a>Mostrar datos de la persona natural</a></p>
+        {% else %}
+            <p><a>Mostrar datos de la persona jurídica</a></p>
+        {% endif %}
+        {% if complaint_for_dist.department %}
+            <p><strong>Área de trabajo asignada:</strong> {{ complaint_for_dist.department.nombre }}</p>
+            {% if complaint_for_dist.status == 'P' or complaint_for_dist.status == 'Pendiente' %}
+                {% if complaint_for_dist.is_natural %}
+                    <p>
+                        <a href={% url 'trans_wait_to_assigned' complaint_id=complaint_for_dist.id department_id=complaint_for_dist.department.id municipality_id=complaint_for_dist.person_natural.municipio.id %}>Asignar
+                            a un técnico</a></p>
+
+                {% else %}
+                    <p>
+                        <a href={% url 'trans_wait_to_assigned' complaint_id=complaint_for_dist.id department_id=complaint_for_dist.department.id municipality_id=complaint_for_dist.person_juridic.municipio.id %}>Asignar
+                            a un técnico</a></p>
+                {% endif %}
+            {% else %}
+                <p>Asignada a un técnico</p>
+
+
+                {% if tech %}
+                    <a href={% url 'form_finished_complaint' complaint_id=complaint_for_dist.id technical_id=tech.technical.id %}>
+                                        Responder </a>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <a href={% url 'assign_department' complaint_id=complaint_for_dist.id %}> Asignar Departamento</a>
+        {% endif %}
+
+        {% if complaint_for_dist.is_natural %}
+            <p><a href={% url 'index_natural_complaint' %}>Ver quejas naturales</a></p>
+        {% else %}
+            <p><a href={% url 'index_juridic_complaint' %}>Ver quejas jurídicas</a></p>
+        {% endif %}
+    {% else %}
+        <p>Problemas mostrando la queja</p>
+    {% endif %}
+{% endblock %}

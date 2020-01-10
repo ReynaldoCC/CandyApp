@@ -1,0 +1,38 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if provincia %}
+        <form role="form" action="{% url 'provincia_edit' provincia.id %}" method="post" id="form_provincia">
+        {% else %}
+        <form role="form" action="{% url 'provincia_new' %}" method="post" id="form_provincia">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Provincia</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-control-sm">
+                    <label>Nombre</label>
+                    {{ form.non_field_errors }}
+                    {{ form.nombre }}
+                </div>
+                <div class="form-control-sm">
+                    <label>Número</label>
+                    {{ form.non_field_errors }}
+                    {{ form.numero }}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#form_provincia').validate();
+</script>

@@ -1,0 +1,105 @@
+{% extends 'layouts/admin/users.html' %}
+{% block page_title %} {{ block.super }} -> Formulario {% endblock page_title %}
+{% load static %}
+{% block breadcrumb_title %} Formulario {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/admin/users/form/' == request.path %}
+    <li class="active">Crear</li>
+    {% else %}
+    <li class="active">Actualizar</li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="animated fadeIn">
+        <div class="row padding-short">
+            <div class="">
+                <form novalidate method="POST">
+                    {% csrf_token %}
+                    {% if form.errors or formprs.errors or formprf.errors %}
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Por favor, corrija {% if form.errors|length == 1 %}"el error señalado"{% else %}"los errores señalados"{% endif %} a continuación.
+                    </div>
+                    {% endif %}
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Usuario</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-12 ">
+                                <div class="alert alert-info">
+                                    Datos de Usuario
+                                </div>
+                            </div>
+                            {% for field in form %}
+                            <div class="form-group col-md-6" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                                {% if field.name == 'groups' or field.name == 'user_permissions' %}
+                                <span>
+                                    <input id="filter_{% if field.name == 'groups'%}groups{% else %}user_permissions{% endif %}" class="pull-right" type="text" placeholder="Filtrar por:">
+                                    <label><input id="check_all_{% if field.name == 'groups'%}groups{% else %}user_permissions{% endif %}" type="checkbox"> Marcar todos los </label>
+                                </span>
+                                {% endif %}
+                                {{field.errors}}
+                                <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                                {{field}}
+                            </div>
+                            {% endfor %}
+                            <div class="col-12 ">
+                                <div class="alert alert-info">
+                                    Datos Personales
+                                </div>
+                            </div>
+                            {% for field in formprs %}
+                            <div class="form-group col-md-6" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                                {{field.errors}}
+                                <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                                {% if 'calle' in field.name %}
+                                {% if perms.dpv_nomencladores.add_calle %}
+                                <button onclick="return abrir_modal('{% url 'agree_calle' %}', 'id_{{field.name}}')" class="pull-right btn btn-link">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                                {% endif %}
+                                {% endif %}
+                                {{field}}
+                            </div>
+                            {% endfor %}
+                            <div class="col-12 ">
+                                <div class="alert alert-info">
+                                    Datos del Perfil
+                                </div>
+                            </div>
+                            {% for field in formprf %}
+                            <div class="form-group col-md-6 {% if field.name == 'centro_trabajo' and not request.user.perfil_usuario.centro_trabajo.oc %} disabled {% endif %}" {% if field.name == 'datos_usuario' or field.name == 'datos_personales' %} hidden {% endif %} data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                                {{field.errors}}
+                                <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                                {{field}}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="card-footer">
+                            <a type="button" class="btn btn-default" href="{% url 'admin_user' %}">
+                                <i class="fa fa-reply"></i>
+                                Volver
+                            </a>
+                            <button type="submit" class="pull-right btn btn-primary">
+                                <i class="fa fa-check"></i>
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade modal-show" id="add_calle" role="dialog">
+
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+{{block.super}}
+    <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/users.js' %}"></script>
+{% endblock extra_scripts %}

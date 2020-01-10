@@ -1,0 +1,63 @@
+{% extends 'layouts/base.html' %}
+
+{% block page_title %} | Confirmar contraseña {% endblock page_title %}
+{% load static %}
+{% block main_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/cs-skin-elastic.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/style.css' %}">
+{% endblock main_style %}
+{% block full_page_content %}
+    <div class="page_background_kuki">
+        <div class="col-sm-10 offset-sm-1">
+            <div class="sufee-login d-flex align-content-center flex-wrap snow_white_glass">
+                <div class="container">
+                    <div class="login-content">
+                        <div class="login-logo imagat_center">
+                            <a href="index.html">
+                                <img class="align-content" src="{% static 'dpv_base/images/logo2.png' %}" alt="Logo DPV">
+                            </a>
+                        </div>
+                        <div class="container">
+                            <div class="col-md-4 offset-md-4">
+                            {% if validlink %}
+                                <h3 class="text-primary">Cambiar Contraseña</h3>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    {% for field in form %}
+                                    <div class="form-group"" >
+                                        {{field.errors}}
+                                        <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                                        {{field}}
+                                    <span class="help-text">{{field.help_text}}</span>
+                                    </div>
+                                    {% endfor %}
+                                    <button class="btn btn-primary" type="submit">Cambiar</button>
+                                </form>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    El enlace para recetear la contraseña no es válido, posiblemente ya fue usado antes ó se generó hace mucho tiempo.
+                                    Por favor intente nuevamente pedir una <a href="{% url 'base_recoverpass' %}">nueva contraseña</a>.
+                                </div>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock full_page_content %}
+{% block main_cripts %}
+    <script src="{% static 'dpv_base/js/vendor/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/popper.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/plugins.js' %}"></script>
+    <script src="{% static 'dpv_base/js/main.js' %}"></script>
+{% endblock main_cripts %}
+{% block init_jquery %}
+{% endblock init_jquery %}

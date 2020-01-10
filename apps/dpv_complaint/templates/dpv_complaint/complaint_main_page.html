@@ -1,0 +1,41 @@
+{% extends 'layouts/base.html' %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/quejas/' == request.path %}
+        <li class="active">Quejas</li>
+    {% else %}
+        <li>
+            <a href="{% url 'main_complaint' %}">
+                Quejas
+            </a>
+        </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block breadcrumb_title %}
+{% endblock breadcrumb_title %}
+{% block content_page %}
+    <style type="text/css">
+        td {
+            padding: 0px 8px 0px 8px;
+        }
+    </style>
+    <div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Seleccione una opción</h4>
+            </div>
+            <div class="modal-body">
+                <h2><a href={% url 'add_natural_person' %}>Insertar queja natural</a></h2>
+                <h2><a href={% url 'add_juridic_person' %}>Insertar queja jurídica</a></h2>
+                <h2><a href={% url 'index_natural_complaint' %}>Quejas naturales</a></h2>
+                <h2><a href={% url 'index_juridic_complaint' %}>Quejas jurídicas</a></h2>
+                <h2><a href={% url 'waiting_for_distribution' %}>Quejas en espera de distribución</a></h2>
+                <h2><a href={% url 'index_finished_complaint' %}>Quejas finalizadas</a></h2>
+                <h2><a href={% url 'index_accepted_all' %}>Quejas aceptadas</a></h2>
+                <h2><a href={% url 'index_technicals' %}>Índice de técnicos</a></h2>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

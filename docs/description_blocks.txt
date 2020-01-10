@@ -1,0 +1,20 @@
+En la plantilla base del proyecto estan los siguientes bloques de código heredable
+
+
+bloque site_title -> Titulo del sitio o aplicacion total ( no recomendado sobreescribir )
+bloque page_title -> Titulo de la pagina o vista ( recomendado sobreescribir )
+bloque main_style -> Importacion de archivos CSS principales de la aplicacion ( no recomendado sobreescribir )
+bloque extra_style -> Importacion de archivos CSS de la pagina en si ( recomendado sobreescribir )
+bloque main_fonts -> Importacion de archivos de Fuentes principales del sitio en general  ( no recomendado sobreescribir )
+bloque extra_fonts -> Importacion de archivos de Fuentes de una pagina especifica ( recomendado sobreescribir )
+bloque full_page_content -> Contenido total del body es el contenido del body excepto la importacion de js y css ( no recomendado sobreescribir )
+bloque sidebar_panel -> Element o Side Bar de la aplicación web   ( no recomendado sobreescribir )
+bloque right_panel -> Elemento panel derecho del la aplicacion web contiene headbar, breadcrumb y page_content ( no recomendado sobreescribir )
+bloque header -> Elemento header de la palicacion Web( no recomendado sobreescribir )
+bloque breadcrumbs -> Elemento breadcrumb de la aplicacion web se usa heredando de la plantilla padre para mantener una navegabilidad ( no recomendado sobreescribir )
+bloque breadcrumbs_title -> Elemento títutlo del creadcrumb se hereda de la plantilla padre y se sobre escribe con el valor de la plantilla actual.
+bloque content_page -> Este bloque es el que tiene el contenido principal de cada pagina, este es el bloque donde se pone el contenido principal de
+                       la vista, bloque hecho para sobre escribir( es para sobreescribir )
+bloque main_cripts -> Este bloque contiene los scripts js principales del sitio ( no recomendado sobreescribir )
+bloque extra_scripts -> Este bloque debe contener los js necesarios para una pagina o vista. ( recomendado sobreescribir )
+bloque init_jquery -> instanciacion de jquery, no sobreescribir a no ser que estes duro en eso. ( no sobreescribir )

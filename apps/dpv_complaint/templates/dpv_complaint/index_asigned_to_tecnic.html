@@ -1,0 +1,62 @@
+{% extends 'dpv_complaint/complaint_main_page.html' %}
+{% block breadcrumbs %}
+    {{ block.super }}
+
+{% endblock breadcrumbs %}
+{% block content_page %}
+
+    <style type="text/css">
+        td {
+            padding: 0px 8px 0px 8px;
+        }
+    </style>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+
+                {% if index %}
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Nombre</th>
+                            <th>Asunto</th>
+                            <th>Cuerpo</th>
+                            <th>Departamento</th>
+                            <th>Operaciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for complaint in index %}
+                            <tr>
+                                <td>{{ complaint.number }}</td>
+                                {% if complaint.is_natural %}
+                                    <td>{{ complaint.person_natural.nombre }}</td>
+                                {% else %}
+                                    <td>{{ complaint.person_juridic.nombre }}</td>
+                                {% endif %}
+                                <td>{{ complaint.topic }}</td>
+                                <td>{{ complaint.body }}</td>
+                                {% if complaint.department %}
+                                    <td>{{ complaint.department.nombre }}</td>
+                                {% else %}
+                                    <td><p>Queja sin asignar área de Trabajo</p></td>
+                                {% endif %}
+
+                                <td><a href={% url 'watch_complaint' complaint_id=complaint.id %}> Ver datos de la queja</a></td>
+                                <td>
+                                    <a href={% url 'form_finished_complaint' complaint_id=complaint.id technical_id=tecnic_id %}>
+                                        Responder</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                {% else %}
+                    <p> No existen quejas asignadas a un técnico</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

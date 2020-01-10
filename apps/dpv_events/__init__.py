@@ -1,0 +1,1 @@
+default_app_config = "apps.dpv_events.apps.Dpv_eventsConfig"

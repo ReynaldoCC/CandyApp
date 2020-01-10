@@ -1,0 +1,147 @@
+{% extends 'dpv_events/events_base.html' %}
+{% load i18n %}
+{% load static %}
+{% block page_title %}| Tipos de Eventos {% endblock page_title %}
+{% block extra_style %}{% endblock %}
+{% block breadcrumb_title %} Tipos de Eventos {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if 'dpv_events/tipoevento/' in request.path %}
+    <li class="active">Tipos de Eventos</li>
+    {% else %}
+    <li>
+        <a href="{% url 'dpv_events:tipoevento' %}">
+            Tipos de Eventos
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+
+{% block content_page %}
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Tipos de Eventos</strong>
+                {% if perms.dpv_events.add_tipoevento %}
+                    <a id="btn_create_tipoevento" href="#form_tipoevento" class="pull-right btn btn-success btn-sm" role="button" data-toggle="modal">
+                        <i class="fa fa-plus"></i> Agregar Tipo de Evento </a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if models %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered" id="sample_editable_1">
+                        <thead>
+                        <tr>
+                            <th>
+                                No.
+                            </th>
+                            <th>Tipo de Evento</th>
+                            <th>Frecuencia</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for model in models %}
+                            <tr>
+                                <td>
+                                    {{ model.id }}
+                                </td>
+                                <td>{{ model.type }}</td>
+                                <td>{{ model.frecuencia|default:"" }}</td>
+
+                                <td>
+                                    {% if perms.dpv_events.change_tipoevento %}
+                                        <a href="#form_tipoevento" class="btn btn-warning btn-sm edit" data-toggle="modal" data-id="{{ model.id }}" data-type="{{ model.type }}" data-frecuencia="{{ model.frecuencia_id }}">
+                                            <i class="fa fa-pencil"></i> </a>
+                                    {% endif %}
+                                    {% if perms.dpv_events.delete_tipoevento %}
+                                        <a href="#myModal{{ model.id }}" role="button" class="btn btn-danger btn-sm black" data-toggle="modal">
+                                            <i class="fa fa-trash-o"></i> </a>
+                                        <div id="myModal{{ model.id }}" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                                            <div class="modal-dialog modal-sm">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                        <h4 class="modal-title">Confirmar </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="text-center">
+                                                            Seguro desea borrar el Tipo de Evento
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">
+                                                            Cancelar
+                                                        </button>
+                                                        <a href="{% url 'dpv_events:delete_tipoevento' model.id %}" class="btn btn-primary">
+                                                            Confirmar
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <h2 class="text-center">No hay Tipos de Eventos</h2>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+	<!-- END PAGE CONTENT -->
+    {% if perms.dpv_events.add_tipoevento %}
+    <div id="form_tipoevento" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="card light">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-plus"></i>
+                            <span class="caption-subject bold" style="text-transform: uppercase;"> <span class="action_tipoevento">Agregar</span> Tipo de Evento</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="#" method="POST" class="form-horizontal agregar" id="newtipoevento_form">{% csrf_token %}
+                            <div class="row">
+                                {% for field in form %}
+                                <div class="form-group col-md-12">
+                                    <label class="pull-left col-md-3">{{ field.label_tag }}</label>
+                                    <div class="pull-right input-icon col-md-9">
+                                        {{ field }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <button id="cancelar" type="reset" class="btn btn-default" data-dismiss="modal" aria-hidden="true">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    {% trans 'Save' %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_events/scripts/DjangoAjax.js' %}"></script>
+    <script src="{% static 'dpv_events/scripts/tipoevento.js' %}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function(){
+            TipoEventoScript.init();
+        });
+    </script>
+{% endblock extra_scripts %}

@@ -1,0 +1,38 @@
+{% load static i18n %}
+<li class="{% if '/dashboard/' in request.path %} active {% endif %}">
+    <a href="{% url 'base_dashboard' %}">
+        <i class="fa fa-dashboard">
+            Inicio
+        </i>
+    </a>
+</li>
+{% if perms.auth.view_user or perms.auth.view_group or perms.auth.view_logentry %}
+<li class="{% if '/admin/' in request.path %} active show {% endif %} menu-item-has-children dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="menu-icon fa fa-laptop"></i>
+        Administración
+    </a>
+    <ul class="sub-menu children dropdown-menu">
+        {% if perms.auth.view_user %}
+        <li class="{% if '/admin/users/' in request.path %} active {% endif %}">
+            <a href="{% url 'admin_user' %}"><i class="fa fa-user"></i>Usuarios</a>
+        </li>
+        {% endif %}
+        {% if perms.auth.view_group %}
+        <li class="{% if '/admin/groups/' in request.path %} active {% endif %}">
+            <a href="{% url 'admin_group' %}"><i class="fa fa-users"></i>Grupos</a>
+        </li>
+        {% endif %}
+        {% if perms.email_sender.add_emailconfigurate or perms.email_sender.change_emailconfigurate or perms.email_sender.delete_emailconfigurate or perms.email_sender.view_emailconfigurate %}
+        <li class="{% if '/admin/email/' in request.path %} active {% endif %}">
+            <a href="{% url 'admin_emailconf' %}"><i class="fa fa-envelope"></i>Configuración de Correo</a>
+        </li>
+        {% endif %}
+        {% if False %}
+        <li class="{% if '/logs/' in request.path %} active {% endif %}">
+            <a href="{% url 'admin_logs' %}"><i class="fa fa-users"></i>Registros</a>
+        </li>
+        {% endif %}
+    </ul>
+</li>
+{% endif %}

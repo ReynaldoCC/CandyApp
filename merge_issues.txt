@@ -1,0 +1,37 @@
+Performing inexact rename detection: 100% (157325/157325), done.
+Auto-merging locales_viv/settings.py
+Removing apps/email_sender/migrations/__init__.py
+Removing apps/dpv_viviendas/migrations/__init__.py
+CONFLICT (modify/delete): apps/dpv_viviendas/migrations/0001_initial.py deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_viviendas/migrations/0001_initial.py left in tree.
+Removing apps/dpv_persona/migrations/__init__.py
+CONFLICT (modify/delete): apps/dpv_persona/migrations/0001_initial.py deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_persona/migrations/0001_initial.py left in tree.
+Removing apps/dpv_perfil/migrations/__init__.py
+CONFLICT (modify/delete): apps/dpv_perfil/migrations/0001_initial.py deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_perfil/migrations/0001_initial.py left in tree.
+CONFLICT (modify/delete): apps/dpv_perfil/__pycache__/views.cpython-36.pyc deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_perfil/__pycache__/views.cpython-36.pyc left in tree.
+CONFLICT (modify/delete): apps/dpv_perfil/__pycache__/urls.cpython-36.pyc deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_perfil/__pycache__/urls.cpython-36.pyc left in tree.
+CONFLICT (modify/delete): apps/dpv_perfil/__pycache__/models.cpython-36.pyc deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_perfil/__pycache__/models.cpython-36.pyc left in tree.
+CONFLICT (modify/delete): apps/dpv_perfil/__pycache__/apps.cpython-36.pyc deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_perfil/__pycache__/apps.cpython-36.pyc left in tree.
+CONFLICT (modify/delete): apps/dpv_perfil/__pycache__/admin.cpython-36.pyc deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_perfil/__pycache__/admin.cpython-36.pyc left in tree.
+CONFLICT (modify/delete): apps/dpv_perfil/__pycache__/__init__.cpython-36.pyc deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_perfil/__pycache__/__init__.cpython-36.pyc left in tree.
+Auto-merging apps/dpv_nomencladores/migrations/0001_initial.py
+CONFLICT (content): Merge conflict in apps/dpv_nomencladores/migrations/0001_initial.py
+Removing apps/dpv_locales/templates/dpv_locales/estdistico_template.html
+Removing apps/dpv_locales/migrations/__init__.py
+CONFLICT (modify/delete): apps/dpv_locales/migrations/0001_initial.py deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_locales/migrations/0001_initial.py left in tree.
+Removing apps/dpv_events/migrations/__init__.py
+CONFLICT (modify/delete): apps/dpv_events/migrations/0001_initial.py deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_events/migrations/0001_initial.py left in tree.
+Auto-merging apps/dpv_complaint/models.py
+Auto-merging apps/dpv_complaint/migrations/0001_initial.py
+CONFLICT (content): Merge conflict in apps/dpv_complaint/migrations/0001_initial.py
+CONFLICT (modify/delete): apps/dpv_base/templatetags/__pycache__/base_tags.cpython-36.pyc deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_base/templatetags/__pycache__/base_tags.cpython-36.pyc left in tree.
+CONFLICT (modify/delete): apps/dpv_base/templatetags/__pycache__/__init__.cpython-36.pyc deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_base/templatetags/__pycache__/__init__.cpython-36.pyc left in tree.
+Auto-merging apps/dpv_base/templates/layouts/recoverpass/recoverpass.html
+Removing apps/dpv_base/templates/layouts/admin/users_view.html
+CONFLICT (rename/delete): Adobe_Flash.png deleted in HEAD and renamed to apps/dpv_base/static/dpv_base/js/lib/datatables/extensions/TableTools/images/pdf.png in rem/reynaldo_dev. Version rem/reynaldo_dev of apps/dpv_base/static/dpv_base/js/lib/datatables/extensions/TableTools/images/pdf.png left in tree.
+Removing apps/dpv_base/static/dpv_base/images/logo-S.png
+Removing apps/dpv_base/migrations/__init__.py
+CONFLICT (modify/delete): apps/dpv_base/migrations/0001_initial.py deleted in rem/reynaldo_dev and modified in HEAD. Version HEAD of apps/dpv_base/migrations/0001_initial.py left in tree.
+Removing apps/__pycache__/__init__.cpython-36.pyc
+Removing .idea/workspace.xml
+Removing .idea/misc.xml
+Automatic merge failed; fix conflicts and then commit the result.

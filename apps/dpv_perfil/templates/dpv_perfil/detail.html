@@ -1,0 +1,154 @@
+{% extends 'layouts/dashboard.html' %}
+{% load static %}
+{% block breadcrumb_title %} Perfil de Usuario {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/perfil/' == request.path %}
+    <li class="active">Perfil</li>
+    {% else %}
+    <li>
+        <a href="{% url 'admin_user' %}">
+            Usuarios
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="content mt-3">
+        <form method="POST" action="{% url 'perfil_detail' %}"  enctype="multipart/form-data">{% csrf_token %}
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mx-auto d-block">
+                            <span class="file-field">
+                                {% if request.user.perfil_usuario.avatar %}
+                                <img class="rounded-circle mx-auto d-block" height="150px" width="150px" src="/media/{{ request.user.perfil_usuario.avatar }}" alt="Avatar usuario {{ request.user.username }}">
+                                {{ profileform.avatar }}
+                                {% else %}
+                                <img class="rounded-circle mx-auto d-block" height="150px" width="150px" src="{% static 'dpv_base/images/noavatar.png' %}" alt="Avatar usuario {{ request.user.username }}">
+                                {{ profileform.avatar }}
+                                {% endif %}
+                            </span>
+                            <h5 class="text-sm-center mt-2 mb-1">{{ request.user.first_name }}</h5>
+                            <div class="location text-sm-center"><i class="ti-layout-grid4-alt"></i> {{ request.user.last_name }}</div>
+                        </div>
+                        <hr>
+                        <div class="card-text text-sm-center">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Unidad: </span><span class="pull-right">{{ request.user.perfil_usuario.centro_trabajo }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Departamento:</span> <span class="pull-right">{{ request.user.perfil_usuario.depto_trabajo }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Notificatión al Email:</span> <span class="pull-right">{{ profileform.notificacion_email }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Documentación al Email:</span> <span class="pull-right">{{ profileform.documentacion_email }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <strong class="card-title mb-3">Datos Perfil</strong>
+                        <button type="submit" class="btn btn-outline-secondary pull-right" >Actualizar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-text text-sm-center">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Nombre de usuario: </span><span class="pull-right">{{ request.user.username }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Email:</span> <span class="pull-right">{{request.user.email}}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Administrador:</span> <span class="pull-right">{% if request.user.is_staff %} <i class="ti-check text-success"></i> {% else %} <i class="ti-close text-danger"></i> {% endif %}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Primer Login:</span> <span class="pull-right">{{ request.user.date_joined }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Último Login:</span> <span class="pull-right">{{ request.user.last_login }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Contraseña:</span> <a class="btn btn-sm pull-right" onclick="return abrir_modal('{% url 'perfil_changepass' %}')" >Cambiar</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Grupos:</span> <span class="pull-right"></span> <span class="pull-right">Ninguno</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <strong class="card-title mb-3">Datos Usuario</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-text text-sm-center">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Nombre: </span><span class="pull-right">{{ request.user.first_name }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Apellidos:</span> <span class="pull-right">{{ request.user.last_name }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Email:</span> <span class="pull-right">{{ personform.email_address }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Dirección:</span> <span class="pull-right">Calle {{ request.user.perfil_usuario.datos_personales.direccion_calle }} #{{ request.user.perfil_usuario.datos_personales.direccion_numero }}, entre {{ request.user.perfil_usuario.datos_personales.direccion_entrecalle1 }} y {{ request.user.perfil_usuario.datos_personales.direccion_entrecalle2 }}, municipio {{ request.user.perfil_usuario.datos_personales.municipio }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Teléfono:</span> <span class="pull-right">{{ personform.telefono }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Móvil:</span> <span class="pull-right">{{ request.user.perfil_usuario.datos_personales.movil }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> CI:</span> <span class="pull-right">{{ request.user.perfil_usuario.datos_personales.ci }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="pull-left"> Género:</span> <span class="pull-right">{{ request.user.perfil_usuario.datos_personales.genero }} <i class="fa fa-male"></i></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <strong class="card-title mb-3">Datos Personales</strong>
+                        <button type="submit" class="btn btn-outline-secondary pull-right" >Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade modal-show" id="popup" role="dialog">
+
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
+    <script src="{% static 'dpv_base/js/base.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $('#bootstrap-data-table-export').DataTable();
+        } );
+    </script>{% endblock extra_scripts %}

@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+{% load static base_tags %}
+{% block page_title %} | Entrada {% endblock page_title %}
+{% load static %}
+{% block main_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/cs-skin-elastic.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/style.css' %}">
+{% endblock main_style %}
+{% block full_page_content %}
+    <div class="page_background_kuki">
+
+        {% if form.errors %}
+        <div class="col-md-8 offset-md-2 col-sm-10 padding-d-15">
+            <br/>
+            <div class="alert alert-danger text-center">
+                {{form.errors }}
+            </div>
+        </div>
+        {% endif %}
+        <div class="col-sm-10 col-md-5">
+            <div class="sufee-login d-flex align-content-center flex-wrap snow_white_glass">
+                <div class="container">
+                    <div class="login-content">
+                        <div class="login-logo imagat_center">
+                            <a href="index.html">
+                                <img class="align-content" src="{% static 'dpv_base/images/logo2.png' %}" alt="Logo DPV">
+                            </a>
+                        </div>
+                        <div class="login-form">
+                            <form method="post">
+                                {% csrf_token %}
+                                {% for field in form %}
+                                <div class="form-group">
+                                    <p class="text-danger">{{field.errors}}</p>
+                                    <label>{{field.label}}</label>
+                                    {{field}}
+                                    <p class="help-text">{{field.help_text}}</p>
+                                </div>
+                                {% endfor %}
+                                <label class="pull-right">
+                                    <a class="color-blue" href="{% url 'password_reset' %}">A olvidado su contraseña?</a>
+                                </label>
+                                <button type="submit" class="btn btn-success btn-flat m-b-30 m-t-30">Entrar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock full_page_content %}
+{% block main_cripts %}
+    <script src="{% static 'dpv_base/js/vendor/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/popper.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/plugins.js' %}"></script>
+    <script src="{% static 'dpv_base/js/main.js' %}"></script>
+{% endblock main_cripts %}
+{% block init_jquery %}
+{% endblock init_jquery %}

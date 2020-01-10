@@ -1,0 +1,58 @@
+{% extends 'dpv_complaint/complaint_main_page.html' %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/quejas/wait_distribution/' == request.path %}
+        <li class="active">Quejas en Espera</li>
+    {% else %}
+        <li>
+            <a href="{% url 'waiting_for_distribution' %}">
+                Quejas en Espera
+            </a>
+        </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+                {% if index %}
+                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Nombre</th>
+                            <th>Asunto</th>
+                            <th>Cuerpo</th>
+                            <th>Operaciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for complaint_for_dist in index %}
+                            <tr>
+                                <td>{{ complaint_for_dist.complaint.number }}</td>
+                                {% if complaint_for_dist.complaint.is_natural %}
+                                    <td>{{ complaint_for_dist.complaint.person_natural.nombre }} {{ complaint_for_dist.complaint.person_natural.apellidos }}</td>
+                                {% else %}
+                                    <td>{{ complaint_for_dist.complaint.person_juridic.nombre }}</td>
+                                {% endif %}
+                                <td>{{ complaint_for_dist.complaint.topic }}</td>
+                                <td>{{ complaint_for_dist.complaint.body }}</td>
+                                <td>
+                                    <p>Asignar Departamento!!</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info">
+                        <h2 class="text-center">No hay quejas registradas en espera de distribución</h2>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content_page %}
+

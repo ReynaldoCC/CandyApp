@@ -1,0 +1,279 @@
+{% extends 'dpv_events/events_base.html' %}
+{% load i18n %}
+{% load static %}
+{% block page_title %}| Eventos{% endblock page_title %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/js/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css' %}">
+{% endblock %}
+{% block breadcrumb_title %}Eventos{% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if 'dpv_events/eventos/' in request.path %}
+    <li class="active">Eventos</li>
+    {% else %}
+    <li>
+        <a href="{% url 'dpv_events:eventos' %}">
+            Eventos
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+
+{% block content_page %}
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">
+                    Eventos
+                    <nav class="pull-right">
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Eventos</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">
+                                <i class="fa fa-plus"></i> Agregar Evento</a>
+                            </a>
+                        </div>
+                    </nav>
+                </strong>
+            </div>
+            <div class="card-body">
+                <div class="default-tab">
+                    <div class="tab-content pl-3 pt-2" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            {% if models %}
+                            <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Evento</th>
+                                    <th>Fecha Programada</th>
+                                    <th>Lugar</th>
+                                    <th>Mes</th>
+                                    <th>Tipo</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for model in models|dictsort:"date_programed" %}
+                                <tr>
+                                    <td>{{ model.type.type }}</td>
+                                    <td>{{ model.date_programed }}</td>
+                                    <td>{{ model.site }}</td>
+                                    <td>{{ model.get_month }}</td>
+                                    <td>{{ model.get_is_extraordinario }}</td>
+                                    <td>
+                                        {% if perms.dpv_events.view_evento %}
+                                        <a class="btn btn-primary btn-sm" href="{% url 'dpv_events:evento' model.id %}">
+                                            <i class="fa fa-eye"></i> </a>
+                                        {% endif %}
+                                        {% if perms.dpv_events.change_evento and not model.in_time and not model.is_done %}
+                                        <a href="#myModalisDone{{ model.id }}" role="button" class="btn btn-warning btn-sm" data-toggle="modal">
+                                            <i class="fa fa-check"></i> </a>
+                                        <div id="myModalisDone{{ model.id }}" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                                            <div class="modal-dialog modal-sm">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                        <h4 class="modal-title">Confirmar </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="text-center">
+                                                            Seguro desea dar por cumplido el Evento
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn default" data-dismiss="modal" aria-hidden="true">
+                                                            Cancelar
+                                                        </button>
+                                                        <a href="{% url 'dpv_events:done_evento' model.id %}" class="btn btn-primary">
+                                                            Confirmar
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        {% if perms.dpv_events.delete_evento and model.in_time %}
+                                        <a href="#myModal{{ model.id }}" role="button" class="btn btn-danger btn-sm " data-toggle="modal">
+                                            <i class="fa fa-trash-o"></i> </a>
+                                        <div id="myModal{{ model.id }}" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                                            <div class="modal-dialog modal-sm">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                        <h4 class="modal-title">Confirmar </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="text-center">
+                                                            Seguro desea borrar el Evento
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn default" data-dismiss="modal" aria-hidden="true">
+                                                            Cancelar
+                                                        </button>
+                                                        <a href="{% url 'dpv_events:delete_evento' model.id %}" class="btn btn-primary">
+                                                            Confirmar
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <h2 class="text-center">No hay Eventos registrados</h2>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <form action="#" class="form-horizontal" id="newevento_form">{% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label col-md-3">{{ form.type_evento.label_tag }}</label>
+                                            <div class="input-icon col-md-9">
+                                                {{ form.type_evento }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label col-md-3">{{ form.date_programed_evento.label_tag }}</label>
+                                            <div class="col-md-9">
+                                                <div class="input-group date form_meridian_datetime" data-date="2012-12-21T15:25:00Z">
+                                                    {{ form.date_programed_evento }}
+                                                    <span class="input-group-btn">
+                                                        <button class="btn default date-reset" type="button"><i class="fa fa-times"></i></button>
+                                                        <button class="btn default date-set" type="button"><i class="fa fa-calendar"></i></button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label col-md-3">{{ form.site_evento.label_tag }}</label>
+                                            <div class="input-icon col-md-9">
+                                                {{ form.site_evento }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label col-md-3">{{ form.month_evento.label_tag }}</label>
+                                            <div class="input-icon col-md-9">
+                                                <select name="month_evento" id="id_month_evento" class="form-control" prompt="" title="Campo Obligatorio">
+                                                    <option value=""></option>
+                                                    <option value="1">Enero</option>
+                                                    <option value="2">Febrero</option>
+                                                    <option value="3">Marzo</option>
+                                                    <option value="4">Abril</option>
+                                                    <option value="5">Mayo</option>
+                                                    <option value="6">Junio</option>
+                                                    <option value="7">Julio</option>
+                                                    <option value="8">Agosto</option>
+                                                    <option value="9">Septiembre</option>
+                                                    <option value="10">Octubre</option>
+                                                    <option value="11">Noviembre</option>
+                                                    <option value="12">Diciembre</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label col-md-3">{{ form.is_extraordinario_evento.label_tag }}</label>
+                                            <div class="input-icon col-md-9">
+                                                {{ form.is_extraordinario_evento }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <h3 class="text-muted">Orden del día: <a href="#form_theme_event" class="btn btn-primary"  role="button" data-toggle="modal">{% trans 'Add' %} Tema</a></h3>
+                                        <table id="table_1" class="table table-advance">
+                                            <thead>
+                                            <tr>
+                                                <th>Tema</th>
+                                                <th>Asunto</th>
+                                                <th>Responsable</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Chequeo de Acuerdos</td>
+                                                <td>{{ user.username }}</td>
+                                                <td></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="cancelar" type="button" class="btn default" data-dismiss="modal" aria-hidden="true">
+                                        Cancelar
+                                    </button>
+                                    <button type="submit" class="btn blue">
+                                        {% trans 'Save' %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="form_theme_event" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption theme-font">
+                            <i class="icon-plus theme-font"></i>
+                            <span class="caption-subject bold uppercase"> Agregar Tema</span>
+                        </div>
+                        <div class="actions">
+                            <button type="button" id="close_theme_event" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <form action="#" class="" id="newtheme_event_form">{% csrf_token %}
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label class="control-label col-md-3">{{ form.asunto_tema_evento.label_tag }}</label>
+                                    <div class="input-icon col-md-9">
+                                        {{ form.asunto_tema_evento }}
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label class="control-label col-md-3">{{ form.responsable_tema_evento.label_tag }}</label>
+                                    <div class="input-icon col-md-9">
+                                        {{ form.responsable_tema_evento }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="cancelar_theme_event" type="button" class="btn default" data-dismiss="modal" aria-hidden="true">
+                                    Cancelar
+                                </button>
+                                <button class="btn btn-primary" type="submit">
+                                    {% trans 'Save' %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_events/scripts/DjangoAjax.js' %}"></script>
+    <script src="{% static 'dpv_events/scripts/eventos.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js' %}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function(){
+            EventosScript.init();
+        });
+    </script>
+{% endblock extra_scripts %}

@@ -1,0 +1,57 @@
+{% extends 'layouts/base.html' %}
+
+{% block page_title %} | Confirmar contraseña {% endblock page_title %}
+{% load static %}
+{% block main_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/cs-skin-elastic.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/css/style.css' %}">
+{% endblock main_style %}
+{% block full_page_content %}
+    <div class="page_background_kuki">
+        <div class="col-sm-10 offset-sm-1">
+            <div class="sufee-login d-flex align-content-center flex-wrap snow_white_glass">
+                <div class="container">
+                    <div class="login-content">
+                        <div class="login-logo">
+                            <a href="#">
+                                <img class="align-content" src="{% static 'dpv_base/images/logo2.png' %}" alt="Logo DPV">
+                            </a>
+                            <a href="#" class="pull-right">
+                                <img class="align-content" src="{% static 'dpv_base/images/403.png' %}" alt="Logo DPV">
+                            </a>
+                        </div>
+                        <div class="container">
+                            <div class="alert alert-danger text-center">
+                                <h4>Usted no tiene los privilegios necesarios para consumir el recurso al que intenta acceder.</h4>
+                                <ul class="text-left">
+                                    <li>Puede ser una mala configuracion de sus permisos.</li>
+                                    <li>Puede que usted no tenga permisos para usar ese recurso.</li>
+                                    <li>Puede que se haya terminado su session vuelva a iniciar session desde la pantalla de <a href="{% url 'base_login' %}" >Login <i class="fa fa-key"></i>.</li>
+                                </ul>
+                                {% if request.user.is_authenticated %}
+                                    Ir a la pantalla de <a href="{% url 'base_dashboard' %}">Inicio <i class="fa fa-home"></i></a>.
+                                {% else %}
+                                    Ir a la pantalla de <a href="{% url 'base_login' %}" >Login <i class="fa fa-key"></i></a>.
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock full_page_content %}
+{% block main_cripts %}
+    <script src="{% static 'dpv_base/js/vendor/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/popper.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/plugins.js' %}"></script>
+    <script src="{% static 'dpv_base/js/main.js' %}"></script>
+{% endblock main_cripts %}
+{% block init_jquery %}
+{% endblock init_jquery %}

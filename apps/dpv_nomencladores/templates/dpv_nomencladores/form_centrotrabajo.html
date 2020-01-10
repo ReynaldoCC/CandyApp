@@ -1,0 +1,55 @@
+<div class="modal-dialog modal-md">
+    <div class="modal-content">
+        {% if centrotrabajo %}
+        <form role="form" action="{% url 'centrotrabajo_edit' centrotrabajo.id %}" method="post" id="form_centtrab">
+        {% else %}
+        <form role="form" action="{% url 'centrotrabajo_new' %}" method="post" id="form_centtrab">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Unidad</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-control-sm">
+                    <label for="">Nombre</label>
+                    {{ form.non_field_errors }}
+                    {{ form.nombre }}
+                </div>
+               <div class="form-control-sm">
+                    <label for="">Número</label>
+                    {{ form.non_field_errors }}
+                    {{ form.numero }}
+                </div>
+                <div class="form-control-sm">
+                    <label for="">Siglas</label>
+                    {{ form.non_field_errors }}
+                    {{ form.siglas }}
+                </div>
+                <div class="form-control-sm">
+                    <label for="">Municipio</label>
+                    {{ form.non_field_errors }}
+                    {{ form.municipio }}
+                </div>
+
+                <div class="col-md-12" style="padding-left: 40px; padding-top: 15px">
+                    <div class="checkbox">
+                        <label>
+                            <input name="oc" class="form-check-input" type="checkbox" {% if centrotrabajo.oc %} checked {% endif %}>
+                            <i class="input-helper"></i> Oficina Central
+                        </label>
+                    </div>
+                </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('#form_centtrab').validate();
+</script>

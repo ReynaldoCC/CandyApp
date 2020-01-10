@@ -1,0 +1,69 @@
+{% load static %}
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Detalles del Local</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+            <div class="modal-body">
+                <div class="col-md-12"><span class="text-muted">Dirección:</span> Calle {{local.direccion_calle}} # {{local.direccion_numero}}, {{local.piso.nombre}}, entre {{local.direccion_entre1}} y {{local.direccion_entre2}} </div>
+                <div class="col-md-6"><span class="text-muted">Municipio:</span> {{local.municipio}}</div>
+                <div class="col-md-12"><span class="text-muted">Consejo Popular:</span> {{local.consejo_popular}}</div>
+                <div class="col-md-6"><span class="text-muted">No. de Viviendas:</span> {{local.no_viviendas}}</div>
+                <div class="col-md-12"><span class="text-muted">Viviendas Pendientes de aprobación:</span> {{local.pendiente}}</div>
+                <div class="col-md-6"><span class="text-muted">Organismo:</span> {{local.organismo.nombre}}</div>
+                <div class="col-md-12"><span class="text-muted">Fecha en Sistema:</span> {{local.fecha}}</div>
+                {% if local.acta %}
+                <div class="col-md-6"><span class="text-muted">Acta:</span> {{local.acta}}</div>
+                {% endif %}
+                {% if local.acuerdoCAM %}
+                <div class="col-md-6"><span class="text-muted">Acuerdo CAM:</span> {{local.acuerdoCAM}}</div>
+                {% endif %}
+                {% if local.acuerdoPEM %}
+                <div class="col-md-6"><span class="text-muted">Acuerdo PEM:</span> {{local.acuerdoPEM}}</div>
+                {% endif %}
+                {% if local.acuerdoORG %}
+                <div class="col-md-6"><span class="text-muted">Acuerdo Organismo:</span> {{local.acuerdoORG}}</div>
+                {% endif %}
+                {% if local.acuerdo_DPV %}
+                <div class="col-md-6"><span class="text-muted">Acuerdo DPV:</span> {{local.acuerdo_DPV}}</div>
+                {% endif %}
+                <div class="col-md-12"><span class="text-muted">Observaciones:</span></div>
+                <div class="col-md-12"> {{local.observaciones}}</div>
+                <div class="col-md-12 alert {% if local.data_ok == 0 %}alert-success{% elif local.data_ok == 1 %}alert-warning{% elif local.data_ok == 2 %}alert-danger{% endif %}"> {{local.system_info}}</div>
+                <div class="col-md-12 table-reponsive">
+                    {% if local.vivienda_local.count > 0 %}
+                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Datos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for viv in local.vivienda_local.all %}
+                            <tr>
+                                <td class="text-center text-middle">{{viv.numero}}</td>
+                                <td>
+                                    <span>Propietario: {{viv.propietario}}</span>
+                                    <span>No. convivientes: {{viv.cantidad_persona}}</span>
+                                    <span>Fecha habitada: {{viv.fecha_propietario}}</span>
+                                    <span>Concepto: {{viv.concepto}}</span>
+                                    <span>Aprobada: <i class="fa {% if viv.aprobada %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="alert alert-danger text-center">
+                        Este local no tiene viviendas asociadas.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cerrar</button>
+            </div>
+    </div>
+</div>

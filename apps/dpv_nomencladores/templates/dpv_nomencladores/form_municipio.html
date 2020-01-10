@@ -1,0 +1,41 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if municipio %}
+        <form role="form" action="{% url 'municipio_edit' municipio.id %}" method="post" id="form_municipio">
+        {% else %}
+        <form role="form" action="{% url 'municipio_new' %}" method="post" id="form_municipio">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Municipio</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-control-sm">
+                    <label for="">Nombre</label>
+                    {{ form.non_field_errors }}
+                    {{ form.nombre }}
+                </div>
+               <div class="form-control-sm">
+                    <label for="">Número</label>
+                    {{ form.non_field_errors }}
+                    {{ form.numero }}
+                </div>
+                <div class="form-control-sm">
+                    <label for="">Provincia</label>
+                    {{ form.non_field_errors }}
+                    {{ form.provincia }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('#form_municipio').validate();
+</script>

@@ -1,0 +1,98 @@
+{% extends 'dpv_complaint/complaint_main_page.html' %}
+{% block content_page %}
+    <form role="form" action="{% url 'add_natural_person' %}" method="post">
+
+        {% csrf_token %}
+        <div>
+            <div class="card-header">
+                <strong class="card-title">{{ form_name }}</strong>
+                <a role="button" class="pull-right btn btn-success btn-sm"
+                   href={% url 'add_natural_person' %}><i class="fa fa-plus">
+                    Agregar Queja Natural</i></a>
+                <a role="button" class="pull-right
+                   btn btn-success btn-sm" href={% url 'add_juridic_person' %}><i class="fa fa-plus">
+                    Agregar Queja Juridica</i></a>
+
+            </div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Persona Natural</h4>
+                    <div class="actions">
+                        <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form class="row" role="form" method="post">
+                        <div class="col-md-12">
+                            <div class="form-control-sm">
+                                <label for="">Nombre*</label>
+                                {{ form.non_field_errors }}
+                                {{ form.nombre }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Apellidos*</label>
+                                {{ form.non_field_errors }}
+                                {{ form.apellidos }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">CI*</label>
+                                {{ form.non_field_errors }}
+                                {{ form.ci }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Correo electrónico</label>
+                                {{ form.non_field_errors }}
+                                {{ form.email_address }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Municipio*</label>
+                                {{ form.non_field_errors }}
+                                {{ form.municipio }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Dirección de la Calle*</label>
+                                {{ form.non_field_errors }}
+                                {{ form.direccion_calle }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Dirección de entre calle 1</label>
+                                {{ form.non_field_errors }}
+                                {{ form.direccion_entrecalle1 }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Dirección de entre calle 2</label>
+                                {{ form.non_field_errors }}
+                                {{ form.direccion_entrecalle2 }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Número de Vivienda</label>
+                                {{ form.non_field_errors }}
+                                {{ form.direccion_numero }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Teléfono fijo</label>
+                                {{ form.non_field_errors }}
+                                {{ form.telefono }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Teléfono móvil</label>
+                                {{ form.non_field_errors }}
+                                {{ form.movil }}
+                            </div>
+                            <div class="form-control-sm">
+                                <label for="">Género</label>
+                                {{ form.non_field_errors }}
+                                {{ form.genero }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" href={% url 'main_complaint' %}>Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock content_page %}

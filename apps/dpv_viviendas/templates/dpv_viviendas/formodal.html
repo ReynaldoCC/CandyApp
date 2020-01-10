@@ -1,0 +1,67 @@
+{% load static %}
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Agregar Vivienda</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form novalidate method="POST"action="/vivienda/formodal/{{local}}">
+            <div class="modal-body">
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    Por favor, corrija {% if form.errors|length == 1 %}"el error señalado"{% else %}"los errores señalados"{% endif %} a continuación.
+                </div>
+                {% endif %}
+                <div class="card">
+                    <div class="card-body">
+                        {% for field in form %}
+                        <div class="form-group {% if field.name == 'add_concepto' %} col-md-12 {% else %} col-md-6 {% endif %} {% if field.name == 'local_dado' %} disabled {% endif %}" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                            {{field.errors}}
+                            <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                            {{field}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-default" href="#" data-dismiss="modal">
+                    <i class="fa fa-reply"></i>
+                    Volver
+                </a>
+                <button type="submit" class="pull-right btn btn-primary">
+                    <i class="fa fa-check"></i>
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+
+$(function(){
+   $.datepicker.regional['es'] = {
+    closeText: 'Cerrar',
+    prevText: '<Ant',
+    nextText: 'Sig>',
+    currentText: 'Hoy',
+    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
+    dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+    weekHeader: 'Sm',
+    dateFormat: 'dd/mm/yy',
+    firstDay: 1,
+    isRTL: false,
+    showMonthAfterYear: false,
+    yearSuffix: ''
+    };
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+   $('.date').datepicker();
+});
+</script>

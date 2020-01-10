@@ -1,0 +1,72 @@
+{% extends 'dpv_persona/list_personat.html' %}
+{% block page_title %} | Formulario {% endblock page_title %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %}  Formulario {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/persona/natural/form/' == request.path %}
+    <li class="active">Crear</li>
+    {% else %}
+    <li class="active">
+            Actualizar
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+        <div class="col-md-12">
+        <form novalidate method="POST">
+            {% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Por favor, corrija {% if form.errors|length == 1 %}"el error señalado"{% else %}"los errores señalados"{% endif %} a continuación.
+            </div>
+            {% endif %}
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Entidad</strong>
+                </div>
+                <div class="card-body">
+                    {% for field in form %}
+                    <div class="form-group {% if field.name == 'add_concepto' %} col-md-12 {% else %} col-md-6 {% endif %}" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                        {{field.errors}}
+                        <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                        {% if 'calle' in field.name or 'entre' in field.name %}
+                        {% if perms.dpv_nomencladores.add_calle %}
+                            <button onclick="return abrir_modal('{% url 'agree_calle' %}', 'id_{{field.name}}')" class="pull-right btn btn-link">
+                                <i class="fa fa-plus text-success"></i>
+                            </button>
+                        {% endif %}
+                        {% endif %}
+                        {{field}}
+                        {{field.required }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <a type="button" class="btn btn-default" href="{% url 'persona_natural' %}">
+                        <i class="fa fa-reply"></i>
+                        Volver
+                    </a>
+                    <button type="submit" class="pull-right btn btn-primary">
+                        <i class="fa fa-check"></i>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade modal-show" id="add_calle" role="dialog">
+
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+{{block.super}}
+    <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_persona/js/personat.js' %}"></script>
+{% endblock extra_scripts %}
+{% block init_jquery %} {% endblock init_jquery %}

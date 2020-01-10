@@ -1,0 +1,46 @@
+{% extends 'layouts/dashboard.html' %}
+{% block breadcrumb_title %} Personas Naturales y Jurídicas {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/persona/' == request.path %}
+    <li class="active">Personas</li>
+    {% else %}
+    <li>
+        <a href="{% url 'persona_list' %}">
+            Personas
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <div class="card text-white bg-flat-color-1 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right">
+                        <a href="{% url 'persona_natural' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{cantpers}}</span>
+                    </h1>
+                    <h3 class="text-light">Personas Registradas</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <div class="card text-white bg-flat-color-2 el-rounded dashwidget">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'persona_juridica' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{cantents}}</span>
+                    </h1>
+                    <h3 class="text-light">Entidades Registradas</h3>
+                </div>
+            </div>
+        </div>
+{% endblock content_page %}
