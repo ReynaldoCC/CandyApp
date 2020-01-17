@@ -24,9 +24,9 @@ def menuable_apps():
                 if hasattr(app, 'menuable') and app.menuable:
                     if hasattr(app, 'model_data'):
                         if len(app.model_data) == 1:
-                            setattr(app, 'count_data', app.get_model(app.model_data[0]).objects.all().count())
+                            setattr(app, 'count_data', app.get_model(app.model_data[0]).objects.all().count() or 0)
                         else:
-                            setattr(app, 'count_data', all_apps.get_model(app.model_data[0], app.model_data[1]).objects.all().count())
+                            setattr(app, 'count_data', all_apps.get_model(app.model_data[0], app.model_data[1]).objects.all().count() or 0)
                     menuable_apps.append(app)
     return menuable_apps
 

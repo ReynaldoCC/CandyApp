@@ -190,10 +190,11 @@ class TipoProcedencia(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Procedencia(models.Model):
     nombre = models.CharField(max_length=50, verbose_name="Procedencia", unique=True, validators=[MaxLengthValidator(50), not_special_char])
     enviar = models.BooleanField(default=True, verbose_name="Enviar Respuesta", help_text="Marque para enviar la respuesta por correo electrónico")
-    tipo = models.OneToOneField(TipoProcedencia, related_name="municipios", on_delete=models.CASCADE)
+    tipo = models.OneToOneField(TipoProcedencia, related_name="municipios", on_delete=models.CASCADE, default='', blank=True)
 
     class Meta:
         verbose_name = "Procedencia"

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 from apps.dpv_persona.models import PersonaNatural
 from apps.dpv_nomencladores.models import AreaTrabajo, CentroTrabajo
 import uuid
@@ -25,3 +27,10 @@ class Perfil(models.Model):
     class Meta:
         verbose_name = "Perfil"
         verbose_name_plural = "Perfiles"
+
+
+ # Signals
+@receiver(pre_save, sender=User)
+def crear_perfil_usuario(sender, **kwargs):
+    if kwargs.get('Created', True):
+        print('usuario creado', kwargs)

@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class EmailSenderConfig(AppConfig):
-    name = 'email_sender'
+    name = 'apps.email_sender'

@@ -9,8 +9,6 @@ class QuejaForm(forms.ModelForm):
     class Meta:
         model = Queja
         fields = ('asunto',
-                  'person_natural',
-                  'empresa',
                   'dir_calle',
                   'dir_num',
                   'dir_entrecalle1',
@@ -19,8 +17,7 @@ class QuejaForm(forms.ModelForm):
                   'referencia',
                   'estado',
                   'texto',
-                  'clasificacion',
-                  'respuesta',)
+                  'clasificacion',)
         widgets = {
             'dir_numero': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
             'dir_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
@@ -48,7 +45,7 @@ class QuejaForm(forms.ModelForm):
 class AsignaQuejaDptoForm(forms.ModelForm):
 
     class Meta:
-        model = Queja
+        model = AsignaQuejaDpto
         fields = (
                   'dpto',
                   )
@@ -60,7 +57,7 @@ class AsignaQuejaDptoForm(forms.ModelForm):
 class AsignaQuejaTecnicoForm(forms.ModelForm):
 
     class Meta:
-        model = Queja
+        model = AsignaQuejaTecnico
         fields = (
                   'tecnico',
                   )

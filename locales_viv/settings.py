@@ -41,16 +41,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.dpv_base',
     'apps.dpv_nomencladores',
-    'apps.dpv_complaint',
     'apps.export_do',
     'apps.dpv_persona',
     'apps.dpv_viviendas',
     'apps.dpv_locales',
     'apps.dpv_perfil',
     'apps.dpv_events',
+    'apps.dpv_respuesta',
+    'apps.dpv_quejas',
     'apps.email_sender',
-    #'django_filters',
-    #'chartjs',
 ]
 
 MIDDLEWARE = [

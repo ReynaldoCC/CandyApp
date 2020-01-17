@@ -1,0 +1,16 @@
+{% load static i18n %}
+{% if perms.dpv_quejas.view_queja %}
+    <li class="{% if '/quejas/' in request.path %} active show {% endif %} menu-item-has-children dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="menu-icon fa fa-building-o"></i>
+            Quejas
+        </a>
+        <ul class="sub-menu children dropdown-menu">
+            {% if perms.dpv_quejas.view_queja %}
+            <li class="{% if '/quejas/' == request.path %} active {% endif %}">
+                <a href="{% url 'quejas_list' %}"><i class="fa fa-building-o"></i>Quejas </a>
+            </li>
+            {% endif %}
+        </ul>
+    </li>
+{% endif %}
