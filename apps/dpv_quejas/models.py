@@ -8,10 +8,11 @@ from apps.dpv_nomencladores.validators import *
 from apps.dpv_nomencladores.models import *
 from apps.dpv_respuesta.models import *
 from apps.dpv_persona.models import *
+from apps.dpv_base.mixins import LoggerMixin
 from django.utils import timezone
 
 
-class Queja(models.Model):
+class Queja(LoggerMixin):
     dir_num = models.CharField(max_length=15, verbose_name=_('Dirección Número'))
     dir_calle = models.ForeignKey(Calle, verbose_name=_('Dirección Calle'), related_name='queja_calle',
                                   on_delete=models.CASCADE, blank=True, default='')
@@ -41,7 +42,7 @@ class Queja(models.Model):
         verbose_name_plural = _("Quejas")
 
 
-class Damnificado(models.Model):
+class Damnificado(LoggerMixin):
     queja = models.ForeignKey(Queja, on_delete=models.CASCADE, related_name='damnificado')
 
     class Meta:
@@ -59,7 +60,7 @@ class DamnificadoJuridico(Damnificado):
                                          blank=True, null=True, default='')
 
 
-class AsignaQuejaDpto(models.Model):
+class AsignaQuejaDpto(LoggerMixin):
     quejadpto = models.ForeignKey(Queja, related_name='quejadpto', on_delete=models.CASCADE, blank=True, null=True, default='')
     dpto = models.ForeignKey(AreaTrabajo, related_name='dpto', on_delete=models.CASCADE, blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
@@ -70,7 +71,7 @@ class AsignaQuejaDpto(models.Model):
         verbose_name_plural = _("Quejas asignadas a Depto")
 
 
-class AsignaQuejaTecnico(models.Model):
+class AsignaQuejaTecnico(LoggerMixin):
     quejatecnico = models.ForeignKey(Queja, related_name='quejatecnico', on_delete=models.CASCADE, blank=True, null=True, default='')
     tecnico = models.ForeignKey(Tecnico, related_name='tecnico', on_delete=models.CASCADE, blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
@@ -81,7 +82,7 @@ class AsignaQuejaTecnico(models.Model):
         verbose_name_plural = _("Quejas asignadas a Técnico")
 
 
-class QuejaRechazada(models.Model):
+class QuejaRechazada(LoggerMixin):
     queja = models.ForeignKey(Queja, related_name='rechazada', on_delete=models.CASCADE, blank=True, null=True, default='')
     motivo = models.TextField(verbose_name=_("Motivo de Rechazo"),
                               help_text=_("Motivo por el cual se rechaza la queja"),
@@ -93,7 +94,7 @@ class QuejaRechazada(models.Model):
         verbose_name_plural = _("Quejas Rechazadas")
 
 
-class QuejaRedirigida(models.Model):
+class QuejaRedirigida(LoggerMixin):
     queja = models.ForeignKey(Queja, related_name='redirigida', on_delete=models.CASCADE, blank=True, null=True, default='')
     motivo = models.TextField(verbose_name=_("Motivo de Rechazo"),
                               help_text=_("Motivo por el cual se rechaza la queja"),

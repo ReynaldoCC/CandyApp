@@ -8,6 +8,9 @@ from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.apps import apps as all_apps
+from django.views.defaults import page_not_found, server_error, bad_request, permission_denied
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from .forms import LoginForm, RecoverPassForm
 from .forms import GroupForm, UserMForm, UserNPForm, UserPasswordForm, SetPasswordCAForm, PasswordResetCAForm
 from .utils import store_url_names
@@ -16,11 +19,8 @@ from apps.dpv_persona.forms import PersonaNaturalMForm
 from apps.dpv_perfil.models import Perfil
 from apps.dpv_perfil.forms import PerfilMForm
 from apps.email_sender.models import EmailConfigurate
+from apps.dpv_base.mixins import perform_log
 from .utils import set_settings_email_conf, comapare_db_settings_conf, get_settings_email_conf
-from django.views.defaults import page_not_found, server_error, bad_request, permission_denied
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
-
 
 # Create your views here.
 @login_required()
@@ -47,6 +47,7 @@ def login_page(request):
                         login(request, access)
                         if not_expiry:
                             request.session.set_expiry(4838400)
+                        perform_log(request=request, af=3)
                         return redirect(reverse_lazy('base_dashboard'))
                     else:
                         form.add_error('password_login', _('Combinación no válida de usuario y contraseña'))
@@ -127,6 +128,7 @@ def user_add(request):
             except:
                 form.add_error('email', 'ya existe algún usuario que está usando ese email')
                 return render(request, 'layouts/admin/users_form.html', {'form': form, 'formprs': formprs, 'formprf': formprf })
+            perform_log(obj=usr, request=request, af=0)
             return redirect('admin_user')
         else:
             return render(request, 'layouts/admin/users_form.html', {'form': form, 'formprs': formprs, 'formprf': formprf })
@@ -150,7 +152,8 @@ def group_add(request):
     if request.method == 'POST':
         form = GroupForm(request.POST)
         if form.is_valid():
-            form.save()
+            grp = form.save()
+            perform_log(obj=grp, request=request, af=0)
             return redirect('admin_group')
         else:
             return render(request, 'layouts/admin/groups_form.html', {'form': form})
@@ -198,6 +201,7 @@ def configure_email(request):
         if form.is_valid():
             conf = form.save()
             set_settings_email_conf(conf)
+            conf.perform_log(request=request, af=0)
             return render(request, 'layouts/admin/mailconf.html', {'form': form, 'ec': ec, 'message': message})
         else:
             return render(request, 'layouts/admin/mailconf.html', {'form': form, 'ec': ec, 'message': message})
@@ -216,9 +220,10 @@ def user_edit(request, id_usuario):
         formprs = PersonaNaturalMForm(request.POST, instance=prs)
         formprf = PerfilMForm(request.POST, instance=prf)
         if form.is_valid() and formprf.is_valid() and formprs.is_valid():
-            form.save()
+            usr = form.save()
             formprs.save()
             formprf.save()
+            perform_log(obj=usr, request=request, af=1)
             return redirect(reverse_lazy('admin_user'))
     form = UserNPForm(instance=usr)
     formprs = PersonaNaturalMForm(instance=prs)
@@ -232,7 +237,8 @@ def group_edit(request, id_group):
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=grp)
         if form.is_valid():
-            form.save()
+            grp = form.save()
+            perform_log(obj=grp, request=request, af=1)
             return redirect(reverse_lazy('admin_group'))
     else:
         form = GroupForm(instance=grp)
@@ -246,6 +252,7 @@ def user_deactivate(request, id_usr):
         if request.method == 'POST':
             usr.is_active = not usr.is_active
             usr.save()
+            perform_log(obj=usr, request=request, af=2)
             return redirect(reverse_lazy('admin_user'))
         return render(request, 'layouts/admin/user_deactivate.html', {'usr': usr})
     return redirect(reverse_lazy('admin_user'))
@@ -260,6 +267,7 @@ def user_setpass(request, id_usr):
         if form.is_valid():
             usr.set_password(form.cleaned_data.get('password'))
             usr.save()
+            perform_log(obj=usr, request=request, af=1)
             return redirect(reverse_lazy('admin_user'))
     return render(request, 'layouts/admin/user_setpass.html', {'form': form, 'usr': usr})
 
@@ -280,6 +288,7 @@ def group_detail(request, id_grp):
 def group_delete(request, id_grp):
     grupo = Group.objects.filter(id=id_grp).first()
     if request.method == 'POST':
+        perform_log(obj=grupo, request=request, af=2)
         grupo.delete()
         return redirect(reverse_lazy('admin_group'))
     return render(request, 'layouts/admin/groups_delete.html', {'grupo': grupo})
@@ -311,20 +320,21 @@ def change_pass(request):
         if passform.is_valid():
             usr = passform.save()
             update_session_auth_hash(request, usr)
+            perform_log(obj=usr, request=request, af=1)
             return redirect(reverse_lazy('perfil_detail'))
     return render(request, 'layouts/admin/change_pass.html', {'passform': passform})
 
 
-# def error400(request):
-#     return bad_request(request, template_name='400.html')
-#
-#
-# def error403(request):
-#     return permission_denied(request, template_name='403.html')
-#
-#
-# def error404(request):
-#     return page_not_found(request, template_name='404.html')
+def error400(request):
+    return bad_request(request, template_name='400.html')
+
+
+def error403(request):
+    return permission_denied(request, template_name='403.html')
+
+
+def error404(request):
+    return page_not_found(request, template_name='404.html')
 
 
 def error500(request):

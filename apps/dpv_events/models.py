@@ -4,7 +4,9 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import Permission, User
 from django.utils import formats
+from apps.dpv_base.mixins import LoggerMixin
 import datetime
+
 
 
 MESES = {
@@ -23,7 +25,7 @@ MESES = {
 }
 
 
-class Frecuencia(models.Model):
+class Frecuencia(LoggerMixin):
     name = models.CharField(max_length=255)
     days = models.IntegerField()
 
@@ -34,7 +36,7 @@ class Frecuencia(models.Model):
         return self.name
 
 
-class TipoEvento(models.Model):
+class TipoEvento(LoggerMixin):
     type = models.CharField(max_length=255)
     frecuencia = models.ForeignKey(Frecuencia,null=True, blank=True, on_delete=models.CASCADE)
     permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
@@ -46,7 +48,7 @@ class TipoEvento(models.Model):
         return self.type
 
 
-class Evento(models.Model):
+class Evento(LoggerMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.ForeignKey(TipoEvento, on_delete=models.CASCADE)
     date_programed = models.DateTimeField()
@@ -131,7 +133,7 @@ def generate_code_acuerdo():
     return "{}/{}".format(len(Acuerdo.objects.all()),timezone.now().year)
 
 
-class Acta(models.Model):
+class Acta(LoggerMixin):
     event = models.OneToOneField(Evento, on_delete=models.CASCADE)
     code = models.CharField(max_length=25, default=generate_code_acta)
     body = models.TextField()
@@ -141,7 +143,7 @@ class Acta(models.Model):
         verbose_name_plural = 'actas'
 
 
-class Acuerdo(models.Model):
+class Acuerdo(LoggerMixin):
     code = models.CharField(max_length=25,default=generate_code_acuerdo)
     event = models.ForeignKey(Evento, on_delete=models.CASCADE)
     asunto = models.CharField(max_length=255)
@@ -166,7 +168,7 @@ class Acuerdo(models.Model):
         return state
 
 
-class TemaEvento(models.Model):
+class TemaEvento(LoggerMixin):
     asunto = models.CharField(max_length=255)
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     responsable = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -176,7 +178,7 @@ class TemaEvento(models.Model):
         verbose_name_plural = 'temas de evento'
 
 
-class ResponsableAcuerdo(models.Model):
+class ResponsableAcuerdo(LoggerMixin):
     responsable = models.ForeignKey(User, on_delete=models.CASCADE)
     acuerdo = models.ForeignKey(Acuerdo, on_delete=models.CASCADE)
 
@@ -184,7 +186,7 @@ class ResponsableAcuerdo(models.Model):
         verbose_name_plural = 'responsables'
 
 
-class RespuestaAcuerdo(models.Model):
+class RespuestaAcuerdo(LoggerMixin):
     responsable = models.ForeignKey(ResponsableAcuerdo, on_delete=models.CASCADE)
     text = models.TextField()
     date_created = models.DateTimeField()

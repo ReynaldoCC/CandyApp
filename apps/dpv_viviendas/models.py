@@ -2,10 +2,11 @@ from django.db import models
 from apps.dpv_nomencladores.models import Destino, Concepto
 from apps.dpv_persona.models import PersonaNatural
 from apps.dpv_locales.models import Local
+from apps.dpv_base.mixins import LoggerMixin
 
 
 # Create your models here.
-class Vivienda(models.Model):
+class Vivienda(LoggerMixin):
     numero = models.PositiveSmallIntegerField()
     destino = models.ForeignKey(Destino, help_text="Destino para la vivienda", related_name="locales_dest", on_delete=models.CASCADE)
     cantidad_persona = models.PositiveSmallIntegerField(help_text="Cantidad de personas que viven en la vivienda")

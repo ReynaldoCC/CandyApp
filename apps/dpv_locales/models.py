@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext as _
 from django.core.exceptions import ValidationError
+from apps.dpv_base.mixins import LoggerMixin
 from apps.dpv_nomencladores.models import Municipio, Organismo, Calle, Piso, ConsejoPopular
 from .validators import validate_acta_acuerdo, start_with_number
 
@@ -10,7 +11,7 @@ from .validators import validate_acta_acuerdo, start_with_number
 registring = False
 
 
-class Local(models.Model):
+class Local(LoggerMixin):
     direccion_calle = models.ForeignKey(Calle, related_name="calle_principal", help_text="Calle de la direccion", on_delete=models.CASCADE, verbose_name="Calle", blank=False, null=False)
     direccion_numero = models.CharField(max_length=10, help_text="Numero de la dirección", verbose_name="Número", validators=[start_with_number])
     piso = models.ForeignKey(Piso, help_text="Piso de la direccion del local", on_delete=models.CASCADE)

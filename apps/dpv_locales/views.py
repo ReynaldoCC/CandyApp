@@ -34,6 +34,7 @@ def local_add(request):
         form = LocalForm(request.POST)
         if form.is_valid():
             local = form.save()
+            local.perform_log(request=request, af=0)
             return redirect(to=reverse_lazy('locales_edit', kwargs={'id_local': local.id}))
         else:
             return render(request, 'dpv_locales/form.html', {'form': form})
@@ -82,7 +83,8 @@ def local_edit(request, id_local):
     if request.method == 'POST':
         form = LocalForm(request.POST, instance=lol)
         if form.is_valid():
-            form.save()
+            local = form.save()
+            local.perform_log(request=request, af=1)
             return redirect(reverse_lazy('locales_list'))
     return render(request, 'dpv_locales/form.html', {'form': form, 'local': lol})
 
@@ -100,6 +102,7 @@ def local_remove(request, id_local):
     if lol:
         if request.method == 'POST':
             if lol.vivienda_local.count() < 1:
+                lol.perform_log(request=request, af=2)
                 lol.delete()
                 return redirect(reverse_lazy('locales_list'))
         return render(request, 'dpv_locales/delete.html', {'local': lol})

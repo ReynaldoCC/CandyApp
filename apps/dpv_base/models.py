@@ -1,8 +1,9 @@
 from django.db import models
+from .mixins import LoggerMixin
 
 
 # Create your models here.
-class FilesUploaded(models.Model):
+class FilesUploaded(LoggerMixin):
     nombre = models.CharField(max_length=255)
     tipo_mime = models.CharField(max_length=50)
     extencion = models.CharField(max_length=5)
@@ -17,7 +18,7 @@ class FilesUploaded(models.Model):
         return '%s.%s' % (self.nombre, self.extencion)
 
 
-class ConfigMail(models.Model):
+class ConfigMail(LoggerMixin):
     servidor = models.CharField(max_length=100)
     puerto = models.CharField(max_length=3)
     usuario = models.CharField(max_length=255)

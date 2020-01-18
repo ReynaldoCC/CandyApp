@@ -23,7 +23,9 @@ def create_tipoevento(request):
     if form.is_valid():
         type = request.POST["type_tipoevento"]
 
-        permission = Permission.objects.create(name="Puede visualizar %s" % (type),content_type=ContentType.objects.get_for_model(TipoEvento),codename="view_tipoevento_%s" % (type.lower().replace(" ", "_")))
+        permission = Permission.objects.create(name="Puede visualizar %s" % (type),
+                                               content_type=ContentType.objects.get_for_model(TipoEvento),
+                                               codename="view_tipoevento_%s" % (type.lower().replace(" ", "_")))
 
         model = TipoEvento()
         model.type = type
@@ -31,6 +33,7 @@ def create_tipoevento(request):
             model.frecuencia_id = request.POST["frecuencia_tipoevento"]
         model.permission_id = permission.id
         model.save()
+        model.perform_log(request=request, af=0)
     return JsonResponse(data)
 
 
@@ -45,7 +48,7 @@ def update_tipoevento(request):
         if request.POST.get("frecuencia_tipoevento"):
             model.frecuencia_id = form.cleaned_data["frecuencia_tipoevento"]
         model.save()
-
+        model.perform_log(request=request, af=1)
     return JsonResponse(data)
 
 
@@ -53,6 +56,7 @@ def update_tipoevento(request):
 def delete_tipoevento(request, tipoevento_id):
     model = TipoEvento.objects.get(pk=tipoevento_id)
     permission = Permission.objects.get(pk=model.permission_id)
+    model.perform_log(request=request, af=2)
     model.delete()
     permission.delete()
     return redirect('dpv_events:tipoevento')
@@ -60,7 +64,8 @@ def delete_tipoevento(request, tipoevento_id):
 
 @permission_required('dpv_events.view_frecuencia')
 def FrecuenciaView(request):
-    return render(request,'dpv_events/frecuencia.html',{'models':Frecuencia.objects.all(),'form':FrecuenciaForm()})
+    return render(request, 'dpv_events/frecuencia.html', {'models': Frecuencia.objects.all(),
+                                                          'form': FrecuenciaForm()})
 
 
 @permission_required('dpv_events.add_frecuencia')
@@ -73,6 +78,7 @@ def create_frecuencia(request):
         model.name = form.cleaned_data["name_frecuencia"]
         model.days = form.cleaned_data["days_frecuencia"]
         model.save()
+        model.perform_log(request=request, af=0)
     return JsonResponse(data)
 
 
@@ -86,6 +92,7 @@ def update_frecuencia(request):
         model.name = form.cleaned_data["name_frecuencia"]
         model.days = form.cleaned_data["days_frecuencia"]
         model.save()
+        model.perform_log(request=request, af=1)
 
     return JsonResponse(data)
 
@@ -93,6 +100,7 @@ def update_frecuencia(request):
 @permission_required('dpv_events.delete_frecuencia')
 def delete_frecuencia(request, frecuencia_id):
     model = Frecuencia.objects.get(pk=frecuencia_id)
+    model.perform_log(request=request, af=2)
     model.delete()
     return redirect('dpv_events:frecuencia')
 
@@ -105,12 +113,13 @@ def EventosView(request):
         if request.user.has_perm(event.type.permission):
             models.append(event)
 
-    return render(request,'dpv_events/eventos.html',{'models':models,'form':EventoForm()})
+    return render(request, 'dpv_events/eventos.html', {'models': models, 'form': EventoForm()})
 
 
 @permission_required('dpv_events.view_evento')
 def EventoView(request, event_id):
-    return render(request,'dpv_events/evento.html',{'model':get_object_or_404(Evento.objects.all(), pk=event_id),'form':EventoForm()})
+    return render(request, 'dpv_events/evento.html', {'model': get_object_or_404(Evento.objects.all(), pk=event_id),
+                                                      'form': EventoForm()})
 
 
 @permission_required('dpv_events.add_evento')
@@ -155,6 +164,7 @@ def create_evento(request):
     tema.responsable_id = request.user.id
     tema.save()
 
+    model.perform_log(request=request, af=0)
     return JsonResponse(data)
 
 
@@ -207,6 +217,7 @@ def update_evento(request):
         "themes": themes
     }
 
+    model.perform_log(request=request, af=1)
     return JsonResponse(data)
 
 
@@ -215,12 +226,15 @@ def done_evento(request, evento_id):
     model = Evento.objects.get(pk=evento_id)
     model.is_done = True
     model.save()
+
+    model.perform_log(request=request, af=1)
     return redirect('dpv_events:eventos')
 
 
 @permission_required('dpv_events.delete_evento')
 def delete_evento(request, evento_id):
     model = Evento.objects.get(pk=evento_id)
+    model.perform_log(request=request, af=2)
     model.delete()
     return redirect('dpv_events:eventos')
 
@@ -258,6 +272,7 @@ def create_temaevento(request):
     model.responsable_id = request.user.id
     model.es_sugerido = True
     model.save()
+    model.perform_log(request=request, af=0)
 
     data["id"] = model.id
     data["asunto"] = model.asunto
@@ -271,6 +286,7 @@ def aprobar_temaevento(request):
     model = TemaEvento.objects.get(pk=request.POST['theme_id'])
     model.es_sugerido = False
     model.save()
+    model.perform_log(request=request, af=1)
 
     data = {}
 
@@ -290,7 +306,7 @@ def create_acta(request):
     data['id'] = model.id
     data['code'] = model.code
     data['body'] = model.body
-
+    model.perform_log(request=request, af=0)
     return JsonResponse(data)
 
 
@@ -320,5 +336,5 @@ def create_acuerdo(request):
     data['date_finish'] = model.date_finish
     data['responsables'] = request.user.username
     data['state'] = 'En Proceso'
-
+    model.perform_log(request=request, af=0)
     return JsonResponse(data)

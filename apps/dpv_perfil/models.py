@@ -4,6 +4,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from apps.dpv_persona.models import PersonaNatural
 from apps.dpv_nomencladores.models import AreaTrabajo, CentroTrabajo
+from apps.dpv_base.mixins import LoggerMixin
 import uuid
 
 
@@ -13,7 +14,7 @@ def scramble_upload_avatar(instance, filename, subdiretory='avatars'):
     return subdiretory+'/{}.{}'.format(uuid.uuid4(), ext)
 
 
-class Perfil(models.Model):
+class Perfil(LoggerMixin):
     datos_usuario = models.OneToOneField(User, verbose_name="Datos del usuario", related_name="perfil_usuario", on_delete=models.CASCADE)
     datos_personales = models.OneToOneField(PersonaNatural, verbose_name="Datos Personales", related_name="perfil_datos", on_delete=models.CASCADE)
     notificacion_email = models.BooleanField(default=True, verbose_name="Notificar por Email",

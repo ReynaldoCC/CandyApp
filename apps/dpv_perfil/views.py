@@ -14,7 +14,9 @@ def index(request):
         personform = PersonaNaturalProfileForm(request.POST, instance=request.user.perfil_usuario.datos_personales)
         if profileform.is_valid() and personform.is_valid():
             avat = profileform.save()
-            personform.save()
+            model = personform.save()
+            avat.perform_log(request=request, af=1)
+            model.perform_log(request=request, af=1)
             return render(request, 'dpv_perfil/detail.html', {'profileform': profileform, 'personform': personform})
         return render(request, 'dpv_perfil/detail.html', {'profileform': profileform, 'personform': personform})
     return render(request, 'dpv_perfil/detail.html', {'profileform': profileform, 'personform': personform})

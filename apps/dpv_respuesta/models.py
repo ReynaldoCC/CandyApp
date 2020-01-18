@@ -2,16 +2,17 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from apps.dpv_nomencladores.models import *
 from apps.dpv_perfil.models import *
+from apps.dpv_base.mixins import LoggerMixin
 
 
-class Tecnico (models.Model):
+class Tecnico (LoggerMixin):
     profile = models.ForeignKey(Perfil, on_delete=False, related_name='profile')
 
     def __str__(self):
         return '{}'.format(self.profile.datos_personales.nombre + ' ' + self.profile.datos_personales.apellidos)
 
 
-class Respuesta(models.Model):
+class Respuesta(LoggerMixin):
     fecha_respuesta = models.DateTimeField(auto_now_add=True, verbose_name=_("Fecha de Respuesta"))
     rechazada = models.DateTimeField(default=None, null=True)
     codigo = models.CharField(verbose_name=_("Código de la Respuesta"), max_length=14)
@@ -24,7 +25,7 @@ class Respuesta(models.Model):
         verbose_name_plural = _("RespuestaS")
 
 
-class ApruebaJefe(models.Model):
+class ApruebaJefe(LoggerMixin):
     observacion_jefe = models.TextField(max_length=1000, default='', blank=True, verbose_name=_('Observaciones'))
     fecha_jefe = models.DateTimeField(blank=True, default='', verbose_name=_('Fecha Aprobación Jefe'), null=True)
     respuesta = models.ForeignKey(Respuesta, verbose_name=_('Respuesta Dada'), on_delete=models.CASCADE, blank=True, null=True, default='')
@@ -35,7 +36,7 @@ class ApruebaJefe(models.Model):
         verbose_name_plural = _("Respuestas Aprobadas por Jefe")
 
 
-class ApruebaDtr(models.Model):
+class ApruebaDtr(LoggerMixin):
     observacion_dtr = models.TextField(max_length=1000, default='', blank=True, verbose_name=_('Observaciones'))
     fecha_dtr = models.DateTimeField(blank=True, default='', verbose_name=_('Fecha Aprobación Director'), null=True)
     respuesta = models.ForeignKey(Respuesta, verbose_name=_('Respuesta Dada'), on_delete=models.CASCADE, blank=True, null=True, default='')

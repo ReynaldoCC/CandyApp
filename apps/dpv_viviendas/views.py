@@ -30,7 +30,8 @@ def vivienda_add(request):
     if request.method == 'POST':
         form = ViviendaForm(request.POST)
         if form.is_valid():
-            form.save()
+            model = form.save()
+            model.perform_log(request=request, af=0)
             return redirect(reverse_lazy('vivienda_list'))
         else:
             return render(request, 'dpv_viviendas/form.html', {'form': form})
@@ -45,7 +46,8 @@ def vivienda_edit(request, id_vivienda):
     if request.method == 'POST':
         form = ViviendaForm(request.POST, instance=viv)
         if form.is_valid():
-            form.save()
+            model = form.save()
+            model.perform_log(request=request, af=1)
             return redirect(reverse_lazy('vivienda_list'))
     else:
         form = ViviendaForm(instance=viv)
@@ -63,7 +65,7 @@ def vivienda_detail(request, id_vivienda):
                 viv = Vivienda()
     except:
         print("El susuario no tiene perfil asociado")
-    return  render(request, 'dpv_viviendas/detail.html', {'vivienda': viv})
+    return render(request, 'dpv_viviendas/detail.html', {'vivienda': viv})
 
 
 @permission_required('dpv_viviendas.delete_vivienda', raise_exception=True)
@@ -75,11 +77,13 @@ def vivienda_delete(request, id_vivienda):
         if not perfil.centro_trabajo.oc:
             if perfil.centro_trabajo.municipio != viv.local_dado.municpio:
                 if request.method == 'POST':
+                    viv.perform_log(request=request, af=2)
                     viv.delete()
                     return redirect(reverse_lazy('vivienda_list'))
                 viv = Vivienda()
         else:
             if request.method == 'POST':
+                viv.perform_log(request=request, af=2)
                 viv.delete()
                 return redirect(reverse_lazy('vivienda_list'))
     except:
@@ -96,6 +100,7 @@ def vivienda_add_modal(request, id_local):
         form = ViviendaForm(request.POST, instance=viv)
         if form.is_valid():
             viv = form.save()
+            viv.perform_log(request=request, af=0)
             return redirect(reverse_lazy('locales_edit', kwargs={'id_local': viv.local_dado.id}))
         else:
             return redirect(reverse_lazy('locales_list'))

@@ -30,7 +30,8 @@ def add_personjur(request):
     if request.method == 'POST':
         form = PersonaJuridicaForm(request.POST)
         if form.is_valid():
-            form.save()
+            model = form.save()
+            model.perform_log(request=request, af=0)
             return redirect(reverse_lazy('persona_juridica'))
         else:
             return render(request, 'dpv_persona/form_persojur.html', {'form': form})
@@ -44,7 +45,8 @@ def add_personat(request):
     if request.method == 'POST':
         form = PersonaNaturalForm(request.POST)
         if form.is_valid():
-            form.save()
+            model = form.save()
+            model.perform_log(request=request, af=0)
             return redirect(reverse_lazy('persona_natural'))
         else:
             return render(request, 'dpv_persona/form_personat.html', {'form': form})
@@ -59,7 +61,8 @@ def edit_personat(request, id_personat):
     if request.method == 'POST':
         form = PersonaNaturalForm(request.POST, instance=pers)
         if form.is_valid():
-            form.save()
+            model = form.save()
+            model.perform_log(request=request, af=1)
             return redirect(reverse_lazy('persona_natural'))
     else:
         form = PersonaNaturalForm(instance=pers)
@@ -72,7 +75,8 @@ def edit_persojur(request, id_persojur):
     if request.method == 'POST':
         form = PersonaJuridicaForm(request.POST, instance=ents)
         if form.is_valid():
-            form.save()
+            model = form.save()
+            model.perform_log(request=request, af=1)
             return redirect(reverse_lazy('persona_juridica'))
     else:
         form = PersonaJuridicaForm(instance=ents)
@@ -95,6 +99,7 @@ def detail_personat(request, id_personat):
 def delete_persojur(request, id_persojur):
     persojur = PersonaJuridica.objects.filter(id=id_persojur).first()
     if request.method == 'POST':
+        persojur.perform_log(request=request, af=2)
         persojur.delete()
         return redirect(reverse_lazy('persona_juridica'))
     return render(request, 'dpv_persona/delete_persojur.html', {'persojur': persojur})
@@ -104,6 +109,7 @@ def delete_persojur(request, id_persojur):
 def delete_personat(request, id_personat):
     personat = PersonaNatural.objects.filter(id=id_personat).first()
     if request.method == 'POST':
+        personat.perform_log(request=request, af=2)
         personat.delete()
         return redirect(reverse_lazy('persona_natural'))
     return render(request, 'dpv_persona/delete_personat.html', {'personat': personat})
