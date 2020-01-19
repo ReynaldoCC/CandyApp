@@ -19,12 +19,14 @@ class PersonaNaturalForm(forms.ModelForm):
                   'direccion_entrecalle1',
                   'direccion_entrecalle2',
                   'municipio',
+                  'cpopular',
                   'genero', )
         widgets = {
             'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
             'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
             'direccion_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
             'municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.", "class": "form-control select2"}),
+            'cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control select2"}),
             'genero': forms.Select(attrs={"placeholder": "Seleccione un Género.", "class": "form-control select2"}),
             'direccion_numero': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
             'ci': forms.TextInput(attrs={"placeholder": "CI", "class": "form-control"}),

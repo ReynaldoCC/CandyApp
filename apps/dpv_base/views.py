@@ -47,7 +47,7 @@ def login_page(request):
                         login(request, access)
                         if not_expiry:
                             request.session.set_expiry(4838400)
-                        perform_log(request=request, af=3)
+                        perform_log(obj=user, request=request, af=3)
                         return redirect(reverse_lazy('base_dashboard'))
                     else:
                         form.add_error('password_login', _('Combinación no válida de usuario y contraseña'))

@@ -33,7 +33,9 @@ class Queja(LoggerMixin):
     estado = models.ForeignKey(Estado, verbose_name=_('Estado'),
                                on_delete=models.CASCADE, blank=True, default='')
     fecha_radicacion = models.DateTimeField(verbose_name=_("Fecha Radicación"), auto_now_add=True)
-    texto = models.TextField(max_length=1000, verbose_name='Cuerpo de la queja')
+    texto = models.TextField(max_length=3000, verbose_name='Cuerpo de la queja')
+    tiempo = models.PositiveSmallIntegerField(verbose_name=_("Tiempo en proceso"), default=0,
+                                              help_text=_("Tiempo en días que tiene de radicada la queja"))
     clasificacion = models.ForeignKey(TipoQueja, verbose_name='Tipo de Queja',
                                       on_delete=models.CASCADE, blank=True, default='')
 
@@ -65,6 +67,7 @@ class AsignaQuejaDpto(LoggerMixin):
     dpto = models.ForeignKey(AreaTrabajo, related_name='dpto', on_delete=models.CASCADE, blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
     fecha_asignacion = models.DateTimeField(verbose_name=_("Fecha Asignación"), auto_now_add=True)
+    rechazada = models.DateTimeField(default=None, null=True)
 
     class Meta:
         verbose_name = _("Queja asignada a Depto")
@@ -76,6 +79,7 @@ class AsignaQuejaTecnico(LoggerMixin):
     tecnico = models.ForeignKey(Tecnico, related_name='tecnico', on_delete=models.CASCADE, blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
     fecha_asignacion = models.DateTimeField(verbose_name=_("Fecha Asignación"), auto_now_add=True)
+    rechazada = models.DateTimeField(default=None, null=True)
 
     class Meta:
         verbose_name = _("Queja asignada a Técnico")
@@ -104,6 +108,12 @@ class QuejaRedirigida(LoggerMixin):
 
 class RespuestaQueja(Respuesta):
     queja = models.ForeignKey(Queja, related_name='respuesta', on_delete=models.CASCADE, blank=True, null=True, default='')
+
+
+class QuejaNotificada(LoggerMixin):
+    queja = models.ForeignKey(Queja, related_name='notificada', on_delete=models.CASCADE, blank=True, null=True, default='')
+    notificada = models.DateTimeField(default=None, null=True, verbose_name=_("Notificada"))
+    notificador = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Quien notifica."), default='', blank=True)
 
 
 # Signals

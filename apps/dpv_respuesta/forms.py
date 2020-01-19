@@ -4,8 +4,6 @@ from django.utils.translation import gettext as _
 from .models import *
 
 
-
-
 class RespuestaForm(forms.ModelForm):
 
     class Meta:
@@ -15,8 +13,7 @@ class RespuestaForm(forms.ModelForm):
                   'clasificacion',
                   )
         widgets = {
-            'texto': forms.Textarea(attrs={"placeholder": "Nombre", "class": "form-control"}),
-            'clasificacion': forms.Select(attrs={"placeholder": "Seleccione un Estado.", "class": "form-control select2"}),
+            'texto': forms.Textarea(attrs={"placeholder": "Cuerpo de la respuesta", "class": "form-control"}),
         }
 
 
@@ -26,22 +23,32 @@ class ApruebaJefeForm(forms.ModelForm):
         model = ApruebaJefe
         fields = (
                   'observacion_jefe',
-                  'respuesta'
-
                   )
         widgets = {
-            'observacion_jefe': forms.Textarea(attrs={"placeholder": "Nombre", "class": "form-control"}),
+            'observacion_jefe': forms.Textarea(attrs={"placeholder": "Observación", "class": "form-control"}),
         }
 
 
 class ApruebaDtrForm(forms.ModelForm):
+
     class Meta:
         model = ApruebaDtr
         fields = (
             'observacion_dtr',
-
-
         )
         widgets = {
-            'observacion_jefe': forms.Textarea(attrs={"placeholder": "Nombre", "class": "form-control"}),
+            'observacion_dtr': forms.Textarea(attrs={"placeholder": "Observación", "class": "form-control"}),
         }
+
+
+class RespuestaRechazadaForm(forms.ModelForm):
+
+    class Meta:
+        model = RespuestaRechazada
+        fields = (
+            'argumento',
+        )
+        widgets = {
+            'argumento': forms.Textarea(attrs={"placeholder": "Argumento", "class": "form-control"}),
+        }
+

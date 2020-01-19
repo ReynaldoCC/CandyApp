@@ -5,6 +5,14 @@ from .models import *
 
 
 class QuejaForm(forms.ModelForm):
+    tipo_procedencia = forms.ModelChoiceField(queryset=TipoProcedencia.objects.all(),
+                                              label=_("Procedencia generica"),
+                                              help_text=_("Aquí se expresa si la queja proviene de una Empresa, Persona, Organismo, Anónimo, etc.."),
+                                              widget=forms.Select(attrs={"class": "form-control"}))
+    damnificado_not_indb = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-check-input switch-input"}),
+                                              initial=False,
+                                              label=_("El damnificado no está en la lista"),
+                                              help_text=_("Marque aqui si la persona que busca no está en la lista y se le mostrará un formulario para ingresar sus datos"))
 
     class Meta:
         model = Queja
@@ -13,23 +21,25 @@ class QuejaForm(forms.ModelForm):
                   'dir_num',
                   'dir_entrecalle1',
                   'dir_entrecalle2',
+                  'dir_municipio',
+                  'dir_cpopular',
                   'procedencia',
                   'referencia',
-                  'estado',
-                  'texto',
-                  'clasificacion',)
+                  'tipo_procedencia',
+                  'damnificado_not_indb',
+                  'texto',)
         widgets = {
-            'dir_numero': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
-            'dir_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'dir_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'dir_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'person_natural': forms.Select(attrs={"placeholder": "Seleccione un Ciudadano.", "class": "form-control select2"}),
-            'procedencia': forms.Select(attrs={"placeholder": "Seleccione una Procedencia.", "class": "form-control select2"}),
+            'dir_num': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
+            'dir_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
+            'dir_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
+            'dir_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
+            'procedencia': forms.Select(attrs={"placeholder": "Seleccione una Procedencia.", "class": "no-show form-control"}),
+            'dir_municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.", "class": "form-control"}),
+            'dir_cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control"}),
             'referencia': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
             'texto': forms.Textarea(attrs={"placeholder": "Nombre", "class": "form-control"}),
-            'empresa': forms.Select(attrs={"placeholder": "Seleccione una Empresa.", "class": "form-control select2"}),
-            'estado': forms.Select(attrs={"placeholder": "Seleccione un Estado.", "class": "form-control select2"}),
-            'clasificacion': forms.Select(attrs={"placeholder": "Seleccione un Estado.", "class": "form-control select2"}),
+            'asunto': forms.Select(attrs={"placeholder": "Seleccione un Asunto", "class": "form-control"}),
+            'damnificado': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
         }
 
     def clean(self):
@@ -64,3 +74,17 @@ class AsignaQuejaTecnicoForm(forms.ModelForm):
         widgets = {
             'tecnico': forms.Select(attrs={"placeholder": "Seleccione un Técnico.", "class": "form-control select2"}),
         }
+
+
+class DamnificadoNaturalForm(forms.ModelForm):
+
+    class Meta:
+        model = DamnificadoNatural
+        fields = (
+                  'persona_natural',
+        )
+        widgets = {
+            'persona_natural': forms.Select(attrs={"placeholder": "Seleccione una persona.", "class": "form-control"}),
+        }
+
+

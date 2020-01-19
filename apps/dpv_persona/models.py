@@ -3,7 +3,7 @@ from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.core.exceptions import ValidationError
 from apps.dpv_nomencladores.models import Municipio, Calle
 from apps.dpv_nomencladores.validators import only_letters, only_numbers
-from apps.dpv_nomencladores.models import Genero, AreaTrabajo, CentroTrabajo
+from apps.dpv_nomencladores.models import Genero, AreaTrabajo, CentroTrabajo, ConsejoPopular
 from apps.dpv_base.mixins import LoggerMixin
 from .validators import ci_validate
 
@@ -11,6 +11,9 @@ from .validators import ci_validate
 # Create your models here.
 class Persona(LoggerMixin):
     nombre = models.CharField(max_length=30, validators=[MaxLengthValidator(30)])
+    cpopular = models.ForeignKey(ConsejoPopular, on_delete=models.CASCADE,
+                                 verbose_name="Consejo Popular", default='', blank=True,
+                                 help_text="Consejo popular donde recide la persona")
     municipio = models.ForeignKey(Municipio, on_delete=models.CASCADE, verbose_name="Municipio", help_text="Municipio donde recide la persona")
     direccion_calle = models.ForeignKey(Calle, on_delete=models.CASCADE, verbose_name="Calle", blank=True)
     direccion_numero = models.PositiveSmallIntegerField(blank=True, verbose_name="Número")
