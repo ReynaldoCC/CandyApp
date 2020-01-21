@@ -116,20 +116,12 @@ class QuejaNotificada(LoggerMixin):
     notificador = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Quien notifica."), default='', blank=True)
 
 
-# Signals
-@receiver(pre_save, sender=Queja)
-def setear_numero(sender, **kwargs):
-    if kwargs.get('instance'):
-        instance = kwargs.get('instance')
-        if instance.numero == '' or not instance.numero:
-            configurar_numero_queja(instance)
-
-
-def configurar_numero_queja(instancia=None):
+# Utils functionalities
+def configurar_numero_queja(instancia=None, sender=None):
     if instancia and instancia.id:
-        ultima_queja = Queja.objects.exclude(id=instancia.id).filter(fecha_radicacion__year=timezone.now().year).order_by('numero').last()
+        ultima_queja = sender.objects.exclude(id=instancia.id).filter(fecha_radicacion__year=timezone.now().year).order_by('numero').last()
     else:
-        ultima_queja = Queja.objects.filter(fecha_radicacion__year=timezone.now().year).order_by('numero').last()
+        ultima_queja = sender.objects.filter(fecha_radicacion__year=timezone.now().year).order_by('numero').last()
     if ultima_queja:
         ultimo_numero = ultima_queja.numero
         if len(ultimo_numero) < 14:
@@ -150,3 +142,18 @@ def configurar_numero_queja(instancia=None):
                                             timezone.now().strftime('%y'),
                                             timezone.now().strftime('%m'),
                                             consecutivo)
+
+
+def configurar_estado(instance):
+    if not instance or instance is None:
+        return
+
+
+# Signals
+@receiver(pre_save, sender=Queja)
+def preset_queja(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        if instance.numero == '' or not instance.numero:
+            configurar_numero_queja(instance, sender)
+        configurar_estado(instance)

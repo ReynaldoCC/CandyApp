@@ -14,3 +14,7 @@ class DpvNomencladoresConfig(AppConfig):
     model_data = ['ConsejoPopular']
     name_data = 'Consejos Populares Registrados' # Nombre o texto a mostrar del sisginificado de dichos registros
     route_data = 'nomenclador_index' # ruta principal del modulo
+
+    def ready(self):
+        from .utils import charge_initial
+        charge_initial()

@@ -248,8 +248,8 @@ class Procedencia(LoggerMixin):
                               validators=[MaxLengthValidator(50), not_special_char])
     enviar = models.BooleanField(default=True, verbose_name="Enviar Respuesta",
                                  help_text="Marque para enviar la respuesta por correo electrónico")
-    tipo = models.OneToOneField(TipoProcedencia, related_name="municipios",
-                                on_delete=models.CASCADE, default='', blank=True)
+    tipo = models.ForeignKey(TipoProcedencia, related_name="procedencias",
+                             on_delete=models.CASCADE, default='', blank=True)
     limit = models.Q(app_label='dpv_nomencladores', model='organismo') | \
         models.Q(app_label='dpv_nomencladores', model='organizacion') | \
         models.Q(app_label='dpv_persona', model='personanatural') | \
