@@ -331,8 +331,8 @@ def autofill_organismo(request):
         print(nombre)
         if nombre:
             if len(nombre) >= 3:
-                personas = [model_to_dict(mot) for mot in Organismo.objects.filter(nombre__icontains=nombre)[:10]]
-                data['organismos'] = personas
+                organismos = [model_to_dict(mot) for mot in Organismo.objects.filter(nombre__icontains=nombre)[:10]]
+                data['organismos'] = organismos
         return JsonResponse(data=data, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
@@ -346,7 +346,7 @@ def found_organismo_by_name(request):
             organismo = Organismo.objects.filter(nombre=nombre).first()
             if organismo:
                 data['exist'] = True
-                data['person'] = model_to_dict(organismo)
+                data['organismo'] = model_to_dict(organismo)
             else:
                 data['exist'] = False
         return JsonResponse(data=data, status=200)
@@ -896,6 +896,35 @@ def delete_prensaescrita(request, id_prensaescrita):
                   {'prensaescrita': prensaescrita})
 
 
+def autofill_prensaescrita(request):
+    if request.method == 'POST':
+        data = dict()
+        nombre = request.POST.get('nombre')
+        print(nombre)
+        if nombre:
+            if len(nombre) >= 3:
+                prensasescritas = [model_to_dict(mot) for mot in PrensaEscrita.objects.filter(nombre__icontains=nombre)[:10]]
+                data['prensasescritas'] = prensasescritas
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def found_prensaescrita_by_name(request):
+    if request.method == 'POST':
+        data = dict()
+        nombre = request.POST.get('nombre')
+        print(nombre)
+        if nombre:
+            prensaescrita = PrensaEscrita.objects.filter(nombre=nombre).first()
+            if prensaescrita:
+                data['exist'] = True
+                data['prensaescrita'] = model_to_dict(prensaescrita)
+            else:
+                data['exist'] = False
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
 # --------------------------------------- Telefono ------------------------------------------------
 @permission_required('dpv_nomencladores.view_telefono', raise_exception=True)
 def index_telefono(request):
@@ -944,6 +973,35 @@ def delete_telefono(request, id_telefono):
     return render(request,
                   'dpv_nomencladores/delete_telefono.html',
                   {'telefono': telefono})
+
+
+def autofill_telefono(request):
+    if request.method == 'POST':
+        data = dict()
+        numero = request.POST.get('numero')
+        print(numero)
+        if numero:
+            if len(numero) >= 3:
+                telefonos = [model_to_dict(mot) for mot in Telefono.objects.filter(numero__icontains=numero)[:10]]
+                data['telefonos'] = telefonos
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def found_telefono_by_number(request):
+    if request.method == 'POST':
+        data = dict()
+        numero = request.POST.get('numero')
+        print(numero)
+        if numero:
+            telefono = Telefono.objects.filter(nombre=numero).first()
+            if telefono:
+                data['exist'] = True
+                data['telefono'] = model_to_dict(telefono)
+            else:
+                data['exist'] = False
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
 # --------------------------------------- Email ------------------------------------------------
@@ -996,6 +1054,35 @@ def delete_email(request, id_email):
                   {'email': email})
 
 
+def autofill_email(request):
+    if request.method == 'POST':
+        data = dict()
+        email = request.POST.get('email')
+        print(email)
+        if email:
+            if len(email) >= 3:
+                emails = [model_to_dict(mot) for mot in Telefono.objects.filter(email__icontains=email)[:10]]
+                data['emails'] = emails
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def found_email_by_address(request):
+    if request.method == 'POST':
+        data = dict()
+        email = request.POST.get('email')
+        print(email)
+        if email:
+            found_email = Telefono.objects.filter(email=email).first()
+            if found_email:
+                data['exist'] = True
+                data['email'] = model_to_dict(found_email)
+            else:
+                data['exist'] = False
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
 # --------------------------------------- Gobierno ------------------------------------------------
 @permission_required('dpv_nomencladores.view_gobierno', raise_exception=True)
 def index_gobierno(request):
@@ -1046,6 +1133,35 @@ def delete_gobierno(request, id_email):
                   {'gobierno': gobierno})
 
 
+def autofill_gobierno(request):
+    if request.method == 'POST':
+        data = dict()
+        nombre = request.POST.get('nombre')
+        print(nombre)
+        if nombre:
+            if len(nombre) >= 3:
+                gobiernos = [model_to_dict(mot) for mot in Gobierno.objects.filter(nombre__icontains=nombre)[:10]]
+                data['gobiernos'] = gobiernos
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def found_gobierno_by_name(request):
+    if request.method == 'POST':
+        data = dict()
+        nombre = request.POST.get('nombre')
+        print(nombre)
+        if nombre:
+            gobierno = Gobierno.objects.filter(nombre=nombre).first()
+            if gobierno:
+                data['exist'] = True
+                data['gobierno'] = model_to_dict(gobierno)
+            else:
+                data['exist'] = False
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
 # --------------------------------------- Organizacion ------------------------------------------------
 @permission_required('dpv_nomencladores.view_organizacion', raise_exception=True)
 def index_organizacion(request):
@@ -1094,3 +1210,32 @@ def delete_organizacion(request, id_organizacion):
     return render(request,
                   'dpv_nomencladores/delete_organizacion.html',
                   {'organizacion': organizacion})
+
+
+def autofill_organizacion(request):
+    if request.method == 'POST':
+        data = dict()
+        nombre = request.POST.get('nombre')
+        print(nombre)
+        if nombre:
+            if len(nombre) >= 3:
+                organizaciones = [model_to_dict(mot) for mot in Organizacion.objects.filter(nombre__icontains=nombre)[:10]]
+                data['organizaciones'] = organizaciones
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def found_organizacion_by_name(request):
+    if request.method == 'POST':
+        data = dict()
+        nombre = request.POST.get('nombre')
+        print(nombre)
+        if nombre:
+            organizacion = Organizacion.objects.filter(nombre=nombre).first()
+            if organizacion:
+                data['exist'] = True
+                data['organizacion'] = model_to_dict(organizacion)
+            else:
+                data['exist'] = False
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)

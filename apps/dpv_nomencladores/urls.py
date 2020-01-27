@@ -33,6 +33,8 @@ urlpatterns = [
 
     path('organismo/', index_organismo, name='nomenclador_organismo'),
     path('nuevo_organismo/', add_organismo, name='organismo_new'),
+    path('organismo/autofill', autofill_organismo, name='organismo_autofill'),
+    path('organismo/found', found_organismo_by_name, name='organismo_found'),
     path('editar_organismo/<int:id_organismo>', update_organismo, name='organismo_edit'),
     path('eliminar_organismo/<int:id_organismo>', delete_organismo, name='organismo_delete'),
 
@@ -90,4 +92,42 @@ urlpatterns = [
     path('nuevo_clasificacionrespuesta/', add_clasificacionrespuesta, name='clasificacionrespuesta_new'),
     path('editar_clasificacionrespuesta/<int:id_clasificacionrespuesta>', update_clasificacionrespuesta, name='clasificacionrespuesta_edit'),
     path('eliminar_clasificacionrespuesta/<int:id_clasificacionrespuesta>', delete_clasificacionrespuesta, name='clasificacionrespuesta_delete'),
+
+    path('prensaescrita/', index_prensaescrita, name='nomenclador_prensaescrita'),
+    path('nuevo_prensaescrita/', add_prensaescrita, name='prensaescrita_new'),
+    path('editar_prensaescrita/<int:id_prensaescrita>', update_prensaescrita, name='prensaescrita_edit'),
+    path('eliminar_prensaescrita/<int:id_prensaescrita>', delete_prensaescrita, name='prensaescrita_delete'),
+    path('prensaescrita/autofill', autofill_prensaescrita, name='prensaescrita_autofill'),
+    path('prensaescrita/found', found_prensaescrita_by_name, name='prensaescrita_found'),
+
+    path('telefono/', index_telefono, name='nomenclador_telefono'),
+    path('nuevo_telefono/', add_telefono, name='telefono_new'),
+    path('editar_telefono/<int:id_telefono>', update_telefono, name='telefono_edit'),
+    path('eliminar_telefono/<int:id_telefono>', delete_telefono, name='telefono_delete'),
+    path('telefono/autofill', autofill_telefono, name='telefono_autofill'),
+    path('telefono/found', found_telefono_by_number, name='telefono_found'),
+
+    path('email/', index_email, name='nomenclador_email'),
+    path('nuevo_email/', add_email, name='email_new'),
+    path('editar_email/<int:id_email>', update_email, name='email_edit'),
+    path('eliminar_email/<int:id_email>', delete_email, name='email_delete'),
+    path('email/autofill', autofill_email, name='email_autofill'),
+    path('email/found', found_email_by_address, name='email_found'),
+
+    path('gobierno/', index_gobierno, name='nomenclador_gobierno'),
+    path('nuevo_gobierno/', add_gobierno, name='gobierno_new'),
+    path('editar_gobierno/<int:id_gobierno>', update_gobierno, name='gobierno_edit'),
+    path('eliminar_gobierno/<int:id_gobierno>', delete_gobierno, name='gobierno_delete'),
+    path('gobierno/autofill', autofill_gobierno, name='gobierno_autofill'),
+    path('gobierno/found', found_gobierno_by_name, name='gobierno_found'),
+
+    path('organizacion/', index_organizacion, name='nomenclador_organizacion'),
+    path('nuevo_organizacion/', add_organizacion, name='organizacion_new'),
+    path('editar_organizacion/<int:id_organizacion>', update_organizacion, name='organizacion_edit'),
+    path('eliminar_organizacion/<int:id_organizacion>', delete_organizacion, name='organizacion_delete'),
+    path('organizacion/autofill', autofill_organizacion, name='organizacion_autofill'),
+    path('organizacion/found', found_organizacion_by_name, name='organizacion_found'),
+
+
+
 ]

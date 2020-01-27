@@ -1,12 +1,12 @@
 <div class="modal-dialog modal-md">
     <div class="modal-content">
-        {% if prensaescrita %}
-        <form role="form" action="{% url 'prensaescrita_edit' prensaescrita.id %}" method="post" id="form_prensaescrita">
+        {% if telefono %}
+        <form role="form" action="{% url 'telefono_edit' telefono.id %}" method="post" id="form_telefono">
         {% else %}
-        <form role="form" action="{% url 'prensaescrita_new' %}" method="post" id="form_prensaescrita">
+        <form role="form" action="{% url 'telefono_new' %}" method="post" id="form_telefono">
         {% endif %}
             <div class="modal-header" >
-                <h4 class="modal-title">Calle</h4>
+                <h4 class="modal-title">Teléfono</h4>
                 <div class="actions">
                     <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 </div>
@@ -31,5 +31,5 @@
     </div>
 </div>
 <script>
-    $('#form_prensaescrita').validate();
+    $('#form_telefono').validate();
 </script>

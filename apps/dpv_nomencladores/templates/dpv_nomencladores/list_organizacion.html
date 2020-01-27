@@ -1,19 +1,19 @@
 {% extends 'dpv_nomencladores/list.html' %}
-{% block page_title %} | Prensas Escritas {% endblock page_title %}
+{% block page_title %} | Organizaciones {% endblock page_title %}
 {% load static %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
 {% endblock extra_style %}
-{% block breadcrumb_title %} Gestión de Prensas Escritas {% endblock breadcrumb_title %}
+{% block breadcrumb_title %} Gestión de Organizaciones {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% if '/nomenclador/prensaescrita/' == request.path %}
-    <li class="active">Prensas Escritas</li>
+    {% if '/nomenclador/organizacion/' == request.path %}
+    <li class="active">Organizaciones</li>
     {% else %}
     <li>
-        <a href="{% url 'nomenclador_prensaescrita' %}">
-            Prensas Escritas
+        <a href="{% url 'nomenclador_organizacion' %}">
+            Organizaciones
         </a>
     </li>
     {% endif %}
@@ -22,34 +22,32 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <strong class="card-title">Prensas Escritas</strong>
-                {% if perms.dpv_nomencladores.add_prensaescrita %}
-                <button onclick="return abrir_modal('{% url 'prensaescrita_new' %}')" class="pull-right btn btn-success btn-sm">
-                    <i class="fa fa-plus"></i>Agregar Prensa Escrita</button>
+                <strong class="card-title">Organizaciones</strong>
+                {% if perms.dpv_nomencladores.add_organizacion %}
+                <button onclick="return abrir_modal('{% url 'organizacion_new' %}')" class="pull-right btn btn-success btn-sm">
+                    <i class="fa fa-plus"></i>Agregar Organización</button>
                 {% endif %}
             </div>
             <div class="card-body">
-                {% if prensasescritas %}
+                {% if organizaciones %}
                 <div class="table-responsive">
                     <table id="bootstrap-data-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Siglas</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for prensaescrita in prensasescritas %}
+                        {% for organizacion in organizaciones %}
                             <tr>
-                                <td>{{prensaescrita.nombre}}</td>
-                                <td>{{prensaescrita.siglas}}</td>
+                                <td>{{organizacion.nombre}}</td>
                                 <td>
-                                    {% if perms.dpv_nomencladores.change_prensaescrita %}
-                                    <a onclick="return abrir_modal('{% url 'prensaescrita_edit' prensaescrita.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
+                                    {% if perms.dpv_nomencladores.change_organizacion %}
+                                    <a onclick="return abrir_modal('{% url 'organizacion_edit' organizacion.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
                                     {% endif %}
-                                    {% if perms.dpv_nomencladores.delete_prensaescrita %}
-                                    <a onclick="return abrir_modal('{% url 'prensaescrita_delete' prensaescrita.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                                    {% if perms.dpv_nomencladores.delete_organizacion %}
+                                    <a onclick="return abrir_modal('{% url 'organizacion_delete' organizacion.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -59,7 +57,7 @@
                 </div>
                 {% else %}
                 <div class="alert alert-info">
-                    <h2 class="text-center">No hay Prensas Escritas registradas que mostrar</h2>
+                    <h2 class="text-center">No hay Organizaciones registradas que mostrar</h2>
                 </div>
                 {% endif %}
             </div>

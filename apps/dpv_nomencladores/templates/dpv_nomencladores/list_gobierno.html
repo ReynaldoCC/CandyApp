@@ -1,19 +1,19 @@
 {% extends 'dpv_nomencladores/list.html' %}
-{% block page_title %} | Prensas Escritas {% endblock page_title %}
+{% block page_title %} | Gobiernos {% endblock page_title %}
 {% load static %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
 {% endblock extra_style %}
-{% block breadcrumb_title %} Gestión de Prensas Escritas {% endblock breadcrumb_title %}
+{% block breadcrumb_title %} Gestión de Gobiernos {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% if '/nomenclador/prensaescrita/' == request.path %}
-    <li class="active">Prensas Escritas</li>
+    {% if '/nomenclador/gobierno/' == request.path %}
+    <li class="active">Gobiernos</li>
     {% else %}
     <li>
-        <a href="{% url 'nomenclador_prensaescrita' %}">
-            Prensas Escritas
+        <a href="{% url 'nomenclador_gobierno' %}">
+            Gobiernos
         </a>
     </li>
     {% endif %}
@@ -22,34 +22,32 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <strong class="card-title">Prensas Escritas</strong>
-                {% if perms.dpv_nomencladores.add_prensaescrita %}
-                <button onclick="return abrir_modal('{% url 'prensaescrita_new' %}')" class="pull-right btn btn-success btn-sm">
-                    <i class="fa fa-plus"></i>Agregar Prensa Escrita</button>
+                <strong class="card-title">Gobiernos</strong>
+                {% if perms.dpv_nomencladores.add_gobierno %}
+                <button onclick="return abrir_modal('{% url 'gobierno_new' %}')" class="pull-right btn btn-success btn-sm">
+                    <i class="fa fa-plus"></i>Agregar Gobierno</button>
                 {% endif %}
             </div>
             <div class="card-body">
-                {% if prensasescritas %}
+                {% if gobiernos %}
                 <div class="table-responsive">
                     <table id="bootstrap-data-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Siglas</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for prensaescrita in prensasescritas %}
+                        {% for gobierno in gobiernos %}
                             <tr>
-                                <td>{{prensaescrita.nombre}}</td>
-                                <td>{{prensaescrita.siglas}}</td>
+                                <td>{{gobierno.nombre}}</td>
                                 <td>
-                                    {% if perms.dpv_nomencladores.change_prensaescrita %}
-                                    <a onclick="return abrir_modal('{% url 'prensaescrita_edit' prensaescrita.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
+                                    {% if perms.dpv_nomencladores.change_gobierno %}
+                                    <a onclick="return abrir_modal('{% url 'gobierno_edit' gobierno.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
                                     {% endif %}
-                                    {% if perms.dpv_nomencladores.delete_prensaescrita %}
-                                    <a onclick="return abrir_modal('{% url 'prensaescrita_delete' prensaescrita.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                                    {% if perms.dpv_nomencladores.delete_gobierno %}
+                                    <a onclick="return abrir_modal('{% url 'gobierno_delete' gobierno.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -59,7 +57,7 @@
                 </div>
                 {% else %}
                 <div class="alert alert-info">
-                    <h2 class="text-center">No hay Prensas Escritas registradas que mostrar</h2>
+                    <h2 class="text-center">No hay Gobiernos registrados que mostrar</h2>
                 </div>
                 {% endif %}
             </div>
