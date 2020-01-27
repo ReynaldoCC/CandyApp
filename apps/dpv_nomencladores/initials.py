@@ -246,6 +246,9 @@ def create_initial():
             Organizacion(nombre='Organización de Pioneros Jose Martí (OPJM)'),
             Organizacion(nombre='Federación de Estudiantes Universitarios (FEU)'),
             Organizacion(nombre='Federación de Estudiantes de la Enseñanza Media (FEEM)'),
+            Organizacion(nombre='Central de Trabajadores de Cuba (CTC)'),
+            Organizacion(nombre='Comité de Defensa de la Revolución (CDR)'),
+            Organizacion(nombre='Federación de Mujeres de Cuba (FMC)'),
         ])
     else:
         pass
@@ -278,23 +281,23 @@ def create_initial():
 
     if not TipoQueja.objects.all().exists():
         TipoQueja.objects.bulk_create([
-            TipoQueja(nombre='', numero=1),
-            TipoQueja(nombre='', numero=2),
-            TipoQueja(nombre='', numero=3),
+            TipoQueja(nombre='Denuncia', numero=1),
+            TipoQueja(nombre='Consulta', numero=2),
+            TipoQueja(nombre='Queja', numero=3),
         ])
     else:
         pass
 
     if not TipoProcedencia.objects.all().exists():
         TipoProcedencia.objects.bulk_create([
-            TipoProcedencia(nombre='Anónimo', cant_dias=30),
-            TipoProcedencia(nombre='Prensa Escrita', cant_dias=30),
-            TipoProcedencia(nombre='Personal', cant_dias=30),
-            TipoProcedencia(nombre='Telefono', cant_dias=30),
-            TipoProcedencia(nombre='Correo', cant_dias=30),
-            TipoProcedencia(nombre='Empresa', cant_dias=30),
-            TipoProcedencia(nombre='Gobierno', cant_dias=30),
-            TipoProcedencia(nombre='Organización', cant_dias=30),
+            TipoProcedencia(id=1, nombre='Anónimo', cant_dias=30),
+            TipoProcedencia(id=2, nombre='Prensa Escrita', cant_dias=30),
+            TipoProcedencia(id=3, nombre='Personal', cant_dias=30),
+            TipoProcedencia(id=4, nombre='Teléfono', cant_dias=30),
+            TipoProcedencia(id=5, nombre='Correo', cant_dias=30),
+            TipoProcedencia(id=6, nombre='Empresa', cant_dias=30),
+            TipoProcedencia(id=7, nombre='Gobierno', cant_dias=30),
+            TipoProcedencia(id=8, nombre='Organización', cant_dias=30),
         ])
     else:
         pass
@@ -322,10 +325,17 @@ def create_initial():
 
     if not ClasificacionRespuesta.objects.all().exists():
         ClasificacionRespuesta.objects.bulk_create([
-            ClasificacionRespuesta(nombre='', codigo=''),
-            ClasificacionRespuesta(nombre='', codigo=''),
-            ClasificacionRespuesta(nombre='', codigo=''),
-            ClasificacionRespuesta(nombre='', codigo=''),
+            ClasificacionRespuesta(nombre='Solucionada', codigo='S'),
+            ClasificacionRespuesta(nombre='Pendiente Solución', codigo='PS'),
+            ClasificacionRespuesta(nombre='Explicada Causa de No Solución', codigo='ECNS'),
+        ])
+    else:
+        pass
+
+    if not PrensaEscrita.objects.all().exists():
+        PrensaEscrita.objects.bulk_create([
+            PrensaEscrita(nombre='Periódico Gramma', siglas='GRM'),
+            PrensaEscrita(nombre='Revista Mujeres', siglas='MUJ'),
         ])
     else:
         pass

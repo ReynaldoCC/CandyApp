@@ -2,8 +2,10 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 from .validators import only_numbers, only_letters, not_numbers, not_letters, not_special_char
-from django.core.validators import MaxLengthValidator, MinLengthValidator
+from django.core.validators import MaxLengthValidator, MinLengthValidator, EmailValidator
 from apps.dpv_base.mixins import LoggerMixin
 
 
@@ -228,6 +230,64 @@ class TipoQueja(LoggerMixin):
         return self.nombre
 
 
+class PrensaEscrita(LoggerMixin):
+    nombre = models.CharField(max_length=50, verbose_name="Prensa Escrita",
+                              validators=[MaxLengthValidator(50), not_special_char])
+    siglas = models.CharField(max_length=10, verbose_name="Siglas",
+                              validators=[MaxLengthValidator(10), not_special_char])
+
+    class Meta:
+        verbose_name = "Prensa Escrita"
+        verbose_name_plural = "Prensas Escritas"
+        ordering = ["nombre", ]
+        unique_together = (('nombre', 'deleted_at'), )
+
+    def __str__(self):
+        return self.nombre
+
+
+class Email(LoggerMixin):
+    email = models.EmailField(max_length=50, verbose_name="Correo Electrónico",
+                              validators=[MaxLengthValidator(50), EmailValidator()])
+
+    class Meta:
+        verbose_name = "Correo Electrónico"
+        verbose_name_plural = "Correos Electrónicos"
+        ordering = ["email", ]
+        unique_together = (('email', 'deleted_at'), )
+
+    def __str__(self):
+        return self.email
+
+
+class Telefono(LoggerMixin):
+    numero = models.CharField(max_length=50, verbose_name="Teléfono",
+                              validators=[MaxLengthValidator(50), not_special_char])
+
+    class Meta:
+        verbose_name = "Teléfono"
+        verbose_name_plural = "Teléfonos"
+        ordering = ["numero", ]
+        unique_together = (('numero', 'deleted_at'), )
+
+    def __str__(self):
+        return self.numero
+
+
+class Gobierno(LoggerMixin):
+    nombre = models.CharField(max_length=50, verbose_name="Gobierno",
+                              validators=[MaxLengthValidator(50), not_special_char])
+
+    class Meta:
+        verbose_name = "Gobierno"
+        verbose_name_plural = "Gobierno"
+        ordering = ["nombre", ]
+        unique_together = (('nombre', 'deleted_at'), )
+
+    def __str__(self):
+        return self.numero
+
+
 class TipoProcedencia(LoggerMixin):
     nombre = models.CharField(max_length=50, verbose_name="Tipo de Procedencia",
                               validators=[MaxLengthValidator(50), not_special_char])
@@ -252,6 +312,10 @@ class Procedencia(LoggerMixin):
                              on_delete=models.CASCADE, default='', blank=True)
     limit = models.Q(app_label='dpv_nomencladores', model='organismo') | \
         models.Q(app_label='dpv_nomencladores', model='organizacion') | \
+        models.Q(app_label='dpv_nomencladores', model='prensaescrita') | \
+        models.Q(app_label='dpv_nomencladores', model='telefono') | \
+        models.Q(app_label='dpv_nomencladores', model='email') | \
+        models.Q(app_label='dpv_nomencladores', model='gobierno') | \
         models.Q(app_label='dpv_persona', model='personanatural') | \
         models.Q(app_label='dpv_persona', model='personajuridica')
     tipo_contenido = models.ForeignKey(ContentType, verbose_name=_('Contenido de Procedencia'),
@@ -298,3 +362,18 @@ class ClasificacionRespuesta(LoggerMixin):
     def __str__(self):
         return self.nombre
 
+
+def configurar_nombre_procedencia(instance):
+    if not instance or instance is None:
+        return
+
+
+def configurar_tipo_procedencia(instance):
+    if not instance or instance is None:
+        return
+
+
+@receiver(pre_save, sender=Procedencia)
+def preset_procedencia(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')

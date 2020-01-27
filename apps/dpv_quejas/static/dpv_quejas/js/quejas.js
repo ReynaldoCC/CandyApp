@@ -102,15 +102,42 @@ var DPVQuejas = function () {
             //console.log(next_button);
         });
         $("#id_tipo_procedencia").on('change', function (e) {
-            if ($('#id_tipo_procedencia').val() !== '') {
-                $('#id_procedencia').removeClass('no-show');
+            if ($('#id_tipo_procedencia').val() == '') {
+                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').addClass('col-lg-12').removeClass('col-lg-6');
+                $('.procedent').addClass('no-show');
+            } else if ($('#id_tipo_procedencia').val() == '1') {
                 $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-12').addClass('col-lg-6');
-                $('#id_procedencia').parent('.row.form-group.col-lg-6').removeClass('no-show');
-            } else {
-                $('#id_procedencia').addClass('no-show');
-                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-6').addClass('col-lg-12');
-                $('#id_procedencia').parent('.row.form-group.col-lg-6').addClass('no-show');
-            }
+                $('.procedent').addClass('no-show');
+                $('#anon_block').removeClass('no-show');
+            } else if ($('#id_tipo_procedencia').val() == '2') {
+                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-12').addClass('col-lg-6');
+                $('.procedent').addClass('no-show');
+                $('#prensa_block').removeClass('no-show');
+            } else if ($('#id_tipo_procedencia').val() == '3') {
+                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-12').addClass('col-lg-6');
+                $('.procedent').addClass('no-show');
+                $('#persona_block').removeClass('no-show');
+            } else if ($('#id_tipo_procedencia').val() == '4') {
+                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-12').addClass('col-lg-6');
+                $('.procedent').addClass('no-show');
+                $('#telefono_block').removeClass('no-show');
+            } else if ($('#id_tipo_procedencia').val() == '5') {
+                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-12').addClass('col-lg-6');
+                $('.procedent').addClass('no-show');
+                $('#correo_block').removeClass('no-show');
+            } else if ($('#id_tipo_procedencia').val() == '6') {
+                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-12').addClass('col-lg-6');
+                $('.procedent').addClass('no-show');
+                $('#empresa_block').removeClass('no-show');
+            } else if ($('#id_tipo_procedencia').val() == '7') {
+                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-12').addClass('col-lg-6');
+                $('.procedent').addClass('no-show');
+                $('#gob_block').removeClass('no-show');
+            } else if ($('#id_tipo_procedencia').val() == '8') {
+                $('#id_tipo_procedencia').parent('.row.form-group.col-lg-6').removeClass('col-lg-12').addClass('col-lg-6');
+                $('.procedent').addClass('no-show');
+                $('#org_block').removeClass('no-show');
+            };
         });
         $("#id_damnificado_not_indb").on('change', function (e) {
             if (this.checked) {
@@ -140,6 +167,7 @@ var DPVQuejas = function () {
                 $("#id_dir_cpopular").val('');
             }
         });
+        $("#")
 
         var _disableOrEnablePNButton = function (element) {
             //console.log('element', element);
@@ -163,7 +191,7 @@ var DPVQuejas = function () {
                 if (prev_button.hasClass('disabled'))
                     prev_button.removeClass('disabled');
             }
-        }
+        };
         var _verifyProcedence = function() {
             let result = {
                 error: false,
@@ -301,6 +329,7 @@ var DPVQuejas = function () {
             };
             return result;
         };
+
     };
     var _initQuejaForm = function () {
         $.validator.setDefaults({
@@ -479,6 +508,7 @@ var DPVQuejas = function () {
                 },
 			},
 		});
+		queja_form[0].reset();
     };
     return {
         init: function () {

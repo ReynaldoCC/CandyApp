@@ -1,6 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
+from apps.dpv_persona.forms import PersonaNaturalForm, PersonaJuridicaForm
+from apps.dpv_nomencladores.forms import TelefonoForm, EmailForm, OrganismoForm, OrganizationForm, PrensaEscritaForm, \
+    GobiernoForm
 from .models import *
 
 
@@ -76,15 +79,100 @@ class AsignaQuejaTecnicoForm(forms.ModelForm):
         }
 
 
-class DamnificadoNaturalForm(forms.ModelForm):
+class QPersonaNaturalForm(PersonaNaturalForm):
 
-    class Meta:
-        model = DamnificadoNatural
-        fields = (
-                  'persona_natural',
-        )
-        widgets = {
-            'persona_natural': forms.Select(attrs={"placeholder": "Seleccione una persona.", "class": "form-control"}),
-        }
+    def __init__(self, *args, **kwargs):
+        super(QPersonaNaturalForm, self).__init__(*args, **kwargs)
+        self.fields['ci'].widget.attrs.update({'id': 'id_qci', 'class': 'form-control verify'})
+        self.fields['nombre'].widget.attrs.update({'id': 'id_qnombre', 'class': 'form-control verify'})
+        self.fields['apellidos'].widget.attrs.update({'id': 'id_qapellidos', 'class': 'form-control verify'})
+        self.fields['email_address'].widget.attrs.update({'id': 'id_qemail_address', 'class': 'form-control verify'})
+        self.fields['telefono'].widget.attrs.update({'id': 'id_qtelefono', 'class': 'form-control verify'})
+        self.fields['movil'].widget.attrs.update({'id': 'id_qmovil', 'class': 'form-control verify'})
+        self.fields['direccion_calle'].widget.attrs.update({'id': 'id_qdireccion_calle', 'class': 'form-control verify'})
+        self.fields['direccion_numero'].widget.attrs.update({'id': 'id_qdireccion_numero', 'class': 'form-control verify'})
+        self.fields['direccion_entrecalle1'].widget.attrs.update({'id': 'id_qdireccion_entrecalle1', 'class': 'form-control verify'})
+        self.fields['direccion_entrecalle2'].widget.attrs.update({'id': 'id_qdireccion_entrecalle2', 'class': 'form-control verify'})
+        self.fields['municipio'].widget.attrs.update({'id': 'id_qmunicipio', 'class': 'form-control verify'})
+        self.fields['cpopular'].widget.attrs.update({'id': 'id_qcpopular', 'class': 'form-control'})
+        self.fields['genero'].widget.attrs.update({'id': 'id_qgenero', 'class': 'form-control'})
 
 
+class AQPersonaNaturalForm(PersonaNaturalForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AQPersonaNaturalForm, self).__init__(*args, **kwargs)
+        self.fields['ci'].widget.attrs.update({'id': 'id_aqci', 'class': 'form-control verify'})
+        self.fields['nombre'].widget.attrs.update({'id': 'id_aqnombre', 'class': 'form-control verify'})
+        self.fields['apellidos'].widget.attrs.update({'id': 'id_aqapellidos', 'class': 'form-control verify'})
+        self.fields['email_address'].widget.attrs.update({'id': 'id_aqemail_address', 'class': 'form-control verify'})
+        self.fields['telefono'].widget.attrs.update({'id': 'id_aqtelefono', 'class': 'form-control verify'})
+        self.fields['movil'].widget.attrs.update({'id': 'id_aqmovil', 'class': 'form-control verify'})
+        self.fields['direccion_calle'].widget.attrs.update({'id': 'id_aqdireccion_calle', 'class': 'form-control verify'})
+        self.fields['direccion_numero'].widget.attrs.update({'id': 'id_aqdireccion_numero', 'class': 'form-control verify'})
+        self.fields['direccion_entrecalle1'].widget.attrs.update({'id': 'id_aqdireccion_entrecalle1', 'class': 'form-control verify'})
+        self.fields['direccion_entrecalle2'].widget.attrs.update({'id': 'id_aqdireccion_entrecalle2', 'class': 'form-control verify'})
+        self.fields['municipio'].widget.attrs.update({'id': 'id_aqmunicipio', 'class': 'form-control verify'})
+        self.fields['cpopular'].widget.attrs.update({'id': 'id_aqcpopular', 'class': 'form-control'})
+        self.fields['genero'].widget.attrs.update({'id': 'id_aqgenero', 'class': 'form-control'})
+
+
+class QPersonaJuridicaForm(PersonaJuridicaForm):
+
+    def __init__(self, *args, **kwargs):
+        super(QPersonaJuridicaForm, self).__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs.update({'id': 'id_pj_nombre', 'class': 'form-control verify'})
+        self.fields['sigla'].widget.attrs.update({'id': 'id_pj_sigla', 'class': 'form-control verify'})
+        self.fields['telefono'].widget.attrs.update({'id': 'id_pj_telefono', 'class': 'form-control verify'})
+        self.fields['movil'].widget.attrs.update({'id': 'id_pj_movil', 'class': 'form-control verify'})
+        self.fields['nombre_contacto'].widget.attrs.update({'id': 'id_pj_nombre_contacto', 'class': 'form-control verify'})
+        self.fields['email_address'].widget.attrs.update({'id': 'id_pj_email_address', 'class': 'form-control verify'})
+        self.fields['direccion_calle'].widget.attrs.update({'id': 'id_pj_direccion_calle', 'class': 'form-control verify'})
+        self.fields['direccion_numero'].widget.attrs.update({'id': 'id_pj_direccion_numero', 'class': 'form-control verify'})
+        self.fields['direccion_entrecalle1'].widget.attrs.update({'id': 'id_pj_direccion_entrecalle1', 'class': 'form-control verify'})
+        self.fields['direccion_entrecalle2'].widget.attrs.update({'id': 'id_pj_direccion_entrecalle2', 'class': 'form-control verify'})
+        self.fields['municipio'].widget.attrs.update({'id': 'id_pj_municipio', 'class': 'form-control verify'})
+        self.fields['codigo_nit'].widget.attrs.update({'id': 'id_pj_codigo_nit', 'class': 'form-control verify'})
+        self.fields['codigo_reuup'].widget.attrs.update({'id': 'id_pj_codigo_reuup', 'class': 'form-control verify'})
+
+
+class QTelefonoForm(TelefonoForm):
+
+    def __init__(self, *args, **kwargs):
+        super(QTelefonoForm, self).__init__(*args, **kwargs)
+        self.fields['numero'].widget.attrs.update({'id': 'id_tel_numero', 'class': 'form-control verify'})
+
+
+class QEmailForm(EmailForm):
+
+    def __init__(self, *args, **kwargs):
+        super(QEmailForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({'id': 'id_email_email', 'class': 'form-control verify'})
+
+
+class QOrganismoForm(OrganismoForm):
+
+    def __init__(self, *args, **kwargs):
+        super(QOrganismoForm, self).__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs.update({'id': 'id_organismo_nombre', 'class': 'form-control verify'})
+
+
+class QOrganizationForm(OrganizationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(QOrganizationForm, self).__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs.update({'id': 'id_organizacion_nombre', 'class': 'form-control verify'})
+
+
+class QPrensaEscritaForm(PrensaEscritaForm):
+
+    def __init__(self, *args, **kwargs):
+        super(QPrensaEscritaForm, self).__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs.update({'id': 'id_pe_nombre', 'class': 'form-control verify'})
+
+
+class QGobiernoForm(GobiernoForm):
+
+    def __init__(self, *args, **kwargs):
+        super(QGobiernoForm, self).__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs.update({'id': 'id_gob_nombre', 'class': 'form-control verify'})

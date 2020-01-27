@@ -1,0 +1,7 @@
+.nav-item.overrided {
+    padding-right: .5% !important;
+    padding-left: .5% !important;
+}
+.nav-item.overrided .nav-link {
+    padding: .5% !important;
+}

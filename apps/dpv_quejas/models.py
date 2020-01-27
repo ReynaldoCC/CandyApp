@@ -23,20 +23,24 @@ class Queja(LoggerMixin):
                                         on_delete=models.CASCADE, blank=True, default='',
                                         related_name='queja_entrecalle2')
     dir_municipio = models.ForeignKey(Municipio, on_delete=models.CASCADE, verbose_name=_('Dirección Municipio'))
-    dir_cpopular = models.ForeignKey(ConsejoPopular, on_delete=models.CASCADE, verbose_name=_('Dirección Consejo Popular'))
+    dir_cpopular = models.ForeignKey(ConsejoPopular, on_delete=models.CASCADE,
+                                     verbose_name=_('Dirección Consejo Popular'))
     asunto = models.ForeignKey(CodificadorAsunto, verbose_name=_('Asunto Queja'),
                                on_delete=models.CASCADE, blank=True, default='')
+    tipo = models.ForeignKey(TipoQueja, related_name="tipo_queja", on_delete=models.CASCADE, blank=True, default='', verbose_name=_("Tipo"))
     numero = models.CharField(max_length=10, verbose_name=_('Número Queja'))
+    codigo_numero = models.CharField(max_length=10, default='', blank=True)
     procedencia = models.ForeignKey(Procedencia, related_name="prodencia",
                                     on_delete=models.CASCADE, blank=True, null=True, default='')
     referencia = models.CharField(default='', max_length=50, blank=True, verbose_name='Referencia')
     estado = models.ForeignKey(Estado, verbose_name=_('Estado'),
                                on_delete=models.CASCADE, blank=True, default='')
     fecha_radicacion = models.DateTimeField(verbose_name=_("Fecha Radicación"), auto_now_add=True)
+    fecha_termino = models.DateTimeField(verbose_name=_("Fecha Término"), auto_now_add=False, default=None, null=True)
     texto = models.TextField(max_length=3000, verbose_name='Cuerpo de la queja')
     tiempo = models.PositiveSmallIntegerField(verbose_name=_("Tiempo en proceso"), default=0,
                                               help_text=_("Tiempo en días que tiene de radicada la queja"))
-    clasificacion = models.ForeignKey(TipoQueja, verbose_name='Tipo de Queja',
+    clasificacion = models.ForeignKey(ClasificacionRespuesta, related_name="queja_respuesta_clase", verbose_name='Tipo de Queja',
                                       on_delete=models.CASCADE, blank=True, default='')
 
     class Meta:
@@ -46,25 +50,24 @@ class Queja(LoggerMixin):
 
 class Damnificado(LoggerMixin):
     queja = models.ForeignKey(Queja, on_delete=models.CASCADE, related_name='damnificado')
+    limit = models.Q(app_label='dpv_persona', model='personanatural') | \
+        models.Q(app_label='dpv_persona', model='personajuridica')
+    tipo_contenido = models.ForeignKey(ContentType, verbose_name=_('Damnificado de la queja'),
+                                       limit_choices_to=limit,
+                                       null=True, blank=True, on_delete=models.CASCADE)
+    id_objecto = models.PositiveIntegerField(verbose_name=_('related object'), null=True)
+    objecto_contenido = GenericForeignKey('tipo_contenido', 'id_objecto')
 
     class Meta:
         verbose_name = _("Damnificado")
         verbose_name_plural = _("Damnificados")
 
 
-class DamnificadoNatural(Damnificado):
-    persona_natural = models.ForeignKey(PersonaNatural, related_name='persona_natural', on_delete=models.CASCADE,
-                                        blank=True, null=True, default='')
-
-
-class DamnificadoJuridico(Damnificado):
-    persona_juridica = models.ForeignKey(PersonaJuridica, related_name='persona_juridica', on_delete=models.CASCADE,
-                                         blank=True, null=True, default='')
-
-
 class AsignaQuejaDpto(LoggerMixin):
-    quejadpto = models.ForeignKey(Queja, related_name='quejadpto', on_delete=models.CASCADE, blank=True, null=True, default='')
-    dpto = models.ForeignKey(AreaTrabajo, related_name='dpto', on_delete=models.CASCADE, blank=True, null=True, default='')
+    quejadpto = models.ForeignKey(Queja, related_name='quejadpto', on_delete=models.CASCADE,
+                                  blank=True, null=True, default='')
+    dpto = models.ForeignKey(AreaTrabajo, related_name='dpto', on_delete=models.CASCADE,
+                             blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
     fecha_asignacion = models.DateTimeField(verbose_name=_("Fecha Asignación"), auto_now_add=True)
     rechazada = models.DateTimeField(default=None, null=True)
@@ -75,8 +78,10 @@ class AsignaQuejaDpto(LoggerMixin):
 
 
 class AsignaQuejaTecnico(LoggerMixin):
-    quejatecnico = models.ForeignKey(Queja, related_name='quejatecnico', on_delete=models.CASCADE, blank=True, null=True, default='')
-    tecnico = models.ForeignKey(Tecnico, related_name='tecnico', on_delete=models.CASCADE, blank=True, null=True, default='')
+    quejatecnico = models.ForeignKey(Queja, related_name='quejatecnico', on_delete=models.CASCADE,
+                                     blank=True, null=True, default='')
+    tecnico = models.ForeignKey(Tecnico, related_name='tecnico', on_delete=models.CASCADE,
+                                blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
     fecha_asignacion = models.DateTimeField(verbose_name=_("Fecha Asignación"), auto_now_add=True)
     rechazada = models.DateTimeField(default=None, null=True)
@@ -87,11 +92,13 @@ class AsignaQuejaTecnico(LoggerMixin):
 
 
 class QuejaRechazada(LoggerMixin):
-    queja = models.ForeignKey(Queja, related_name='rechazada', on_delete=models.CASCADE, blank=True, null=True, default='')
+    queja = models.ForeignKey(Queja, related_name='rechazada', on_delete=models.CASCADE,
+                              blank=True, null=True, default='')
     motivo = models.TextField(verbose_name=_("Motivo de Rechazo"),
                               help_text=_("Motivo por el cual se rechaza la queja"),
                               default='Motivo por defecto')
-    rechazada_por = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Rechazada Por"), blank=True, default='')
+    rechazada_por = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Rechazada Por"),
+                                      blank=True, default='')
 
     class Meta:
         verbose_name = _("Queja Rechazada")
@@ -99,27 +106,33 @@ class QuejaRechazada(LoggerMixin):
 
 
 class QuejaRedirigida(LoggerMixin):
-    queja = models.ForeignKey(Queja, related_name='redirigida', on_delete=models.CASCADE, blank=True, null=True, default='')
+    queja = models.ForeignKey(Queja, related_name='redirigida', on_delete=models.CASCADE,
+                              blank=True, null=True, default='')
     motivo = models.TextField(verbose_name=_("Motivo de Rechazo"),
                               help_text=_("Motivo por el cual se rechaza la queja"),
                               default='Motivo por defecto')
-    redirigida_por = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Rechazada Por"), blank=True, default='')
+    redirigida_por = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Rechazada Por"),
+                                       blank=True, default='')
 
 
 class RespuestaQueja(Respuesta):
-    queja = models.ForeignKey(Queja, related_name='respuesta', on_delete=models.CASCADE, blank=True, null=True, default='')
+    queja = models.ForeignKey(Queja, related_name='respuesta', on_delete=models.CASCADE,
+                              blank=True, null=True, default='')
 
 
 class QuejaNotificada(LoggerMixin):
-    queja = models.ForeignKey(Queja, related_name='notificada', on_delete=models.CASCADE, blank=True, null=True, default='')
+    queja = models.ForeignKey(Queja, related_name='notificada', on_delete=models.CASCADE,
+                              blank=True, null=True, default='')
     notificada = models.DateTimeField(default=None, null=True, verbose_name=_("Notificada"))
-    notificador = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Quien notifica."), default='', blank=True)
+    notificador = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Quien notifica."),
+                                    default='', blank=True)
 
 
 # Utils functionalities
 def configurar_numero_queja(instancia=None, sender=None):
     if instancia and instancia.id:
-        ultima_queja = sender.objects.exclude(id=instancia.id).filter(fecha_radicacion__year=timezone.now().year).order_by('numero').last()
+        ultima_queja = sender.objects.exclude(id=instancia.id)\
+            .filter(fecha_radicacion__year=timezone.now().year).order_by('numero').last()
     else:
         ultima_queja = sender.objects.filter(fecha_radicacion__year=timezone.now().year).order_by('numero').last()
     if ultima_queja:
@@ -137,14 +150,24 @@ def configurar_numero_queja(instancia=None, sender=None):
             consecutivo = str(int(ultimo_numero[-4:])+1).zfill(4)
 
         instancia.numero = '{%s%s%s%s%s%s}' % (instancia.dir_municipio.provincia.numero,
-                                            instancia.dir_municipio.numero,
-                                            instancia.dir_cpopular,
-                                            timezone.now().strftime('%y'),
-                                            timezone.now().strftime('%m'),
-                                            consecutivo)
+                                               instancia.dir_municipio.numero,
+                                               instancia.dir_cpopular,
+                                               timezone.now().strftime('%y'),
+                                               timezone.now().strftime('%m'),
+                                               consecutivo)
 
 
 def configurar_estado(instance):
+    if not instance or instance is None:
+        return
+
+
+def configurar_fecha_termino(instance):
+    if not instance or instance is None:
+        return
+
+
+def configurara_codigo_numero(instance):
     if not instance or instance is None:
         return
 

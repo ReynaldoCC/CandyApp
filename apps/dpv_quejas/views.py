@@ -3,7 +3,6 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import F, Q, When, Case, BooleanField
 from apps.dpv_respuesta.views import AprobadaRespuestaDtorView, AprobadaRespuestaJefeView
-from apps.dpv_persona.forms import PersonaNaturalForm
 from .forms import *
 from .models import *
 
@@ -34,18 +33,49 @@ def index(request):
 
 def agregar_queja(request):
     form = QuejaForm()
-    pform = PersonaNaturalForm()
-    dform = DamnificadoNaturalForm()
+    aqform = AQPersonaNaturalForm()
+    pnform = QPersonaNaturalForm()
+    pjform = QPersonaJuridicaForm()
+    tform = QTelefonoForm()
+    eform = QEmailForm()
+    orgform = QOrganismoForm()
+    oform = QOrganizationForm()
+    peform = QPrensaEscritaForm()
+    gform = QGobiernoForm()
     if request.method == "POST":
         form = QuejaForm(request.POST)
-        pform = PersonaNaturalForm(request.POST)
-        dform = DamnificadoNaturalForm(request.POST)
-        if form.is_valid() and pform.is_valid() and dform.is_valid():
-            queja = form.save()
-            damn = dform.save(commit=False)
-            person = pform.save()
+        aqform = AQPersonaNaturalForm(request.POST)
+        pnform = QPersonaNaturalForm(request.POST)
+        pjform = QPersonaJuridicaForm(request.POST)
+        tform = QTelefonoForm(request.POST)
+        eform = QEmailForm(request.POST)
+        orgform = QOrganismoForm(request.POST)
+        oform = QOrganizationForm(request.POST)
+        peform = QPrensaEscritaForm(request.POST)
+        gform = QGobiernoForm(request.POST)
 
-    return render(request, 'dpv_quejas/form.html', {'form': form, 'pform': pform, 'dform': dform})
+        if form.is_valid() and pnform.is_valid() and pjform.is_valid() and tform.is_valid() and eform.is_valid()\
+                and orgform.is_valid() and oform.is_valid() and peform.is_valid() and aqform.is_valid()\
+                and gform.is_valid():
+            queja = form.save()
+            person = pnform.save(commit=False)
+            ent = pjform.save(commit=False)
+            orgz = oform.save(commit=False)
+            org = orgform.save(commit=False)
+            tel = tform.save(commit=False)
+            email = eform.save(commit=False)
+            gob = gform.save(commit=False)
+
+    return render(request, 'dpv_quejas/form.html', {'form': form,
+                                                    'pnform': pnform,
+                                                    'pjform': pjform,
+                                                    'tform': tform,
+                                                    'eform': eform,
+                                                    'orgform': orgform,
+                                                    'oform': oform,
+                                                    'peform': peform,
+                                                    'gform': gform,
+                                                    'aqform': aqform})
 
 
 def editar_queja(request, id_queja):

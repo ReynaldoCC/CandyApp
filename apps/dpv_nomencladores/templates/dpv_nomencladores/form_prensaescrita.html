@@ -1,0 +1,55 @@
+<div class="modal-dialog modal-md">
+    <div class="modal-content">
+        {% if calle %}
+        <form role="form" action="{% url 'calle_edit' calle.id %}" method="post" id="form_calle">
+        {% else %}
+        <form role="form" action="{% url 'calle_new' %}" method="post" id="form_calle">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Calle</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-control-sm">
+                    {% for field in form %}
+                    <div class="form-group" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                        {% if field.name == 'municipios' %}
+                            <span>
+                                <input id="filter_municipios" class="pull-right" type="text" placeholder="Filtrar por:">
+                                <label><input id="check_all_municipios" type="checkbox"> Marcar todos los </label>
+                            </span>
+                            {% endif %}
+                        {{field.errors}}
+                        <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('#form_calle').validate();
+    $(document).ready(function(){
+        $("#filter_municipios").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+                $("#id_municipios span").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#check_all_municipios").on("click", function(){
+            if ($("#check_all_municipios").prop('checked'))
+                $("input[name='municipios']").attr('checked', true);
+            else
+                $("input[name='municipios']").attr('checked', false);
+        });
+    });
+</script>

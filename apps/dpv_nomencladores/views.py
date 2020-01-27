@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
 from .forms import *
 from .models import *
 
@@ -321,6 +322,35 @@ def delete_organismo(request, id_organismo):
         organismo.delete()
         return redirect('nomenclador_organismo')
     return render(request, 'dpv_nomencladores/delete_organismo.html', {'organismo': organismo})
+
+
+def autofill_organismo(request):
+    if request.method == 'POST':
+        data = dict()
+        nombre = request.POST.get('nombre')
+        print(nombre)
+        if nombre:
+            if len(nombre) >= 3:
+                personas = [model_to_dict(mot) for mot in Organismo.objects.filter(nombre__icontains=nombre)[:10]]
+                data['organismos'] = personas
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def found_organismo_by_name(request):
+    if request.method == 'POST':
+        data = dict()
+        nombre = request.POST.get('nombre')
+        print(nombre)
+        if nombre:
+            organismo = Organismo.objects.filter(nombre=nombre).first()
+            if organismo:
+                data['exist'] = True
+                data['person'] = model_to_dict(organismo)
+            else:
+                data['exist'] = False
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
 # ------------------------------------------- Destino -----------------------------------------------------------------
@@ -814,3 +844,253 @@ def delete_clasificacionrespuesta(request, id_clasificacionrespuesta):
     return render(request,
                   'dpv_nomencladores/delete_clasificacionrespuesta.html',
                   {'clasificacionrespuesta': clasificacionrespuesta})
+
+
+# --------------------------------------- Prensa Escrita ------------------------------------------------
+@permission_required('dpv_nomencladores.view_prensaescrita', raise_exception=True)
+def index_prensaescrita(request):
+    prensasescritas = PrensaEscrita.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_prensaescrita.html',
+                  {'prensasescritas': prensasescritas})
+
+
+@permission_required('dpv_nomencladores.add_prensaescrita')
+def add_prensaescrita(request):
+    if request.method == 'POST':
+        form = PrensaEscritaForm(request.POST)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_prensaescrita')
+    else:
+        form = PrensaEscritaForm()
+    return render(request, 'dpv_nomencladores/form_prensaescrita.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_prensaescrita')
+def update_prensaescrita(request, id_prensaescrita):
+    prensaescrita = PrensaEscrita.objects.get(id=id_prensaescrita)
+    if request.method == 'GET':
+        form = PrensaEscritaForm(instance=prensaescrita)
+    else:
+        form = PrensaEscritaForm(request.POST, instance=prensaescrita)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_prensaescrita')
+    return render(request,
+                  'dpv_nomencladores/form_prensaescrita.html',
+                  {'form': form, 'prensaescrita': prensaescrita})
+
+
+@permission_required('dpv_nomencladores.delete_prensaescrita')
+def delete_prensaescrita(request, id_prensaescrita):
+    prensaescrita = PrensaEscrita.objects.get(id=id_prensaescrita)
+    if request.method == 'POST':
+        prensaescrita.perform_log(request=request, af=2)
+        prensaescrita.delete()
+        return redirect('nomenclador_prensaescrita')
+    return render(request,
+                  'dpv_nomencladores/delete_prensaescrita.html',
+                  {'prensaescrita': prensaescrita})
+
+
+# --------------------------------------- Telefono ------------------------------------------------
+@permission_required('dpv_nomencladores.view_telefono', raise_exception=True)
+def index_telefono(request):
+    telefonos = Telefono.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_telefono.html',
+                  {'telefonos': telefonos})
+
+
+@permission_required('dpv_nomencladores.add_telefono')
+def add_telefono(request):
+    if request.method == 'POST':
+        form = TelefonoForm(request.POST)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_telefono')
+    else:
+        form = TelefonoForm()
+    return render(request, 'dpv_nomencladores/form_telefono.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_telefono')
+def update_telefono(request, id_telefono):
+    telefono = Telefono.objects.get(id=id_telefono)
+    if request.method == 'GET':
+        form = TelefonoForm(instance=telefono)
+    else:
+        form = TelefonoForm(request.POST, instance=telefono)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_telefono')
+    return render(request,
+                  'dpv_nomencladores/form_telefono.html',
+                  {'form': form, 'telefono': telefono})
+
+
+@permission_required('dpv_nomencladores.delete_telefono')
+def delete_telefono(request, id_telefono):
+    telefono = Telefono.objects.get(id=id_telefono)
+    if request.method == 'POST':
+        telefono.perform_log(request=request, af=2)
+        telefono.delete()
+        return redirect('nomenclador_telefono')
+    return render(request,
+                  'dpv_nomencladores/delete_telefono.html',
+                  {'telefono': telefono})
+
+
+# --------------------------------------- Email ------------------------------------------------
+@permission_required('dpv_nomencladores.view_email', raise_exception=True)
+def index_email(request):
+    emails = Email.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_email.html',
+                  {'emails': emails})
+
+
+@permission_required('dpv_nomencladores.add_email')
+def add_email(request):
+    if request.method == 'POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_email')
+    else:
+        form = EmailForm()
+    return render(request, 'dpv_nomencladores/form_email.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_email')
+def update_email(request, id_email):
+    email = Email.objects.get(id=id_email)
+    if request.method == 'GET':
+        form = EmailForm(instance=email)
+    else:
+        form = EmailForm(request.POST, instance=email)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_email')
+    return render(request,
+                  'dpv_nomencladores/form_email.html',
+                  {'form': form, 'email': email})
+
+
+@permission_required('dpv_nomencladores.delete_email')
+def delete_email(request, id_email):
+    email = Email.objects.get(id=id_email)
+    if request.method == 'POST':
+        email.perform_log(request=request, af=2)
+        email.delete()
+        return redirect('nomenclador_telefono')
+    return render(request,
+                  'dpv_nomencladores/delete_email.html',
+                  {'email': email})
+
+
+# --------------------------------------- Gobierno ------------------------------------------------
+@permission_required('dpv_nomencladores.view_gobierno', raise_exception=True)
+def index_gobierno(request):
+    gobiernos = Gobierno.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_gobierno.html',
+                  {'gobiernos': gobiernos})
+
+
+@permission_required('dpv_nomencladores.add_gobierno')
+def add_gobierno(request):
+    if request.method == 'POST':
+        form = GobiernoForm(request.POST)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_gobierno')
+    else:
+        form = GobiernoForm()
+    return render(request, 'dpv_nomencladores/form_gobierno.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_gobierno')
+def update_gobierno(request, id_gobierno):
+    gobierno = Gobierno.objects.get(id=id_gobierno)
+    if request.method == 'GET':
+        form = GobiernoForm(instance=gobierno)
+    else:
+        form = GobiernoForm(request.POST, instance=gobierno)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_gobierno')
+    return render(request,
+                  'dpv_nomencladores/form_gobierno.html',
+                  {'form': form, 'gobierno': gobierno})
+
+
+@permission_required('dpv_nomencladores.delete_gobierno')
+def delete_gobierno(request, id_email):
+    gobierno = Gobierno.objects.get(id=id_email)
+    if request.method == 'POST':
+        gobierno.perform_log(request=request, af=2)
+        gobierno.delete()
+        return redirect('nomenclador_gobierno')
+    return render(request,
+                  'dpv_nomencladores/delete_gobierno.html',
+                  {'gobierno': gobierno})
+
+
+# --------------------------------------- Organizacion ------------------------------------------------
+@permission_required('dpv_nomencladores.view_organizacion', raise_exception=True)
+def index_organizacion(request):
+    organizaciones = Organizacion.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_organizacion.html',
+                  {'organizaciones': organizaciones})
+
+
+@permission_required('dpv_nomencladores.add_organizacion')
+def add_organizacion(request):
+    if request.method == 'POST':
+        form = OrganizationForm(request.POST)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_organizacion')
+    else:
+        form = OrganizationForm()
+    return render(request, 'dpv_nomencladores/form_organizacion.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_organizacion')
+def update_organizacion(request, id_organizacion):
+    organizacion = Organizacion.objects.get(id=id_organizacion)
+    if request.method == 'GET':
+        form = OrganizationForm(instance=organizacion)
+    else:
+        form = OrganizationForm(request.POST, instance=organizacion)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_organizacion')
+    return render(request,
+                  'dpv_nomencladores/form_organizacion.html',
+                  {'form': form, 'organizacion': organizacion})
+
+
+@permission_required('dpv_nomencladores.delete_organizacion')
+def delete_organizacion(request, id_organizacion):
+    organizacion = Organizacion.objects.get(id=id_organizacion)
+    if request.method == 'POST':
+        organizacion.perform_log(request=request, af=2)
+        organizacion.delete()
+        return redirect('nomenclador_organizacion')
+    return render(request,
+                  'dpv_nomencladores/delete_organizacion.html',
+                  {'organizacion': organizacion})

@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import permission_required, login_required
+from django.forms.models import model_to_dict
+from django.http import JsonResponse
+from django.db.models import Count
 from .forms import PersonaJuridicaForm, PersonaNaturalForm
 from .models import PersonaNatural, PersonaJuridica
 
@@ -113,3 +116,102 @@ def delete_personat(request, id_personat):
         personat.delete()
         return redirect(reverse_lazy('persona_natural'))
     return render(request, 'dpv_persona/delete_personat.html', {'personat': personat})
+
+
+def autofill_ci_personat(request):
+    if request.method == 'POST':
+        data = dict()
+        ci = request.POST.get('ci')
+        print(ci)
+        cis = list()
+        if ci:
+            if len(ci) >= 3:
+                personas = [model_to_dict(mot) for mot in PersonaNatural.objects.filter(ci__icontains=ci)[:10]]
+                data['personas'] = personas
+        else:
+            data['personas'] = cis
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def found_person_by_ci(request):
+    if request.method == 'POST':
+        data = dict()
+        ci = request.POST.get('ci')
+        print(ci)
+        if ci:
+            person = PersonaNatural.objects.filter(ci=ci).first()
+            if person:
+                data['exist'] = True
+                data['person'] = model_to_dict(person)
+            else:
+                data['exist'] = False
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def autofill_data_persojur(request):
+    if request.method == 'POST':
+        data = dict()
+        nit = request.POST.get('codigo_nit')
+        reuup = request.POST.get('codigo_reuup')
+        nombre = request.POST.get('nombre')
+        sigla = request.POST.get('nombre')
+        nombre_contacto = request.POST.get('nombre_contacto')
+        email_address = request.POST.get('email_address')
+        telefono = request.POST.get('telefono')
+        if nit:
+            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(codigo_nit__icontains=nit)[:10]]
+            data['entities'] = entities
+        elif reuup:
+            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(codigo_reuup__icontains=reuup)[:10]]
+            data['entities'] = entities
+        elif nombre:
+            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(nombre__icontains=nombre)[:10]]
+            data['entities'] = entities
+        elif sigla:
+            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(sigla__icontains=sigla)[:10]]
+            data['entities'] = entities
+        elif nombre_contacto:
+            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(nombre_contacto__icontains=nombre_contacto)[:10]]
+            data['entities'] = entities
+        elif email_address:
+            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(email_address__icontains=email_address)[:10]]
+            data['entities'] = entities
+        elif telefono:
+            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(telefono__icontains=telefono)[:10]]
+            data['entities'] = entities
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+def found_entity_by_data(request):
+    if request.method == 'POST':
+        data = dict()
+        nit = request.POST.get('codigo_nit')
+        reuup = request.POST.get('codigo_reuup')
+        nombre = request.POST.get('nombre')
+        sigla = request.POST.get('nombre')
+        nombre_contacto = request.POST.get('nombre_contacto')
+        email_address = request.POST.get('email_address')
+        telefono = request.POST.get('telefono')
+        if nit:
+            model = PersonaJuridica.objects.filter(codigo_nit=nit).first()
+        elif reuup:
+            model = PersonaJuridica.objects.filter(codigo_reuup=reuup).first()
+        elif nombre:
+            model = PersonaJuridica.objects.filter(nombre=nombre).first()
+        elif sigla:
+            model = PersonaJuridica.objects.filter(sigla=sigla).first()
+        elif nombre_contacto:
+            model = PersonaJuridica.objects.filter(nombre_contacto=nombre_contacto).first()
+        elif email_address:
+            model = PersonaJuridica.objects.filter(email_address=email_address).first()
+        elif telefono:
+            model = PersonaJuridica.objects.filter(telefono=telefono).first()
+        else:
+            model = None
+        if model:
+            data['empresa'] = model_to_dict(model)
+        return JsonResponse(data=data, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)

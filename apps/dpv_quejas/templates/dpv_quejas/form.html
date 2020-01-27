@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{% static 'dpv_base/js/lib/jquery-ui/css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Crear {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -32,7 +33,7 @@
                 </div>
                 <div class="card-body">
                     <ul class="nav nav-tabs row" id="myTab" role="tablist">
-                        <li class="nav-item col-md-6 active">
+                        <li class="nav-item col-md-6 active overrided">
                             <a class="nav-link active" id="procedencia_tab" data-toggle="tab" href="#procedencia_content" role="tab" aria-controls="procedencia_content" aria-selected="true">
                                 <aside class="profile-nav alt">
                                     <section class="card">
@@ -49,7 +50,7 @@
                                 </aside>
                             </a>
                         </li>
-                        <li class="nav-item col-md-6">
+                        <li class="nav-item col-md-6 overrided">
                             <a class="nav-link" id="aquejado_tab" data-toggle="tab" href="#aquejado_content" role="tab" aria-controls="aquejado_content" aria-selected="false">
                                 <aside class="profile-nav alt">
                                     <section class="card">
@@ -66,7 +67,7 @@
                                 </aside>
                             </a>
                         </li>
-                        <li class="nav-item col-md-6">
+                        <li class="nav-item col-md-6 overrided">
                             <a class="nav-link" id="queja_tab" data-toggle="tab" href="#queja_content" role="tab" aria-controls="queja_content" aria-selected="false">
                                 <aside class="profile-nav alt">
                                     <section class="card">
@@ -83,7 +84,7 @@
                                 </aside>
                             </a>
                         </li>
-                        <li class="nav-item col-md-6">
+                        <li class="nav-item col-md-6 overrided">
                             <a class="nav-link" id="sumario_tab" data-toggle="tab" href="#sumario_content" role="tab" aria-controls="sumario_content" aria-selected="false">
                                 <aside class="profile-nav alt">
                                     <section class="card">
@@ -122,11 +123,260 @@
                                                 <small class="form-text text-muted">{{form.tipo_procedencia.help_text}}</small>
                                             </div>
                                         </div>
-                                        <div class="row form-group col-lg-6 no-show">
-                                            <div class="col col-md-3"><label for="{{form.procedencia.id_for_label}}" class=" form-control-label">{{form.procedencia.label_tag}}</label></div>
+                                        <div class="row form-group col-lg-12 no-show procedent" id="anon_block">
+                                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <span class="badge badge-pill badge-success">Anónnimo</span>
+                                                Ha seleccionado como procedencia de la queja Anónima por lo tanto no tiene que agregar más datos en este apartado por favor continue. Esto trae implicaciones a la hora de informar la respuesta.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-12 no-show procedent" id="prensa_block">
+                                            <div class="col-md-12 row">
+                                                <div class="col col-md-3"><label for="{{peform.nombre.id_for_label}}" class=" form-control-label">{{peform.nombre.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{peform.nombre}}
+                                                    <small class="form-text text-muted">{{peform.nombre.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 row">
+                                                <div class="col col-md-3"><label for="{{peform.siglas.id_for_label}}" class=" form-control-label">{{peform.siglas.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{peform.siglas}}
+                                                    <small class="form-text text-muted">{{peform.siglas.help_text}}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 no-show procedent" id="persona_block">
+                                            <div class="row form-group offset-md-2">
+                                                <label for="same_quejoso" class="form-check-label">
+                                                    Estos son los mismos datos del Aquejado
+                                                    <label class="switch switch-3d switch-primary mr-3">
+                                                        <input id="same_quejoso" type="checkbox" class="switch-input">
+                                                        <span class="switch-label"></span>
+                                                        <span class="switch-handle"></span>
+                                                    </label>
+                                                </label>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.ci.id_for_label}}" class=" form-control-label">{{aqform.ci.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.ci}}
+                                                    <small class="form-text text-muted">{{aqform.ci.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.nombre.id_for_label}}" class=" form-control-label">{{aqform.nombre.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.nombre}}
+                                                    <small class="form-text text-muted">{{aqform.nombre.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.apellidos.id_for_label}}" class=" form-control-label">{{aqform.apellidos.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.apellidos}}
+                                                    <small class="form-text text-muted">{{aqform.apellidos.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.genero.id_for_label}}" class=" form-control-label">{{aqform.genero.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.genero}}
+                                                    <small class="form-text text-muted">{{aqform.genero.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.email_address.id_for_label}}" class=" form-control-label">{{aqform.email_address.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.email_address}}
+                                                    <small class="form-text text-muted">{{aqform.email_address.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.movil.id_for_label}}" class=" form-control-label">{{aqform.movil.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.movil}}
+                                                    <small class="form-text text-muted">{{aqform.movil.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.telefono.id_for_label}}" class=" form-control-label">{{aqform.telefono.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.telefono}}
+                                                    <small class="form-text text-muted">{{aqform.telefono.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.direccion_calle.id_for_label}}" class=" form-control-label">{{aqform.direccion_calle.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.direccion_calle}}
+                                                    <small class="form-text text-muted">{{aqform.direccion_calle.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.direccion_numero.id_for_label}}" class=" form-control-label">{{aqform.direccion_numero.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.direccion_numero}}
+                                                    <small class="form-text text-muted">{{aqform.direccion_numero.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform..id_for_label}}" class=" form-control-label">{{aqform..label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.}}
+                                                    <small class="form-text text-muted">{{aqform..help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{aqform.direccion_entrecalle1.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.direccion_entrecalle1}}
+                                                    <small class="form-text text-muted">{{aqform.direccion_entrecalle1.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{aqform.direccion_entrecalle2.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.direccion_entrecalle2}}
+                                                    <small class="form-text text-muted">{{aqform.direccion_entrecalle2.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.cpopular.id_for_label}}" class=" form-control-label">{{aqform.cpopular.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.cpopular}}
+                                                    <small class="form-text text-muted">{{aqform.cpopular.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.municipio.id_for_label}}" class=" form-control-label">{{aqform.municipio.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.municipio}}
+                                                    <small class="form-text text-muted">{{aqform.municipio.help_text}}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-12 no-show procedent" id="telefono_block">
+                                            <div class="col col-md-3"><label for="{{tform.numero.id_for_label}}" class=" form-control-label">{{tform.numero.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
-                                                {{form.procedencia}}
-                                                <small class="form-text text-muted">{{form.procedencia.help_text}}</small>
+                                                {{tform.numero}}
+                                                <small class="form-text text-muted">{{tform.numero.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-12 no-show procedent" id="correo_block">
+                                            <div class="col col-md-3"><label for="{{eform.email.id_for_label}}" class=" form-control-label">{{eform.email.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{eform.email}}
+                                                <small class="form-text text-muted">{{eform.email.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row col-lg-12 no-show procedent" id="empresa_block">
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.nombre.id_for_label}}" class=" form-control-label">{{pjform.nombre.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.nombre}}
+                                                    <small class="form-text text-muted">{{pjform.nombre.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.sigla.id_for_label}}" class=" form-control-label">{{pjform.sigla.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.sigla}}
+                                                    <small class="form-text text-muted">{{pjform.sigla.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.telefono.id_for_label}}" class=" form-control-label">{{pjform.telefono.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.telefono}}
+                                                    <small class="form-text text-muted">{{pjform.telefono.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.movil.id_for_label}}" class=" form-control-label">{{pjform.movil.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.movil}}
+                                                    <small class="form-text text-muted">{{pjform.movil.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.nombre_contacto.id_for_label}}" class=" form-control-label">{{pjform.nombre_contacto.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.nombre_contacto}}
+                                                    <small class="form-text text-muted">{{pjform.nombre_contacto.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.email_address.id_for_label}}" class=" form-control-label">{{pjform.email_address.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.email_address}}
+                                                    <small class="form-text text-muted">{{pjform.email_address.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.codigo_nit.id_for_label}}" class=" form-control-label">{{pjform.codigo_nit.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.codigo_nit}}
+                                                    <small class="form-text text-muted">{{pjform.codigo_nit.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.codigo_reuup.id_for_label}}" class=" form-control-label">{{pjform.codigo_reuup.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.codigo_reuup}}
+                                                    <small class="form-text text-muted">{{pjform.codigo_reuup.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.direccion_calle.id_for_label}}" class=" form-control-label">{{pjform.direccion_calle.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.direccion_calle}}
+                                                    <small class="form-text text-muted">{{pjform.direccion_calle.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.direccion_numero.id_for_label}}" class=" form-control-label">{{pjform.direccion_numero.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.direccion_numero}}
+                                                    <small class="form-text text-muted">{{pjform.direccion_numero.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{pjform.direccion_entrecalle1.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.direccion_entrecalle1}}
+                                                    <small class="form-text text-muted">{{pjform.direccion_entrecalle1.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{pjform.direccion_entrecalle2.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.direccion_entrecalle2}}
+                                                    <small class="form-text text-muted">{{pjform.direccion_entrecalle2.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.municipio.id_for_label}}" class=" form-control-label">{{pjform.municipio.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.municipio}}
+                                                    <small class="form-text text-muted">{{pjform.municipio.help_text}}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-12 no-show procedent" id="gob_block">
+                                            <div class="col col-md-3"><label for="{{gform.nombre.id_for_label}}" class=" form-control-label">{{gform.nombre.label}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{gform.nombre}}
+                                                <small class="form-text text-muted">{{gform.nombre.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-12 no-show procedent" id="org_block">
+                                            <div class="col col-md-3"><label for="{{oform.nombre.id_for_label}}" class=" form-control-label">{{oform.nombre.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{oform.nombre}}
+                                                <small class="form-text text-muted">{{oform.nombre.help_text}}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -170,31 +420,31 @@
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.nombre.id_for_label}}" class=" form-control-label">{{pform.nombre.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.ci.id_for_label}}" class=" form-control-label">{{pnform.ci.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.nombre}}
-                                                            <small class="form-text text-muted">{{pform.nombre.help_text}}</small>
+                                                            {{pnform.ci}}
+                                                            <small class="form-text text-muted">{{pnform.ci.help_text}}</small>
                                                         </div>
                                                     </div>
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.apellidos.id_for_label}}" class=" form-control-label">{{pform.apellidos.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.nombre.id_for_label}}" class=" form-control-label">{{pnform.nombre.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.apellidos}}
-                                                            <small class="form-text text-muted">{{pform.apellidos.help_text}}</small>
+                                                            {{pnform.nombre}}
+                                                            <small class="form-text text-muted">{{pnform.nombre.help_text}}</small>
                                                         </div>
                                                     </div>
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.ci.id_for_label}}" class=" form-control-label">{{pform.ci.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.apellidos.id_for_label}}" class=" form-control-label">{{pnform.apellidos.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.ci}}
-                                                            <small class="form-text text-muted">{{pform.ci.help_text}}</small>
+                                                            {{pnform.apellidos}}
+                                                            <small class="form-text text-muted">{{pnform.apellidos.help_text}}</small>
                                                         </div>
                                                     </div>
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.genero.id_for_label}}" class=" form-control-label">{{pform.genero.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.genero.id_for_label}}" class=" form-control-label">{{pnform.genero.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.genero}}
-                                                            <small class="form-text text-muted">{{pform.genero.help_text}}</small>
+                                                            {{pnform.genero}}
+                                                            <small class="form-text text-muted">{{pnform.genero.help_text}}</small>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -206,19 +456,19 @@
                                                 <div class="card-body">
                                                     <div class="card-block row">
                                                         <div class="form-group col-md-6">
-                                                            <label for="{{pform.email_address.id_for_label}}" class=" form-control-label">{{pform.email_address.label}}</label>
-                                                            {{pform.email_address}}
-                                                            <small class="form-text text-muted">{{pform.email_address.help_text}}</small>
+                                                            <label for="{{pnform.email_address.id_for_label}}" class=" form-control-label">{{pnform.email_address.label}}</label>
+                                                            {{pnform.email_address}}
+                                                            <small class="form-text text-muted">{{pnform.email_address.help_text}}</small>
                                                         </div>
                                                         <div class="form-group col-md-3">
-                                                            <label for="{{pform.movil.id_for_label}}" class=" form-control-label">{{pform.movil.label}}</label>
-                                                            {{pform.movil}}
-                                                            <small class="form-text text-muted">{{pform.movil.help_text}}</small>
+                                                            <label for="{{pnform.movil.id_for_label}}" class=" form-control-label">{{pnform.movil.label}}</label>
+                                                            {{pnform.movil}}
+                                                            <small class="form-text text-muted">{{pnform.movil.help_text}}</small>
                                                         </div>
                                                         <div class="form-group col-md-3">
-                                                            <label for="{{pform.telefono.id_for_label}}" class=" form-control-label">{{pform.telefono.label}}</label>
-                                                            {{pform.telefono}}
-                                                            <small class="form-text text-muted">{{pform.telefono.help_text}}</small>
+                                                            <label for="{{pnform.telefono.id_for_label}}" class=" form-control-label">{{pnform.telefono.label}}</label>
+                                                            {{pnform.telefono}}
+                                                            <small class="form-text text-muted">{{pnform.telefono.help_text}}</small>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -229,45 +479,45 @@
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.direccion_calle.id_for_label}}" class=" form-control-label">{{pform.direccion_calle.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.direccion_calle.id_for_label}}" class=" form-control-label">{{pnform.direccion_calle.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.direccion_calle}}
-                                                            <small class="form-text text-muted">{{pform.direccion_calle.help_text}}</small>
+                                                            {{pnform.direccion_calle}}
+                                                            <small class="form-text text-muted">{{pnform.direccion_calle.help_text}}</small>
                                                         </div>
                                                     </div>
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.direccion_numero.id_for_label}}" class=" form-control-label">{{pform.direccion_numero.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.direccion_numero.id_for_label}}" class=" form-control-label">{{pnform.direccion_numero.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.direccion_numero}}
-                                                            <small class="form-text text-muted">{{pform.direccion_numero.help_text}}</small>
+                                                            {{pnform.direccion_numero}}
+                                                            <small class="form-text text-muted">{{pnform.direccion_numero.help_text}}</small>
                                                         </div>
                                                     </div>
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{pform.direccion_entrecalle1.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{pnform.direccion_entrecalle1.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.direccion_entrecalle1}}
-                                                            <small class="form-text text-muted">{{pform.direccion_entrecalle1.help_text}}</small>
+                                                            {{pnform.direccion_entrecalle1}}
+                                                            <small class="form-text text-muted">{{pnform.direccion_entrecalle1.help_text}}</small>
                                                         </div>
                                                     </div>
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{pform.direccion_entrecalle2.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{pnform.direccion_entrecalle2.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.direccion_entrecalle2}}
-                                                            <small class="form-text text-muted">{{pform.direccion_entrecalle2.help_text}}</small>
+                                                            {{pnform.direccion_entrecalle2}}
+                                                            <small class="form-text text-muted">{{pnform.direccion_entrecalle2.help_text}}</small>
                                                         </div>
                                                     </div>
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.cpopular.id_for_label}}" class=" form-control-label">{{pform.cpopular.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.cpopular.id_for_label}}" class=" form-control-label">{{pnform.cpopular.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.cpopular}}
-                                                            <small class="form-text text-muted">{{pform.cpopular.help_text}}</small>
+                                                            {{pnform.cpopular}}
+                                                            <small class="form-text text-muted">{{pnform.cpopular.help_text}}</small>
                                                         </div>
                                                     </div>
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pform.municipio.id_for_label}}" class=" form-control-label">{{pform.municipio.label_tag}}</label></div>
+                                                        <div class="col col-md-3"><label for="{{pnform.municipio.id_for_label}}" class=" form-control-label">{{pnform.municipio.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
-                                                            {{pform.municipio}}
-                                                            <small class="form-text text-muted">{{pform.municipio.help_text}}</small>
+                                                            {{pnform.municipio}}
+                                                            <small class="form-text text-muted">{{pnform.municipio.help_text}}</small>
                                                         </div>
                                                     </div>
                                                 </div>
