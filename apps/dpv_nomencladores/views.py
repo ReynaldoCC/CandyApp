@@ -1061,7 +1061,7 @@ def autofill_email(request):
         print(email)
         if email:
             if len(email) >= 3:
-                emails = [model_to_dict(mot) for mot in Telefono.objects.filter(email__icontains=email)[:10]]
+                emails = [model_to_dict(mot) for mot in Email.objects.filter(email__icontains=email)[:10]]
                 data['emails'] = emails
         return JsonResponse(data=data, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
@@ -1073,7 +1073,7 @@ def found_email_by_address(request):
         email = request.POST.get('email')
         print(email)
         if email:
-            found_email = Telefono.objects.filter(email=email).first()
+            found_email = Email.objects.filter(email=email).first()
             if found_email:
                 data['exist'] = True
                 data['email'] = model_to_dict(found_email)
@@ -1239,3 +1239,16 @@ def found_organizacion_by_name(request):
                 data['exist'] = False
         return JsonResponse(data=data, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@login_required()
+def create_reponder_a_json(request):
+    print(request.method)
+    if request.method == 'POST':
+        form = RespuestaAQuejaForm(request.POST)
+        if form.is_valid():
+            resp = form.save(commit=False)
+            resp.save_and_log(request=request, af=0)
+            data = model_to_dict(resp, fields=['id', 'nombre', ])
+            return JsonResponse(data=data, status=201)
+    return JsonResponse({"error": "Method not allowed"}, status=405)

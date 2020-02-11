@@ -28,7 +28,6 @@ urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
     path('nomenclador/', include(nomencladores_url)),
     path('local/', include(locales_url)),
     path('persona/', include(persona_url)),
-    path('persona/', include(persona_url)),
     path('quejas/', include(quejas_url)),
     path('perfil/', include(perfil_url)),
     path('vivienda/', include(vivienda_url)),

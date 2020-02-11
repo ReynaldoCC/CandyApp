@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{% static 'dpv_base/js/lib/jquery-ui/css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/awesomplete/awesomplete.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Crear {% endblock breadcrumb_title %}
@@ -21,10 +22,82 @@
     <div class="col-md-12">
         <form novalidate method="POST" action="{% url 'quejas_add' %}" id="queja_form">
             {% csrf_token %}
-            {% if form.errors %}
+            {% if form.errors or pnform.errors or pjform.errors or tform.errors or eform.errors or peform.errors or oform.errors or aqform.errors or gform.errors %}
             <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 {% if form.errors|length == 1 %}"Por favor, corrija el error señalado a continuación."{% else %}"Por favor, corrija los errores señalados a continuación."{% endif %}
+                {% if form.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Queja</h4>
+                    <p>{{form.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{form.non_field_errors}}</p>
+                </div>
+                {% endif %}
+                {% if aqform.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Procedencia Persona</h4>
+                    <p>{{aqform.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{aqform.non_field_errors}}</p>
+                </div>
+                {% endif %}
+                {% if pjform.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Procedencia Empresa</h4>
+                    <p>{{pjform.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{pjform.non_field_errors}}</p>
+                </div>
+                {% endif %}
+                {% if tform.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Procedencia Teléfono</h4>
+                    <p>{{tform.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{tform.non_field_errors}}</p>
+                </div>
+                {% endif %}
+                {% if eform.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Procedencia Email</h4>
+                    <p>{{eform.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{eform.non_field_errors}}</p>
+                </div>
+                {% endif %}
+                {% if oform.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Procedencia Organización</h4>
+                    <p>{{oform.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{oform.non_field_errors}}</p>
+                </div>
+                {% endif %}
+                {% if gform.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Procedencia Gobierno</h4>
+                    <p>{{gform.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{gform.non_field_errors}}</p>
+                </div>
+                {% endif %}
+                {% if peform.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Procedencia Prensa Escrita</h4>
+                    <p>{{peform.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{peform.non_field_errors}}</p>
+                </div>
+                {% endif %}
+                {% if pnform.errors %}
+                <div class="alert alert-danger border border-danger">
+                    <h4 class="alert-heading">Persona que se queja</h4>
+                    <p>{{pnform.errors}}</p>
+                    <hr>
+                    <p class="mb-0">{{pnform.non_field_errors}}</p>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
             <div class="card">
@@ -148,17 +221,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 no-show procedent" id="persona_block">
-                                            <div class="row form-group offset-md-2">
-                                                <label for="same_quejoso" class="form-check-label">
-                                                    Estos son los mismos datos del Aquejado
-                                                    <label class="switch switch-3d switch-primary mr-3">
-                                                        <input id="same_quejoso" type="checkbox" class="switch-input">
-                                                        <span class="switch-label"></span>
-                                                        <span class="switch-handle"></span>
-                                                    </label>
-                                                </label>
-                                            </div>
+                                        <div class="row col-lg-12 no-show procedent" id="persona_block">
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.ci.id_for_label}}" class=" form-control-label">{{aqform.ci.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
@@ -223,13 +286,6 @@
                                                 </div>
                                             </div>
                                             <div class="row form-group col-md-6">
-                                                <div class="col col-md-3"><label for="{{aqform..id_for_label}}" class=" form-control-label">{{aqform..label_tag}}</label></div>
-                                                <div class="col-12 col-md-9">
-                                                    {{aqform.}}
-                                                    <small class="form-text text-muted">{{aqform..help_text}}</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{aqform.direccion_entrecalle1.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
                                                     {{aqform.direccion_entrecalle1}}
@@ -244,18 +300,28 @@
                                                 </div>
                                             </div>
                                             <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.municipio.id_for_label}}" class=" form-control-label">{{aqform.municipio.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.municipio}}
+                                                    <small class="form-text text-muted">{{aqform.municipio.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.cpopular.id_for_label}}" class=" form-control-label">{{aqform.cpopular.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
                                                     {{aqform.cpopular}}
                                                     <small class="form-text text-muted">{{aqform.cpopular.help_text}}</small>
                                                 </div>
                                             </div>
-                                            <div class="row form-group col-md-6">
-                                                <div class="col col-md-3"><label for="{{aqform.municipio.id_for_label}}" class=" form-control-label">{{aqform.municipio.label_tag}}</label></div>
-                                                <div class="col-12 col-md-9">
-                                                    {{aqform.municipio}}
-                                                    <small class="form-text text-muted">{{aqform.municipio.help_text}}</small>
-                                                </div>
+                                            <div class="row form-group col-12">
+                                                <label for="id_same_quejoso" class="form-check-label">
+                                                    Estos son los mismos datos del Aquejado
+                                                    <label class="switch switch-3d switch-primary mr-3">
+                                                        <input id="id_same_quejoso" name="same_quejoso" type="checkbox" class="switch-input">
+                                                        <span class="switch-label"></span>
+                                                        <span class="switch-handle"></span>
+                                                    </label>
+                                                </label>
                                             </div>
                                         </div>
                                         <div class="row form-group col-lg-12 no-show procedent" id="telefono_block">
@@ -330,6 +396,20 @@
                                                 </div>
                                             </div>
                                             <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.municipio.id_for_label}}" class=" form-control-label">{{pjform.municipio.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.municipio}}
+                                                    <small class="form-text text-muted">{{pjform.municipio.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{pjform.cpopular.id_for_label}}" class=" form-control-label">{{pjform.cpopular.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{pjform.cpopular}}
+                                                    <small class="form-text text-muted">{{pjform.cpopular.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.direccion_calle.id_for_label}}" class=" form-control-label">{{pjform.direccion_calle.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
                                                     {{pjform.direccion_calle}}
@@ -355,13 +435,6 @@
                                                 <div class="col-12 col-md-9">
                                                     {{pjform.direccion_entrecalle2}}
                                                     <small class="form-text text-muted">{{pjform.direccion_entrecalle2.help_text}}</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group col-md-6">
-                                                <div class="col col-md-3"><label for="{{pjform.municipio.id_for_label}}" class=" form-control-label">{{pjform.municipio.label_tag}}</label></div>
-                                                <div class="col-12 col-md-9">
-                                                    {{pjform.municipio}}
-                                                    <small class="form-text text-muted">{{pjform.municipio.help_text}}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -397,10 +470,10 @@
                                             </div>
                                         </div>
                                         <div class="row form-group col-lg-6" id="is_indb">
-                                            <div class="col col-md-3"><label for="{{dform.persona_natural.id_for_label}}" class=" form-control-label">{{dform.persona_natural.label_tag}}</label></div>
+                                            <div class="col col-md-3"><label for="id_personas_list" class=" form-control-label">Persona que se queja</label></div>
                                             <div class="col-12 col-md-9">
-                                                {{dform.persona_natural}}
-                                                <small class="form-text text-muted">{{dform.persona_natural.help_text}}</small>
+                                                <select id="id_personas_list" name="personas_list" class="form-control"></select>
+                                                <small class="form-text text-muted">Listado de personas existentes ya en la Base de Datos</small>
                                             </div>
                                         </div>
                                         <div class="row col-lg-5">
@@ -418,7 +491,7 @@
                                                 <div class="card-header">
                                                     <h5 class="text-info col-12">Datos de la persona</h5>
                                                 </div>
-                                                <div class="card-body">
+                                                <div class="row card-body">
                                                     <div class="row form-group col-lg-6">
                                                         <div class="col col-md-3"><label for="{{pnform.ci.id_for_label}}" class=" form-control-label">{{pnform.ci.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
@@ -477,7 +550,7 @@
                                                 <div class="card-header">
                                                     <h5 class="text-info col-12">Dirección</h5>
                                                 </div>
-                                                <div class="card-body">
+                                                <div class="row card-body">
                                                     <div class="row form-group col-lg-6">
                                                         <div class="col col-md-3"><label for="{{pnform.direccion_calle.id_for_label}}" class=" form-control-label">{{pnform.direccion_calle.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
@@ -534,11 +607,25 @@
                                 </div>
                                 <div class="card-body card-block">
                                     <div class="row">
+                                        <div class="row form-group col-lg-6">
+                                            <div class="col col-md-3"><label for="{{form.no_procendencia.id_for_label}}" class=" form-control-label">{{form.no_procendencia.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.no_procendencia}}
+                                                <small class="form-text text-muted">{{form.no_procendencia.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-6">
+                                            <div class="col col-md-3"><label for="{{form.no_radicacion.id_for_label}}" class=" form-control-label">{{form.no_radicacion.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.no_radicacion}}
+                                                <small class="form-text text-muted">{{form.no_radicacion.help_text}}</small>
+                                            </div>
+                                        </div>
                                         <div class="row col-lg-5 offset-lg-3">
                                             <div class="form-group">
                                                 <label for="same_address" class="form-control-label">Usar la misma dirección del aquejado </label>
                                                 <label class="switch switch-3d switch-primary mr-3">
-                                                    <input type="checkbox" class="switch-input" id="same_address">
+                                                    <input type="checkbox" class="switch-input" name="same_address" id="same_address">
                                                     <span class="switch-label"></span>
                                                     <span class="switch-handle"></span>
                                                 </label>
@@ -586,18 +673,32 @@
                                                 <small class="form-text text-muted">{{form.dir_cpopular.help_text}}</small>
                                             </div>
                                         </div>
-                                        <div class="row form-group col-lg-12">
+                                        <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.referencia.id_for_label}}" class=" form-control-label">{{form.referencia.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
                                                 {{form.referencia}}
                                                 <small class="form-text text-muted">{{form.referencia.help_text}}</small>
                                             </div>
                                         </div>
-                                        <div class="row form-group col-lg-12">
+                                        <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.asunto.id_for_label}}" class=" form-control-label">{{form.asunto.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
                                                 {{form.asunto}}
                                                 <small class="form-text text-muted">{{form.asunto.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-6">
+                                            <div class="col col-md-3"><label for="{{form.tipo.id_for_label}}" class=" form-control-label">{{form.tipo.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.tipo}}
+                                                <small class="form-text text-muted">{{form.tipo.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-12">
+                                            <div class="col col-md-3"><label for="{{form.asunto_texto.id_for_label}}" class=" form-control-label">{{form.asunto_texto.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.asunto_texto}}
+                                                <small class="form-text text-muted">{{form.asunto_texto.help_text}}</small>
                                             </div>
                                         </div>
                                         <div class="row form-group col-lg-12">
@@ -605,6 +706,13 @@
                                             <div class="col-12 col-md-9">
                                                 {{form.texto}}
                                                 <small class="form-text text-muted">{{form.texto.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-12">
+                                            <div class="col col-md-3"><label for="{{form.responder_a.id_for_label}}" class=" form-control-label">{{form.responder_a.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.responder_a}}
+                                                <small class="form-text text-muted">{{form.responder_a.help_text}}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -616,7 +724,7 @@
                                 <div class="card-header text-light bg-success">
                                     Datos ingresados sobre la <strong>Queja</strong>
                                 </div>
-                                <div class="card-body card-block">
+                                <div class="card-body card-block" id="queja_sumary">
                                 </div>
                             </div>
                         </div>
@@ -627,7 +735,7 @@
                         <i class="fa fa-arrow-left"></i>
                         Anterior
                     </a>
-                    <a type="button" class="btn btn-secondary" href="{% url 'locales_list' %}">
+                    <a type="button" class="btn btn-secondary" href="{% url 'quejas_list' %}">
                         <i class="fa fa-reply"></i>
                         Volver
                     </a>
@@ -635,7 +743,7 @@
                         <i class="fa fa-arrow-right"></i>
                         Siguiente
                     </a>
-                    <button type="submit" class="pull-right btn btn-primary">
+                    <button type="submit" class="pull-right btn btn-primary disabled">
                         <i class="fa fa-check"></i>
                         Guardar
                     </button>
@@ -648,6 +756,10 @@
     </div>
 {% endblock content_page %}
 {% block extra_scripts %}
+    <script>
+        var persons = "{{personas}}";
+        //console.log( 'persons', persons);
+    </script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
@@ -665,5 +777,10 @@
     <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/awesomplete/awesomplete.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/jsrender/jsrender.min.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
+    <script>
+        DPVQuejas.initForm();
+    </script>
 {% endblock extra_scripts %}

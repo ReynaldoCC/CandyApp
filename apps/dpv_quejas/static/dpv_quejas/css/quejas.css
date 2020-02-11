@@ -5,3 +5,16 @@
 .nav-item.overrided .nav-link {
     padding: .5% !important;
 }
+.selectize-control.form-control {
+    padding: 0 !important;
+    border: 0px solid white;
+}
+.selectize-input.invalid {
+    border-color: #dc3545;
+}
+div.awesomplete {
+    width: 100% !important;
+}
+a.back-link {
+    color: #4d16cb !important;
+}

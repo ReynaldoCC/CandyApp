@@ -10,6 +10,7 @@ from apps.dpv_respuesta.models import *
 from apps.dpv_persona.models import *
 from apps.dpv_base.mixins import LoggerMixin
 from django.utils import timezone
+import datetime
 
 
 class Queja(LoggerMixin):
@@ -25,27 +26,40 @@ class Queja(LoggerMixin):
     dir_municipio = models.ForeignKey(Municipio, on_delete=models.CASCADE, verbose_name=_('Dirección Municipio'))
     dir_cpopular = models.ForeignKey(ConsejoPopular, on_delete=models.CASCADE,
                                      verbose_name=_('Dirección Consejo Popular'))
-    asunto = models.ForeignKey(CodificadorAsunto, verbose_name=_('Asunto Queja'),
+    asunto = models.ForeignKey(CodificadorAsunto, verbose_name=_('Asunto Código'),
                                on_delete=models.CASCADE, blank=True, default='')
+    asunto_texto = models.CharField(max_length=300, verbose_name=_("Asunto"), default='', blank=True)
     tipo = models.ForeignKey(TipoQueja, related_name="tipo_queja", on_delete=models.CASCADE, blank=True, default='', verbose_name=_("Tipo"))
-    numero = models.CharField(max_length=10, verbose_name=_('Número Queja'))
+    numero = models.CharField(max_length=14, verbose_name=_('Número Queja'))
     codigo_numero = models.CharField(max_length=10, default='', blank=True)
     procedencia = models.ForeignKey(Procedencia, related_name="prodencia",
                                     on_delete=models.CASCADE, blank=True, null=True, default='')
+    no_procendencia = models.CharField(max_length=14, verbose_name=_("No. de Procedencia"), default='', blank=True)
     referencia = models.CharField(default='', max_length=50, blank=True, verbose_name='Referencia')
     estado = models.ForeignKey(Estado, verbose_name=_('Estado'),
                                on_delete=models.CASCADE, blank=True, default='')
+    no_radicacion = models.CharField(verbose_name=_("No. Radicación Antiguo"), max_length=7, default='', blank=True)
+    radicado_por = models.ForeignKey(User, on_delete=models.CASCADE,
+                                     default='', blank='', verbose_name=_("Radicada Por"),
+                                     related_name="quejas_radicadas")
+    responder_a = models.ForeignKey(RespuestaAQueja, on_delete=models.CASCADE, verbose_name=_("Ofrecer respuesta a"),
+                                    blank=True, null=True, default='')
     fecha_radicacion = models.DateTimeField(verbose_name=_("Fecha Radicación"), auto_now_add=True)
     fecha_termino = models.DateTimeField(verbose_name=_("Fecha Término"), auto_now_add=False, default=None, null=True)
     texto = models.TextField(max_length=3000, verbose_name='Cuerpo de la queja')
     tiempo = models.PositiveSmallIntegerField(verbose_name=_("Tiempo en proceso"), default=0,
                                               help_text=_("Tiempo en días que tiene de radicada la queja"))
-    clasificacion = models.ForeignKey(ClasificacionRespuesta, related_name="queja_respuesta_clase", verbose_name='Tipo de Queja',
-                                      on_delete=models.CASCADE, blank=True, default='')
 
     class Meta:
         verbose_name = _("Queja")
         verbose_name_plural = _("Quejas")
+
+    def __str__(self):
+        return self.numero
+
+    @property
+    def get_quejoso(self):
+        return self.damnificado.first().objecto_contenido
 
 
 class Damnificado(LoggerMixin):
@@ -139,44 +153,161 @@ def configurar_numero_queja(instancia=None, sender=None):
         ultimo_numero = ultima_queja.numero
         if len(ultimo_numero) < 14:
             if len(ultimo_numero) >= 10:
-                consecutivo = str(int(ultimo_numero[10:])+1).zfill(4)
+                try:
+                    consecutivo = str(int(ultimo_numero[10:])+1).zfill(4)
+                except:
+                    consecutivo = '0001'
             else:
-                ultima_queja.save()
-                consecutivo = str(int(ultima_queja.numero[10:])+1).zfill(4)
+                try:
+                    consecutivo = str(int(ultima_queja.numero[10:])+1).zfill(4)
+                except:
+                    consecutivo = '0001'
                 # revisar a partir de que pardete del codigo falla
         elif len(ultimo_numero) < 14:
             consecutivo = str(int(ultimo_numero[10:])+1).zfill(4)
         else:
             consecutivo = str(int(ultimo_numero[-4:])+1).zfill(4)
 
-        instancia.numero = '{%s%s%s%s%s%s}' % (instancia.dir_municipio.provincia.numero,
-                                               instancia.dir_municipio.numero,
-                                               instancia.dir_cpopular,
-                                               timezone.now().strftime('%y'),
-                                               timezone.now().strftime('%m'),
-                                               consecutivo)
+        instancia.numero = '%s%s%s%s%s%s' % (str(instancia.dir_municipio.provincia.numero).zfill(2),
+                                             str(instancia.dir_municipio.numero).zfill(2),
+                                             str(instancia.dir_cpopular.numero).zfill(2),
+                                             timezone.now().strftime('%y'),
+                                             timezone.now().strftime('%m'),
+                                             consecutivo)
+    else:
+        instancia.numero = '%s%s%s%s%s%s' % (str(instancia.dir_municipio.provincia.numero).zfill(2),
+                                             str(instancia.dir_municipio.numero).zfill(2),
+                                             str(instancia.dir_cpopular.numero).zfill(2),
+                                             timezone.now().strftime('%y'),
+                                             timezone.now().strftime('%m'),
+                                             '0001')
 
 
 def configurar_estado(instance):
+    """
+    Este método le asigna un estado a la queja que recibe como instancia que segun los
+    relaciones con su respuesta, asignacion, rechazo, redirección
+
+    :param instance:
+    :return:
+    """
     if not instance or instance is None:
         return
+    radicada = True
+    asig_depto = False
+    asig_tec = False
+    resp = False
+    deny_resp = False
+    apr = False
+    apr_dtr = False
+    noti = False
+    redir = False
+    deny = False
+
+    if instance.quejadpto.exists():
+        asig_depto = True
+    if instance.quejatecnico.exists():
+        asig_tec = True
+    if instance.respuesta.filter(rechazada__isnull=True).exists():
+        resp = True
+        if instance.respuesta.filter(rechazada__isnull=True).first().apruebajefe_set.exists():
+            apr = True
+        if instance.respuesta.filter(rechazada__isnull=True).first().apruebadtr_set.exists():
+            apr_dtr = True
+    if instance.respuesta.count() == instance.respuesta.filter(rechazada__isnull=False).count():
+        if instance.respuesta.count() > 0:
+            deny_resp = True
+    if instance.rechazada.exists():
+        deny = True
+    if instance.redirigida.exists():
+        redir = True
+    if instance.notificada.exists():
+        noti = True
+
+    if radicada and not asig_depto and not asig_tec and not resp and not apr and not apr_dtr and not deny_resp and not deny and not redir and not noti:
+        instance.estado = Estado.objects.filter(id=1).first()
+    elif radicada and deny and redir and not noti:
+        instance.estado = Estado.objects.filter(id=8).first()
+    elif radicada and deny and not redir and not noti:
+        instance.estado = Estado.objects.filter(id=9).first()
+    elif radicada and asig_depto and not asig_tec and not resp and not apr and not apr_dtr and not deny_resp and not deny and not redir and not noti:
+        instance.estado = Estado.objects.filter(id=2).first()
+    elif radicada and asig_depto and asig_tec and not resp and not apr and not apr_dtr and not deny_resp and not deny and not redir and not noti:
+        instance.estado = Estado.objects.filter(id=3).first()
+    elif radicada and asig_depto and asig_tec and not resp and not apr and not apr_dtr and deny_resp and not deny and not redir and not noti:
+        instance.estado = Estado.objects.filter(id=10).first()
+    elif radicada and asig_depto and asig_tec and resp and not apr and not apr_dtr and not deny_resp and not deny and not redir and not noti:
+        instance.estado = Estado.objects.filter(id=4).first()
+    elif radicada and asig_depto and asig_tec and resp and apr and not apr_dtr and not deny_resp and not deny and not redir and not noti:
+        instance.estado = Estado.objects.filter(id=5).first()
+    elif radicada and asig_depto and asig_tec and resp and apr and apr_dtr and not deny_resp and not deny and not redir and not noti:
+        instance.estado = Estado.objects.filter(id=6).first()
+    elif radicada and asig_depto and asig_tec and resp and apr and apr_dtr and not deny_resp and not deny and not redir and noti:
+        instance.estado = Estado.objects.filter(id=7).first()
+    else:
+        instance.estado = Estado.objects.filter(id=11).first()
 
 
 def configurar_fecha_termino(instance):
     if not instance or instance is None:
         return
+    try:
+        if not instance.fecha_termino or instance.fecha_termino is None:
+            if not instance.fecha_radicacion or instance.fecha_radicacion is None:
+                today = timezone.now()
+            else:
+                today = instance.fecha_radicacion
+            if not instance.procedencia or instance.procedencia is None:
+                time_response = 30
+            else:
+                time_response = instance.procedencia.tipo.cant_dias
+            instance.fecha_termino = today + datetime.timedelta(days=time_response)
+    except ValueError as e:
+        print(str(e))
 
 
-def configurara_codigo_numero(instance):
+def configurar_codigo_numero(instance):
     if not instance or instance is None:
         return
+    try:
+        if not instance.codigo_numero and instance.tipo and instance.asunto:
+            instance.codigo_numero = "{}-{}".format(instance.tipo.numero, instance.asunto.numero)
+    except ValueError as e:
+        print(e)
 
+
+def asignar_depto_ap(instance):
+    """
+    Este metodo hecho para ser llamado en el signal pre-save y lo que hace es a a la instancia de queja
+    que recibe por parametro la asigna por defecto al depto. de atención a la población para su procesamiento.
+    :param instance:
+    :return:
+    """
+    if not instance or instance is None:
+        return
+    if not instance.quejadpto.exists():
+        qd = AsignaQuejaDpto()
+        qd.quejadpto = instance
+        qd.dpto = AreaTrabajo.objects.filter(nombre__icontains='atenci').filter(nombre__icontains='poblaci').first()
+        qd.observaciones = "Asignado por el sistema."
+        qd.save()
 
 # Signals
 @receiver(pre_save, sender=Queja)
 def preset_queja(sender, **kwargs):
     if kwargs.get('instance'):
         instance = kwargs.get('instance')
-        if instance.numero == '' or not instance.numero:
-            configurar_numero_queja(instance, sender)
+        if kwargs.get('created', True):
+            if instance.numero == '' or not instance.numero:
+                configurar_numero_queja(instance, sender)
+            configurar_fecha_termino(instance)
+            configurar_codigo_numero(instance)
         configurar_estado(instance)
+
+
+@receiver(post_save, sender=Queja)
+def postset_queja(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        if kwargs.get('created', True):
+            asignar_depto_ap(instance)

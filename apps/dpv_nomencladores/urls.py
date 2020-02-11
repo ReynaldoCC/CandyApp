@@ -128,6 +128,6 @@ urlpatterns = [
     path('organizacion/autofill', autofill_organizacion, name='organizacion_autofill'),
     path('organizacion/found', found_organizacion_by_name, name='organizacion_found'),
 
-
+    path('responder/add/json', create_reponder_a_json, name="resp_new_json"),
 
 ]

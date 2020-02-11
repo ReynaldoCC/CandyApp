@@ -18,6 +18,6 @@ def is_database_synchronized(database):
 def charge_initial():
     if settings.CHARGE_DATA_DEFAULT:
         if is_database_synchronized(DEFAULT_DB_ALIAS):
-            pass
+            create_initial()
     return
 

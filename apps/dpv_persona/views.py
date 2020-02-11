@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import permission_required, login_required
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from django.db.models import Count
+from django.db.models import Count, F, Value, functions
+from django.core import serializers
 from .forms import PersonaJuridicaForm, PersonaNaturalForm
 from .models import PersonaNatural, PersonaJuridica
 
@@ -126,11 +127,11 @@ def autofill_ci_personat(request):
         cis = list()
         if ci:
             if len(ci) >= 3:
-                personas = [model_to_dict(mot) for mot in PersonaNatural.objects.filter(ci__icontains=ci)[:10]]
-                data['personas'] = personas
+                personas = list([model_to_dict(mot) for mot in PersonaNatural.objects.filter(ci__icontains=ci)[:10]])
+                data = personas
         else:
             data['personas'] = cis
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=data, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -143,7 +144,7 @@ def found_person_by_ci(request):
             person = PersonaNatural.objects.filter(ci=ci).first()
             if person:
                 data['exist'] = True
-                data['person'] = model_to_dict(person)
+                data['person'] = model_to_dict(person, exclude=['id', 'deleted_at'])
             else:
                 data['exist'] = False
         return JsonResponse(data=data, status=200)
@@ -156,42 +157,42 @@ def autofill_data_persojur(request):
         nit = request.POST.get('codigo_nit')
         reuup = request.POST.get('codigo_reuup')
         nombre = request.POST.get('nombre')
-        sigla = request.POST.get('nombre')
+        sigla = request.POST.get('sigla')
         nombre_contacto = request.POST.get('nombre_contacto')
         email_address = request.POST.get('email_address')
         telefono = request.POST.get('telefono')
         if nit:
-            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(codigo_nit__icontains=nit)[:10]]
-            data['entities'] = entities
+            entities = list([model_to_dict(mot) for mot in PersonaJuridica.objects.filter(codigo_nit__icontains=nit)[:10]])
+            data = entities
         elif reuup:
-            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(codigo_reuup__icontains=reuup)[:10]]
-            data['entities'] = entities
+            entities = list([model_to_dict(mot) for mot in PersonaJuridica.objects.filter(codigo_reuup__icontains=reuup)[:10]])
+            data = entities
         elif nombre:
-            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(nombre__icontains=nombre)[:10]]
-            data['entities'] = entities
+            entities = list([model_to_dict(mot) for mot in PersonaJuridica.objects.filter(nombre__icontains=nombre)[:10]])
+            data = entities
         elif sigla:
-            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(sigla__icontains=sigla)[:10]]
-            data['entities'] = entities
+            entities = list([model_to_dict(mot) for mot in PersonaJuridica.objects.filter(sigla__icontains=sigla)[:10]])
+            data = entities
         elif nombre_contacto:
-            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(nombre_contacto__icontains=nombre_contacto)[:10]]
-            data['entities'] = entities
+            entities = list([model_to_dict(mot) for mot in PersonaJuridica.objects.filter(nombre_contacto__icontains=nombre_contacto)[:10]])
+            data = entities
         elif email_address:
-            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(email_address__icontains=email_address)[:10]]
-            data['entities'] = entities
+            entities = list([model_to_dict(mot) for mot in PersonaJuridica.objects.filter(email_address__icontains=email_address)[:10]])
+            data = entities
         elif telefono:
-            entities = [model_to_dict(mot) for mot in PersonaJuridica.objects.filter(telefono__icontains=telefono)[:10]]
-            data['entities'] = entities
-        return JsonResponse(data=data, status=200)
+            entities = list([model_to_dict(mot) for mot in PersonaJuridica.objects.filter(telefono__icontains=telefono)[:10]])
+            data = entities
+        return JsonResponse(data=data, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
-def found_entity_by_data(request):
+def found_persojur_by_data(request):
     if request.method == 'POST':
         data = dict()
         nit = request.POST.get('codigo_nit')
         reuup = request.POST.get('codigo_reuup')
         nombre = request.POST.get('nombre')
-        sigla = request.POST.get('nombre')
+        sigla = request.POST.get('sigla')
         nombre_contacto = request.POST.get('nombre_contacto')
         email_address = request.POST.get('email_address')
         telefono = request.POST.get('telefono')
@@ -212,6 +213,31 @@ def found_entity_by_data(request):
         else:
             model = None
         if model:
-            data['empresa'] = model_to_dict(model)
+            data['exist'] = True
+            data['empresa'] = model_to_dict(model, exclude=['id', 'deleted_at'])
+        else:
+            data['exist'] = False
         return JsonResponse(data=data, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@login_required()
+def get_person_fields(request):
+    personas = list(PersonaNatural.objects.all().annotate(
+        text=functions.Concat(F('nombre'), Value(' '), F('apellidos'), Value(' ('), F('ci'), Value(')'))).values('id', 'nombre', 'apellidos', 'email_address', 'ci', 'text',))
+    data = dict()
+    data['personas'] = personas
+    return JsonResponse(data=data, status=200)
+
+
+@login_required()
+def get_person_data(request, id_person):
+    person =get_object_or_404(PersonaNatural, id=id_person)
+    person_dic = model_to_dict(person, exclude=['deleted_at', ])
+    person_dic['genero_nombre'] = person.genero.nombre
+    person_dic['direccion_calle_nombre'] = person.direccion_calle.nombre
+    person_dic['direccion_entrecalle1_nombre'] = person.direccion_entrecalle1.nombre
+    person_dic['direccion_entrecalle2_nombre'] = person.direccion_entrecalle2.nombre
+    person_dic['cpopular_nombre'] = person.cpopular.nombre
+    person_dic['municipio_nombre'] = person.municipio.nombre
+    return JsonResponse(data=person_dic, status=200)

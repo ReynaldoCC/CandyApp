@@ -819,4 +819,13 @@ input#id_email::placeholder, input#id_new_password1::placeholder, input#id_new_p
 label.error {
     color: red;
 }
+.left-panel {
+    min-width: 250px !important;
+}
+.navbar .navbar-nav li > a .menu-icon {
+    width: 25px !important;
+}
+div.table-container {
+    
+}
 /*# sourceMappingURL=style.css.map */

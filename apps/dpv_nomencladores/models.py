@@ -212,7 +212,7 @@ class CodificadorAsunto(LoggerMixin):
         unique_together = (('nombre', 'deleted_at'), ('numero', 'deleted_at'))
 
     def __str__(self):
-        return self.nombre
+        return '({}) - {}'.format(self.numero, self.nombre)
 
 
 class TipoQueja(LoggerMixin):
@@ -285,13 +285,15 @@ class Gobierno(LoggerMixin):
         unique_together = (('nombre', 'deleted_at'), )
 
     def __str__(self):
-        return self.numero
+        return self.nombre
 
 
 class TipoProcedencia(LoggerMixin):
     nombre = models.CharField(max_length=50, verbose_name="Tipo de Procedencia",
                               validators=[MaxLengthValidator(50), not_special_char])
     cant_dias = models.PositiveSmallIntegerField(verbose_name="Días para Respuesta")
+    enviar = models.BooleanField(default=True, verbose_name="Enviar Respuesta",
+                                 help_text="Marque para enviar la respuesta por correo electrónico")
 
     class Meta:
         verbose_name = "Tipo de Procedencia"
@@ -306,8 +308,6 @@ class TipoProcedencia(LoggerMixin):
 class Procedencia(LoggerMixin):
     nombre = models.CharField(max_length=50, verbose_name="Procedencia",
                               validators=[MaxLengthValidator(50), not_special_char])
-    enviar = models.BooleanField(default=True, verbose_name="Enviar Respuesta",
-                                 help_text="Marque para enviar la respuesta por correo electrónico")
     tipo = models.ForeignKey(TipoProcedencia, related_name="procedencias",
                              on_delete=models.CASCADE, default='', blank=True)
     limit = models.Q(app_label='dpv_nomencladores', model='organismo') | \
@@ -363,17 +363,75 @@ class ClasificacionRespuesta(LoggerMixin):
         return self.nombre
 
 
+class ConclusionCaso(LoggerMixin):
+    nombre = models.CharField(max_length=50, verbose_name="Conclusión del Caso",
+                              validators=[MaxLengthValidator(50), not_special_char])
+    codigo = models.CharField(max_length=3, verbose_name="Código", validators=[only_letters])
+
+    class Meta:
+        verbose_name = "Conclusión del Caso"
+        verbose_name_plural = "Conclusiones del Casos"
+        ordering = ["nombre", ]
+        unique_together = (('nombre', 'deleted_at'), ('codigo', 'deleted_at'))
+
+    def __str__(self):
+        return self.codigo
+
+
+class RespuestaAQueja(LoggerMixin):
+    nombre = models.CharField(max_length=100, verbose_name=_("Respuesta a"),
+                              help_text=_("A quien se le debe enviar o notificar la respuesta."),
+                              validators=[MaxLengthValidator(100), ])
+
+    class Meta:
+        verbose_name = "Respuesta a"
+        verbose_name_plural = "Respuestas a"
+        ordering = ["nombre", ]
+        unique_together = (('nombre', 'deleted_at'), )
+
+    def __str__(self):
+        return self.nombre
+
+
 def configurar_nombre_procedencia(instance):
     if not instance or instance is None:
         return
+    try:
+        if not instance.nombre or instance.nombre == "":
+            nuevo_nombre = "({}) {}".format(instance.tipo.nombre, instance.objecto_contenido.__str__())
+            instance.nombre = nuevo_nombre[:50]
+    except ValueError as e:
+        print(str(e))
 
 
 def configurar_tipo_procedencia(instance):
     if not instance or instance is None:
         return
+    try:
+        # if not instance.tipo or instance.tipo is None:
+        if instance.tipo_contenido.model == "personanatural":
+            instance.tipo = TipoProcedencia.objects.get(id=3)
+        elif instance.tipo_contenido.model == "personajuridica":
+            instance.tipo = TipoProcedencia.objects.get(id=6)
+        elif instance.tipo_contenido.model == "organizacion":
+            instance.tipo = TipoProcedencia.objects.get(id=8)
+        elif instance.tipo_contenido.model == "prensaescrita":
+            instance.tipo = TipoProcedencia.objects.get(id=2)
+        elif instance.tipo_contenido.model == "telefono":
+            instance.tipo = TipoProcedencia.objects.get(id=4)
+        elif instance.tipo_contenido.model == "gobierno":
+            instance.tipo = TipoProcedencia.objects.get(id=7)
+        elif instance.tipo_contenido.model == "email":
+            instance.tipo = TipoProcedencia.objects.get(id=5)
+        else:
+            instance.tipo = TipoProcedencia.objects.get(id=1)
+    except ValueError as e:
+        print(str(e))
 
 
 @receiver(pre_save, sender=Procedencia)
 def preset_procedencia(sender, **kwargs):
     if kwargs.get('instance'):
         instance = kwargs.get('instance')
+        configurar_tipo_procedencia(instance)
+        configurar_nombre_procedencia(instance)

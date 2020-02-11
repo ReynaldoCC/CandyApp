@@ -11,7 +11,7 @@ from .validators import ci_validate
 # Create your models here.
 class Persona(LoggerMixin):
     nombre = models.CharField(max_length=30, validators=[MaxLengthValidator(30)])
-    cpopular = models.ForeignKey(ConsejoPopular, on_delete=models.CASCADE,
+    cpopular = models.ForeignKey(ConsejoPopular, on_delete=models.CASCADE, null=True,
                                  verbose_name="Consejo Popular", default='', blank=True,
                                  help_text="Consejo popular donde recide la persona")
     municipio = models.ForeignKey(Municipio, on_delete=models.CASCADE, verbose_name="Municipio", help_text="Municipio donde recide la persona")
@@ -54,6 +54,7 @@ class PersonaNatural(Persona):
 
 
 class PersonaJuridica(Persona):
+    nombre = models.CharField(max_length=100, validators=[MaxLengthValidator(100)])
     sigla = models.CharField(max_length=10, verbose_name="Siglas", blank=True, help_text="Siglas identificativas de la entidad.")
     nombre_contacto = models.CharField(max_length=200, verbose_name="Nombre de contacto", blank=True, help_text="Nombre que se usara para el contacto con la entidad.")
     codigo_nit = models.CharField(max_length=11, verbose_name="Código NiT", help_text="Código NiT de la entidad")

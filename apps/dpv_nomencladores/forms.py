@@ -162,9 +162,10 @@ class TipoProcedenciaForm(forms.ModelForm):
 
     class Meta:
         model = TipoProcedencia
-        fields = ['nombre', 'cant_dias']
+        fields = ['nombre', 'cant_dias', 'enviar', ]
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control malpha'}),
+            'enviar': forms.CheckboxInput(attrs={"class": "form-check-input"}),
             'cant_dias': forms.TextInput(attrs={'placeholder': 'Días', 'class': 'form-control mnumber'}),
         }
 
@@ -173,7 +174,7 @@ class ProcedenciaForm(forms.ModelForm):
 
     class Meta:
         model = Procedencia
-        fields = ['nombre', 'enviar', 'tipo', ]
+        fields = ['nombre', 'tipo', ]
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control malpha'}),
             'enviar': forms.CheckboxInput(attrs={"class": "form-check-input"}),
@@ -247,6 +248,16 @@ class GobiernoForm(forms.ModelForm):
 
     class Meta:
         model = Gobierno
+        fields = ['nombre']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
+        }
+
+
+class RespuestaAQuejaForm(forms.ModelForm):
+
+    class Meta:
+        model = RespuestaAQueja
         fields = ['nombre']
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),

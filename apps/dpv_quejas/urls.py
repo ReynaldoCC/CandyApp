@@ -20,5 +20,4 @@ urlpatterns = [
    path('notify_many/', index, name='quejas_notify_many'),
    path('deny/<int:id_queja>', index, name='quejas_deny'),
    path('redirect/<int:id_queja>', index, name='quejas_redirct'),
-
 ]

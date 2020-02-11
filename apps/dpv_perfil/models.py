@@ -3,10 +3,11 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from apps.dpv_persona.models import PersonaNatural
-from apps.dpv_nomencladores.models import AreaTrabajo, CentroTrabajo
+from apps.dpv_nomencladores.models import AreaTrabajo, CentroTrabajo, Genero, Calle, ConsejoPopular, Municipio
 from apps.dpv_base.mixins import LoggerMixin
+from random import randint
 import uuid
-
+import datetime
 
 # Create your models here.
 def scramble_upload_avatar(instance, filename, subdiretory='avatars'):
@@ -31,7 +32,31 @@ class Perfil(LoggerMixin):
 
 
  # Signals
-@receiver(pre_save, sender=User)
+@receiver(post_save, sender=User)
 def crear_perfil_usuario(sender, **kwargs):
-    if kwargs.get('Created', True):
+    if kwargs.get('created', False):
         print('usuario creado', kwargs)
+        if kwargs.get('instance'):
+            instance = kwargs.get('instance')
+            if instance.is_superuser:
+                p = Perfil()
+                p.centro_trabajo = CentroTrabajo.objects.filter(oc=True).first()
+                p.depto_trabajo = AreaTrabajo.objects.all().first()
+                numero = str(randint(10000, 99999))
+                date = datetime.date.today().strftime('%y%m%d')
+                per = PersonaNatural()
+                per.nombre = "Desarrollador"
+                per.apellidos = "Implatación y Despliegue"
+                per.ci = "{}{}".format(date, numero)
+                per.genero = Genero.objects.first()
+                per.email_address = instance.email or "{}{}@email.cu".format(instance.username, str(randint(50, 90)))
+                per.direccion_numero = str(randint(1, 4000))
+                per.direccion_calle = Calle.objects.first()
+                per.direccion_entrecalle1 = Calle.objects.last()
+                per.direccion_entrecalle2 = Calle.objects.filter(id__in=[3, 4, 5, 6]).last()
+                per.municipio = Municipio.objects.first()
+                per.cpopular = ConsejoPopular.objects.first()
+                per.save()
+                p.datos_personales = per
+                p.datos_usuario = instance
+                p.save()

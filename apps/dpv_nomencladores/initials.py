@@ -290,14 +290,14 @@ def create_initial():
 
     if not TipoProcedencia.objects.all().exists():
         TipoProcedencia.objects.bulk_create([
-            TipoProcedencia(id=1, nombre='Anónimo', cant_dias=30),
-            TipoProcedencia(id=2, nombre='Prensa Escrita', cant_dias=30),
-            TipoProcedencia(id=3, nombre='Personal', cant_dias=30),
-            TipoProcedencia(id=4, nombre='Teléfono', cant_dias=30),
-            TipoProcedencia(id=5, nombre='Correo', cant_dias=30),
-            TipoProcedencia(id=6, nombre='Empresa', cant_dias=30),
-            TipoProcedencia(id=7, nombre='Gobierno', cant_dias=30),
-            TipoProcedencia(id=8, nombre='Organización', cant_dias=30),
+            TipoProcedencia(id=1, nombre='Anónimo', cant_dias=30, enviar=True),
+            TipoProcedencia(id=2, nombre='Prensa Escrita', cant_dias=30, enviar=True),
+            TipoProcedencia(id=3, nombre='Personal', cant_dias=30, enviar=True),
+            TipoProcedencia(id=4, nombre='Teléfono', cant_dias=30, enviar=False),
+            TipoProcedencia(id=5, nombre='Correo', cant_dias=30, enviar=True),
+            TipoProcedencia(id=6, nombre='Empresa', cant_dias=30, enviar=True),
+            TipoProcedencia(id=7, nombre='Gobierno', cant_dias=30, enviar=True),
+            TipoProcedencia(id=8, nombre='Organización', cant_dias=30, enviar=True),
         ])
     else:
         pass
@@ -312,6 +312,9 @@ def create_initial():
             Estado(id=6, nombre='Pendiente de Notificación'),
             Estado(id=7, nombre='Concluida'),
             Estado(id=8, nombre='Trasladada'),
+            Estado(id=9, nombre='Rechazada'),
+            Estado(id=10, nombre='Respuesta Rechazada'),
+            Estado(id=11, nombre='Sin Estado'),
         ])
     else:
         pass

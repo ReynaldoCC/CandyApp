@@ -103,6 +103,7 @@ class PersonaJuridicaForm(forms.ModelForm):
                   'direccion_entrecalle1',
                   'direccion_entrecalle2',
                   'municipio',
+                  'cpopular',
                   'codigo_nit',
                   'codigo_reuup', )
         widgets = {
@@ -119,6 +120,7 @@ class PersonaJuridicaForm(forms.ModelForm):
             'email_address': forms.EmailInput(attrs={"placeholder": "Correo Electrónico", "class": "form-control"}),
             'telefono': forms.TextInput(attrs={"placeholder": "Teléfono Fijo", "class": "form-control"}),
             'movil': forms.TextInput(attrs={"placeholder": "Teléfono Movil", "class": "form-control"}),
+            'cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control select2"}),
         }
 
     def clean(self):

@@ -1,6 +1,6 @@
 {% extends 'layouts/dashboard.html' %}
 {% block page_title %} | Quejas {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
 {% endblock extra_style %}
@@ -18,46 +18,92 @@
     {% endif %}
 {% endblock breadcrumbs %}
 {% block content_page %}
-    <div class="col-md-12">
+    <div class="col-md-12" style="width: calc(100vw - 280px);">
         <div class="card">
             <div class="card-header">
                 <strong class="card-title">Quejas</strong>
-                {% if perms.dpv_quejas.queja %}
                 <span class="pull-right">
+                {% if perms.dpv_quejas.add_queja %}
                     <a href="{% url 'quejas_add' %}" type="button" class="pull-right btn btn-success btn-sm"><i class="fa fa-plus"></i> Agregar Queja</a>
-                    <a href="{% url 'quejas_asig_many_dpto' %}" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Asignar Quejas a Depto</a>
-                    <a href="{% url 'quejas_asig_many_tec' %}" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Asignar Quejas a Técnico</a>
-                    <a href="{% url 'quejas_notify_many' %}" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Notificar Quejas</a>
-                </span>
                 {% endif %}
+                {% if perms.dpv_quejas.add_asignaquejadpto %}
+                    <a href="{% url 'quejas_asig_many_dpto' %}" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Asignar Quejas a Depto</a>
+                {% endif %}
+                {% if perms.dpv_quejas.add_asignaquejatecnico %}
+                    <a href="{% url 'quejas_asig_many_tec' %}" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Asignar Quejas a Técnico</a>
+                {% endif %}
+                {% if perms.dpv_quejas.add_quejanotificada %}
+                    <a href="{% url 'quejas_notify_many' %}" style="margin-right: .25rem;" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Notificar Quejas</a>
+                {% endif %}
+                </span>
             </div>
             <div class="card-body">
                 {% if quejas %}
-                <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                <div class="row col-12" style="margin-bottom: 1rem;">
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="0">Fecha en sistema</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="1">Número</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="2">Código</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="3">Estado</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="4">Tiempo</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="5">Procedencia</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="6">No. Procedencia</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="7">Nombre y Apellidos</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="8">Sexo</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="9">Dirección</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="10">Municipio</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="11">Asunto</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="12">Ofrecer Respuesta a</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="13">Fecha Término</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="14">Conclución del Caso</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="15">Nivel de solución</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="16">Fecha de Solución</button>
+                    <button type="button" class="btn btn-outline-secondary toggle-column" data-column="17">Acciones</button>
+                </div>
+                <div class="row col-12 table-container">
+                    <table id="queja-table" class="table table-striped table-bordered table-responsive table-sm">
                         <thead>
                             <tr>
-                                <th>Número</th>
-                                <th>Fecha en sistema</th>
-                                <th>Procedencia</th>
-                                <th>Dirección</th>
-                                <th>Asunto</th>
-                                <th>Estado</th>
-                                <th>Tiempo</th>
-                                <th>Acciones</th>
+                                <th class="text-nowrap">Fecha en sistema</th>
+                                <th class="text-nowrap">Número</th>
+                                <th class="text-nowrap">Código</th>
+                                <th class="text-nowrap">Estado</th>
+                                <th class="text-nowrap">Tiempo</th>
+                                <th class="text-nowrap">Procedencia</th>
+                                <th class="text-nowrap">No. Procedencia</th>
+                                <th class="text-nowrap">Nombre y Apellidos</th>
+                                <th class="text-nowrap">Sexo</th>
+                                <th class="text-nowrap">Dirección</th>
+                                <th class="text-nowrap">Municipio</th>
+                                <th class="text-nowrap">Asunto</th>
+                                <th class="text-nowrap">Ofrecer Respuesta a</th>
+                                <th class="text-nowrap">Fecha Término</th>
+                                <th class="text-nowrap">Conclución del Caso</th>
+                                <th class="text-nowrap">Nivel de solución</th>
+                                <th class="text-nowrap">Fecha de Solución</th>
+                                <th class="text-nowrap">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for queja in quejas %}
                             <tr>
-                                <td>{{queja.numero}}</td>
-                                <td>{{queja.fecha_radicacion|date:"d/m/Y" }}</td>
-                                <td>{{queja.procedencia}}</td>
-                                <td>{{queja.dir_calle}} #{{queja.dir_numero}}, entre {{queja.dir_entrecalle1}} y {{queja.dir_entrecalle2}}, {{queja.dir_cpopular}}, {{queja.dir_municipio}}</td>
-                                <td>{{queja.asunto}}</td>
-                                <td>{{queja.estado}}</td>
-                                <td>{{queja.tiempo}} día{% if queja.tiempo != 1 %}s{% endif %}</td>
-                                <td>
+                                <td class="text-nowrap">{{queja.fecha_radicacion|date:"d/m/Y" }}</td>
+                                <td class="text-nowrap">{{queja.numero}}</td>
+                                <td class="text-nowrap">{{queja.codigo_numero}}</td>
+                                <td class="text-nowrap">{{queja.estado}}</td>
+                                <td class="text-nowrap">{{queja.tiempo}} día{% if queja.tiempo != 1 %}s{% endif %}</td>
+                                <td class="text-nowrap">{{queja.procedencia}}</td>
+                                <td class="text-nowrap">{% if queja.no_procedencia %}{{queja.no_procedencia}}{% else %}No tiene{% endif %}</td>
+                                <td class="text-nowrap">{{queja.get_quejoso}}</td>
+                                <td class="text-nowrap">{{queja.get_quejoso.genero.sigla}}</td>
+                                <td class="text-nowrap">Calle {{queja.dir_calle}} #{{queja.dir_numero}}, entre {{queja.dir_entrecalle1}} y {{queja.dir_entrecalle2}}, <br>consejo popular {{queja.dir_cpopular}}.</td>
+                                <td class="text-nowrap">{{queja.dir_municipio}}</td>
+                                <td class="text-nowrap">{{queja.asunto_texto|capfirst|truncatechars:"60"}}</td>
+                                <td class="text-nowrap">{{queja.responder_a}}</td>
+                                <td class="text-nowrap">{{queja.fecha_termino|date:"d/m/Y" }}</td>
+                                <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
+                                <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
+                                <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
+                                <td class="text-nowrap">
                                     {% if perms.dpv_quejas.view_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_detail' queja.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
                                     {% endif %}
@@ -68,28 +114,28 @@
                                         <a onclick="return abrir_modal('{% url 'quejas_del' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejadpto %}
-                                        <a href="{% url 'quejas_asig_depto' queja.id %}" type="button" class="btn btn-sm {% if local.data_ok == 0 %}btn-success{% elif local.data_ok == 1 %}btn-warning{% elif local.data_ok == 2 %}btn-danger{% endif %}"><i class="fa fa-caret-square-o-right"></i></a>
+                                        <a href="{% url 'quejas_asig_depto' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejatecnico %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_asig_tec' queja.id %}')" type="button" class="btn btn-sm {% if local.data_ok == 0 %}btn-success{% elif local.data_ok == 1 %}btn-warning{% elif local.data_ok == 2 %}btn-danger{% endif %}"><i class="fa fa-align-justify"></i></a>
+                                        <a onclick="return abrir_modal('{% url 'quejas_asig_tec' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_quejarechazada %}
                                         <a onclick="return abrir_modal('{% url 'quejas_deny' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_quejaredirigida %}
-                                        <a href="{% url 'quejas_redirct' queja.id %}" type="button" class="btn btn-sm {% if local.data_ok == 0 %}btn-success{% elif local.data_ok == 1 %}btn-warning{% elif local.data_ok == 2 %}btn-danger{% endif %}"><i class="fa fa-caret-square-o-right"></i></a>
+                                        <a href="{% url 'quejas_redirct' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_respuestaqueja %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_response' queja.id %}')" type="button" class="btn btn-sm {% if local.data_ok == 0 %}btn-success{% elif local.data_ok == 1 %}btn-warning{% elif local.data_ok == 2 %}btn-danger{% endif %}"><i class="fa fa-align-justify"></i></a>
+                                        <a onclick="return abrir_modal('{% url 'quejas_response' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_respuesta.add_apruebajefe %}
-                                        <a href="{% url 'quejas_ajdepto' queja.id %}" type="button" class="btn btn-sm {% if local.data_ok == 0 %}btn-success{% elif local.data_ok == 1 %}btn-warning{% elif local.data_ok == 2 %}btn-danger{% endif %}"><i class="fa fa-caret-square-o-right"></i></a>
+                                        <a href="{% url 'quejas_ajdepto' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_respuesta.add_apruebadtr %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_adtor' queja.id %}')" type="button" class="btn btn-sm {% if local.data_ok == 0 %}btn-success{% elif local.data_ok == 1 %}btn-warning{% elif local.data_ok == 2 %}btn-danger{% endif %}"><i class="fa fa-align-justify"></i></a>
+                                        <a onclick="return abrir_modal('{% url 'quejas_adtor' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_respuesta.add_quejanotificada %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_notify' queja.id %}')" type="button" class="btn btn-sm {% if local.data_ok == 0 %}btn-success{% elif local.data_ok == 1 %}btn-warning{% elif local.data_ok == 2 %}btn-danger{% endif %}"><i class="fa fa-align-justify"></i></a>
+                                        <a onclick="return abrir_modal('{% url 'quejas_notify' queja.id %}')" type="button" class="btn btn-sm btn-success"><i class="fa fa-align-justify"></i></a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -124,8 +170,45 @@
     <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+            var table = $('#queja-table').DataTable({
+                responsive: true,
+                //scrollX: 800,
+                //order: [ 0, 'asc' ],
+                dom:
+                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                        "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // read more: https://datatables.net/examples/basic_init/dom.html
+                language: {
+                    "decimal": "",
+                    "emptyTable": "{% trans 'No hay Quejas que mostrar' %}",
+                    "info": "{% trans 'Mostrando' %} _START_ a _END_ de _TOTAL_ {% trans 'Quejas' %}",
+                    "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Quejas' %}",
+                    "infoFiltered": "({% trans 'Filtrado de' %} _MAX_ {% trans 'total quejas' %})",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "{% trans 'Mostrar' %} _MENU_ {% trans 'Quejas' %}",
+                    "loadingRecords": "{% trans 'Cargando...' %}",
+                    "processing": "{% trans 'Procesando...' %}",
+                    "search": "{% trans 'Buscar:' %}",
+                    "zeroRecords": "{% trans 'Sin quejas coincidentes encontrados' %}",
+                    "paginate": {
+                            "first": "{% trans 'Primero' %}",
+                            "last": "{% trans 'Ultimo' %}",
+                            "next": "{% trans 'Siguiente' %}",
+                            "previous": "{% trans 'Anterior' %}"
+                    }
+                },
+            });
+            console.log(table);
+            $('button.toggle-column').on( 'click', function (e) {
+                e.preventDefault();
+                $(this).toggleClass('btn-secondary').toggleClass('btn-outline-secondary')
+                var column = table.column( $(this).attr('data-column') );
+            column.visible( ! column.visible() );
         } );
+        });
     </script>
 {% endblock extra_scripts %}
 {% block init_jquery %} {% endblock init_jquery %}
