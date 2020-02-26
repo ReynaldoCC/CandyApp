@@ -116,6 +116,11 @@
                 <a href="{% url 'nomenclador_organizacion' %}"><i class="fa fa-tag"></i>Organización</a>
             </li>
             {% endif %}
+            {% if perms.dpv_respuesta.view_tecnico %}
+            <li class="{% if '/nomenclador/tecnico/' in request.path %} active {% endif %}">
+                <a href="{% url 'nomenclador_tecnico' %}"><i class="fa fa-tag"></i>Técnicos</a>
+            </li>
+            {% endif %}
 
         </ul>
     </li>

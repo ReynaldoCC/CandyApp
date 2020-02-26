@@ -18,3 +18,8 @@ div.awesomplete {
 a.back-link {
     color: #4d16cb !important;
 }
+.modal {
+    opacity: 1 !important;
+    margin-top: 5%;
+    padding-top: 10%;
+}
