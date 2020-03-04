@@ -80,14 +80,17 @@ class AsignaQuejaDptoForm(forms.ModelForm):
 
 
 class AsignaQuejaTecnicoForm(forms.ModelForm):
+    tecnico = forms.ModelChoiceField(queryset=Tecnico.objects.all(),
+                                     label=_("Técnicos"),
+                                     widget=forms.Select(attrs={"class": "form-control select2"}))
 
     class Meta:
         model = AsignaQuejaTecnico
         fields = (
-                  'tecnico', 'observaciones', 'rechazada',
+                  'tecnico','observaciones', 'rechazada',
                   )
         widgets = {
-            'tecnico': forms.Select(attrs={"placeholder": "Seleccione un Técnico.", "class": "form-control select2"}),
+            'tecnico': forms.Select(attrs={"placeholder":"Seleccionar Técnico", "class": "form-control select2"}),
             'observaciones': forms.Textarea(attrs={"placeholder": "Observasiones", "class": "form-control mtext"}),
             'rechazada': forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }

@@ -41,7 +41,7 @@
                         <tbody>
                         {% for tecnico in tecnicos %}
                             <tr>
-                                <td>{{tecnico.profile}}</td>
+                                <td>{{tecnico.profile.datos_personales.nombre}} {{tecnico.profile.datos_personales.apellidos}}</td>
                                 <td>
                                     {% if perms.dpv_respuesta.update_tecnico %}
                                     <a onclick="return abrir_modal('{% url 'tecnico_edit' tecnico.id %}')" class=" btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-pencil"></i></a>
