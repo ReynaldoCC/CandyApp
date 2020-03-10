@@ -211,12 +211,16 @@ def agregar_queja(request):
                                                      objecto_contenido=quejoso, id_objecto=quejoso.id)
             damnificado.save_and_log(request=request, af=0)
             return redirect(reverse_lazy('quejas_list'))
-        if not form.is_valid():
-            print('error form de queja', form.errors)
-        if not procedence_form.is_valid():
-            print('error en el form procedencia', procedence_form.errors, procedence_form.non_field_errors)
-        if not pnform.is_valid():
-            print('error en el form quejoso', pnform.errors)
+        else:
+            var1 = form.is_valid()
+            var2 = pnform.is_valid()
+            var3 = pjform.is_valid()
+            var4 = tform.is_valid()
+            var5 = eform.is_valid()
+            var6 = orgform.is_valid()
+            var7 = oform.is_valid()
+            var8 = gform.is_valid()
+            var9 = aqform.is_valid()
     return render(request, 'dpv_quejas/form.html', {'form': form,
                                                     'pnform': pnform,
                                                     'pjform': pjform,

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import permission_required, login_required
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
@@ -122,8 +122,21 @@ def delete_municipio(request, id_municipio):
 # ------------------------------------ ConsejoPopular -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_consejopopular', raise_exception=True)
 def index_consejopopular(request):
-    consejopopulars = ConsejoPopular.objects.all()
-    return render(request, 'dpv_nomencladores/list_consejopopular.html', {'consejopopulars': consejopopulars})
+    if request.is_ajax():
+        consejopopulars = list(model_to_dict(cpopular) for cpopular in ConsejoPopular.objects.all())
+        return JsonResponse(data=consejopopulars, safe=False, status=200)
+    else:
+        consejopopulars = ConsejoPopular.objects.all()
+        return render(request, 'dpv_nomencladores/list_consejopopular.html', {'consejopopulars': consejopopulars})
+
+
+@login_required()
+def filter_by_muncp(request, id_municipio):
+    try:
+        cpopulares = list(model_to_dict(cpop) for cpop in ConsejoPopular.objects.filter(municipio__id=id_municipio))
+        return JsonResponse(data=cpopulares, safe=False, status=200)
+    except:
+        return JsonResponse({"error": "Invalid id value"})
 
 
 @permission_required('dpv_nomencladores.add_consejopopular')
@@ -137,6 +150,28 @@ def add_consejopopular(request):
     else:
         form = ConsejoPopularForm()
     return render(request, 'dpv_nomencladores/form_consejopopular.html', {'form': form})
+
+
+@login_required()
+def add_cpopular_json(request):
+    data = {}
+    status = 200
+    if request.method == 'POST':
+        form = ConsejoPopularForm(request.POST)
+        if form.is_valid():
+            nombre_cpop = form.cleaned_data.get('nombre')
+            municipio = form.cleaned_data.get('municipio')
+            cpop, created = Calle.objects.get_or_create(nombre=nombre_cpop)
+            if municipio and not cpop.municipio:
+                cpop.municipio = get_object_or_404(Municipio, id=municipio)
+            data = model_to_dict(cpop)
+            if created:
+                status = 201
+            return JsonResponse(data=data, status=status)
+        data['errors'] = form.errors
+        status = 400
+        return JsonResponse(data=data, status=status)
+    return JsonResponse({"error": "method not allowed"}, status=405)
 
 
 @permission_required('dpv_nomencladores.change_consejopopular')
@@ -167,7 +202,11 @@ def delete_consejopopular(request, id_consejopopular):
 # ------------------------------------------- Calle -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_calle', raise_exception=True)
 def index_calle(request):
-    calles = Calle.objects.all()
+    if request.is_ajax():
+        calles = list(model_to_dict(calle) for calle in Calle.objects.all())
+        return JsonResponse(data=calles, safe=False, status=200)
+    else:
+        calles = Calle.objects.all()
     return render(request, 'dpv_nomencladores/list_calle.html', {'calles': calles})
 
 
@@ -203,6 +242,40 @@ def add_calle_on_user(request):
             }
             return JsonResponse(data, status=400)
     return JsonResponse(data)
+
+
+@login_required()
+def add_calle_json(request):
+    data = {}
+    status = 200
+    if request.method == 'POST':
+        form = CalleForm(request.POST)
+        if form.is_valid():
+            nombre_calle = form.cleaned_data.get('nombre')
+            municipios = form.cleaned_data.get('municipios')
+            calle, created = Calle.objects.get_or_create(nombre=nombre_calle)
+            if municipios and not municipios in calle.municipios.all():
+                if calle.municipios.count() == 0:
+                    calle.municipios.set(municipios)
+                else:
+                    calle.municipios.add(municipios)
+            data = model_to_dict(calle)
+            if created:
+                status = 201
+            return JsonResponse(data=data, status=status)
+        data['errors'] = form.errors
+        status = 400
+        return JsonResponse(data=data, status=status)
+    return JsonResponse({"error": "method not allowed"}, status=405)
+
+
+@login_required()
+def filter_by_municipio(request, id_municipio):
+    try:
+        calles = list(model_to_dict(calle) for calle in Calle.objects.filter(municipio__id=id_municipio))
+        return JsonResponse(data=calles, safe=False, status=200)
+    except:
+        return JsonResponse({"error": "Invalid id value"}, status=400)
 
 
 @permission_required('dpv_nomencladores.add_calle')

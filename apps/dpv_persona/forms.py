@@ -47,7 +47,7 @@ class PersonaNaturalForm(forms.ModelForm):
             raise ValidationError({'direccion_entrecalle2': _('La segunda entre calle no puede ser igual a la calle de la dirección.')})
         if self.cleaned_data.get('direccion_entrecalle1') == self.cleaned_data.get('direccion_entrecalle2'):
             raise ValidationError({'direccion_entrecalle2': _('Ambas entre calles no pueden ser iguales.')})
-        return  super(forms.ModelForm, self).clean()
+        return super(forms.ModelForm, self).clean()
 
 
 class PersonaNaturalMForm(forms.ModelForm):

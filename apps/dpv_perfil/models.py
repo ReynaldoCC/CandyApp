@@ -9,6 +9,7 @@ from random import randint
 import uuid
 import datetime
 
+
 # Create your models here.
 def scramble_upload_avatar(instance, filename, subdiretory='avatars'):
     ext = filename.split('.')[-1]
