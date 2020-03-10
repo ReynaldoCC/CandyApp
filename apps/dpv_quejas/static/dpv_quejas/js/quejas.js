@@ -1446,6 +1446,10 @@ var DPVQuejas = function () {
                     digits: true,
                     maxlength: 8,
                     minlength: 8,
+                    remote: {
+                        url: '/persona/natural/verify',
+                        type: 'GET',
+                    },
                 },
 				'person_procedence-telefono': {
 				    required: true,
@@ -1510,6 +1514,10 @@ var DPVQuejas = function () {
                     digits: true,
                     maxlength: 8,
                     minlength: 8,
+                    remote: {
+                        url: '/persona/natural/verify',
+                        type: 'GET',
+                    },
                 },
 				'empresa-nombre_contacto': {
 				    required: true,
@@ -1598,6 +1606,10 @@ var DPVQuejas = function () {
                     digits: true,
                     maxlength: 8,
                     minlength: 8,
+                    remote: {
+                        url: '/persona/natural/verify',
+                        type: 'GET',
+                    },
                 },
 				'person_queja-telefono': {
 				    required: true,
@@ -1748,6 +1760,7 @@ var DPVQuejas = function () {
                     digits: "El movil solo puede tener dígitos.",
                     maxlength: "El movil no pueden tener más de 8 dígitos.",
                     minlength: "El movil no puede tener menos de 8 dígitos.",
+                    remote: "Ya existe otra persona registrada con ese movil",
                 },
 				'person_procedence-telefono': {
 				    required: "El teléfono no puede quedar en blanco.",
@@ -1900,6 +1913,7 @@ var DPVQuejas = function () {
                     digits: "El movil solo puede tener dígitos.",
                     maxlength: "El movil no pueden tener más de 8 dígitos.",
                     minlength: "El movil no puede tener menos de 8 dígitos.",
+                    remote: "Ya existe otra persona registrada con ese movil",
                 },
 				'person_queja-telefono': {
 				    required: "El teléfono no puede quedar en blanco.",

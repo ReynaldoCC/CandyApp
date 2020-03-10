@@ -241,3 +241,20 @@ def get_person_data(request, id_person):
     person_dic['cpopular_nombre'] = person.cpopular.nombre
     person_dic['municipio_nombre'] = person.municipio.nombre
     return JsonResponse(data=person_dic, status=200)
+
+
+@login_required()
+def verify_personat(request):
+    if request.method == 'GET':
+        movil = request.GET.get('movil')
+        id = request.GET.get('id')
+
+        if not id:
+            id = 0
+        if movil:
+            if not PersonaNatural.objects.filter(movil=movil).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", safe=False, status=200)
+    return JsonResponse({"error": "method not Allowed"}, status=405)
