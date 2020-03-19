@@ -1,0 +1,45 @@
+<div class="modal-dialog modal-md">
+    <div class="modal-content">
+		<form novalidate method="POST"action="{% url 'quejas_asig_tec' queja %}" id="form_asig_tecnico">
+            <div class="modal-header" >
+                <h4 class="modal-title">Asignar Técnico</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+				{% if form.errors %}
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    Por favor, corrija {% if form.errors|length == 1 %}"el error señalado"{% else %}"los errores señalados"{% endif %} a continuación.
+                </div>
+                {% endif %}
+                <div class="form-control-sm">
+                    <label>Técnico</label>
+                    {{ form.non_field_errors }}
+                    {{ form.tecnico }}
+                </div>
+                <div class="form-control-dm">
+                    <label>Rechazar</label>
+                    {{ form.non_field_errors }}
+                    {{ form.rechazada }}
+                </div>
+				<div class="form-control-dm">
+                    <label>Observaciones</label>
+                    {{ form.non_field_errors }}
+                    {{ form.observaciones }}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#form_asig_tecnico').validate();
+</script>

@@ -5,7 +5,7 @@ from django.db.models import F, Q, When, Case, BooleanField, Value
 from django.db.models.functions import Concat
 from django.core import serializers
 from django.forms.models import model_to_dict
-from apps.dpv_respuesta.views import AprobadaRespuestaDtorView, AprobadaRespuestaJefeView
+from apps.dpv_respuesta.views import *
 from .forms import *
 from .models import *
 
@@ -242,12 +242,38 @@ def eliminar_queja(request, id_queja):
     return render(request, 'dpv_quejas/delete.html')
 
 
+@permission_required('dpv_quejas.add_asignaquejadpto', raise_exception=True)
 def asignar_queja_depto(request, id_queja):
-    return render(request, 'dpv_quejas/asigna_depto.html')
+    depto=AsignaQuejaDpto()
+    depto.quejadpto = Queja.objects.filter(id=id_queja).first()
+    form = AsignaQuejaDptoForm(instance=depto)
+    if request.method == 'POST':
+        form = AsignaQuejaDptoForm(request.POST, instance=depto)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+            return redirect(reverse_lazy('quejas_list'))
+        else:
+            return render(request, 'dpv_quejas/asignar_depto.html', {'form': form})
+    else:
+        return render(request, 'dpv_quejas/asignar_depto.html', {'form': form, 'queja': id_queja})
 
 
+@permission_required('dpv_quejas.add_asignaquejatecnico', raise_exception=True)
 def asignar_queja_tecnico(request, id_queja):
-    return render(request, 'dpv_quejas/asigna_tecnico.html')
+    tecnico = AsignaQuejaTecnico()
+    tecnico.quejatecnico = Queja.objects.filter(id=id_queja).first()
+    form = AsignaQuejaTecnicoForm(instance=tecnico)
+    if request.method == 'POST':
+        form = AsignaQuejaTecnicoForm(request.POST, instance=tecnico)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+            return redirect(reverse_lazy('quejas_list'))
+        else:
+            return render(request, 'dpv_quejas/asignar_tecnico.html', {'form': form})
+    else:
+        return render(request, 'dpv_quejas/asignar_tecnico.html', {'form': form, 'queja': id_queja})
 
 
 def responder_queja(request, id_queja):

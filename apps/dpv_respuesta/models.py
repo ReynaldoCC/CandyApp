@@ -12,6 +12,7 @@ class Tecnico (LoggerMixin):
         return '{}'.format(self.profile.datos_personales.nombre + ' ' + self.profile.datos_personales.apellidos)
 
 
+
 class Respuesta(LoggerMixin):
     fecha_respuesta = models.DateTimeField(auto_now_add=True, verbose_name=_("Fecha de Respuesta"))
     rechazada = models.DateTimeField(default=None, null=True)

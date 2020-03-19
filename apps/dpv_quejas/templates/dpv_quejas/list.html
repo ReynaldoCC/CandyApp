@@ -3,6 +3,7 @@
 {% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Gestión de Quejas {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -114,7 +115,7 @@
                                         <a onclick="return abrir_modal('{% url 'quejas_del' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejadpto %}
-                                        <a href="{% url 'quejas_asig_depto' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
+                                        <a onclick="return abrir_modal('{% url 'quejas_asig_depto' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejatecnico %}
                                         <a onclick="return abrir_modal('{% url 'quejas_asig_tec' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
@@ -168,6 +169,8 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/validation.functions.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             var table = $('#queja-table').DataTable({
