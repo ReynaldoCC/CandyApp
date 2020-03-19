@@ -10,7 +10,7 @@ from .forms import *
 from .models import *
 
 
-@permission_required('dpv_quejass.view_queja', raise_exception=True)
+@permission_required('dpv_quejas.view_queja', raise_exception=True)
 def index(request):
     quejas = Queja.objects.none()
     try:
@@ -66,6 +66,7 @@ def index(request):
     return render(request, 'dpv_quejas/list.html', {'quejas': quejas})
 
 
+@permission_required('dpv_quejas.add_queja', raise_exception=True)
 def agregar_queja(request):
     form = QuejaForm(prefix='queja')
     aqform = AQPersonaNaturalForm(prefix='person_procedence', empty_permitted=True, use_required_attribute=False)
