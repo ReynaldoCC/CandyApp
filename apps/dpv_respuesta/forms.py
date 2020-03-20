@@ -53,9 +53,10 @@ class RespuestaRechazadaForm(forms.ModelForm):
         }
 
 class TecnicoForm(forms.ModelForm):
-    profile = forms.ModelChoiceField(queryset=User.objects.all(),
-                                              label=_("Técnicos"),
-                                              widget=forms.Select(attrs={"class": "form-control select2"}))
+
     class Meta:
         model = Tecnico
         fields = ('profile',)
+        widgets = {
+           'profile': forms.Select(attrs={"class": "form-control select2"}),
+        }
