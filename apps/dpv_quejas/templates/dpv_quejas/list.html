@@ -105,7 +105,7 @@
                                 <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
                                 <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
                                 <td class="text-nowrap">
-                                    {% if perms.dpv_quejas.view_queja %}
+                                    <!--{% if perms.dpv_quejas.view_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_detail' queja.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.change_queja %}
@@ -113,14 +113,14 @@
                                     {% endif %}
                                     {% if perms.dpv_quejas.delete_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_del' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
-                                    {% endif %}
+                                    {% endif %}-->
                                     {% if perms.dpv_quejas.add_asignaquejadpto %}
                                         <a onclick="return abrir_modal('{% url 'quejas_asig_depto' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejatecnico %}
                                         <a onclick="return abrir_modal('{% url 'quejas_asig_tec' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
                                     {% endif %}
-                                    {% if perms.dpv_quejas.add_quejarechazada %}
+                                    <!--{% if perms.dpv_quejas.add_quejarechazada %}
                                         <a onclick="return abrir_modal('{% url 'quejas_deny' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_quejaredirigida %}
@@ -137,7 +137,7 @@
                                     {% endif %}
                                     {% if perms.dpv_respuesta.add_quejanotificada %}
                                         <a onclick="return abrir_modal('{% url 'quejas_notify' queja.id %}')" type="button" class="btn btn-sm btn-success"><i class="fa fa-align-justify"></i></a>
-                                    {% endif %}
+                                    {% endif %}-->
                                 </td>
                             </tr>
                         {% endfor %}
