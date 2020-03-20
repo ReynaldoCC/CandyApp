@@ -84,7 +84,7 @@ class AsignaQuejaDpto(LoggerMixin):
                              blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
     fecha_asignacion = models.DateTimeField(verbose_name=_("Fecha Asignación"), auto_now_add=True)
-    rechazada = models.DateTimeField(default=None, null=True)
+    rechazada = models.DateTimeField(default=None, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Queja asignada a Depto")
@@ -98,7 +98,7 @@ class AsignaQuejaTecnico(LoggerMixin):
                                 blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
     fecha_asignacion = models.DateTimeField(verbose_name=_("Fecha Asignación"), auto_now_add=True)
-    rechazada = models.DateTimeField(default=None, null=True)
+    rechazada = models.DateTimeField(default=None, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Queja asignada a Técnico")

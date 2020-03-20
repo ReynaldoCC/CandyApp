@@ -70,12 +70,11 @@ class AsignaQuejaDptoForm(forms.ModelForm):
     class Meta:
         model = AsignaQuejaDpto
         fields = (
-                  'dpto', 'observaciones', 'rechazada',
+                  'dpto', 'observaciones',
                   )
         widgets = {
             'dpto': forms.Select(attrs={"placeholder": "Seleccione un Departamento.", "class": "form-control select2"}),
             'observaciones': forms.Textarea(attrs={"placeholder": "Observasiones", "class":"form-control mtext"}),
-            'rechazada': forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 
 
@@ -87,12 +86,11 @@ class AsignaQuejaTecnicoForm(forms.ModelForm):
     class Meta:
         model = AsignaQuejaTecnico
         fields = (
-                  'tecnico','observaciones', 'rechazada',
+                  'tecnico','observaciones',
                   )
         widgets = {
             'tecnico': forms.Select(attrs={"placeholder":"Seleccionar Técnico", "class": "form-control select2"}),
             'observaciones': forms.Textarea(attrs={"placeholder": "Observasiones", "class": "form-control mtext"}),
-            'rechazada': forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 
 
