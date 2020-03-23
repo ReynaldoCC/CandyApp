@@ -4,6 +4,8 @@
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/fixedColumns.dataTables.scss' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/fixedColumns.bootstrap.scss' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Gestión de Quejas {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -61,7 +63,7 @@
                     <button type="button" class="btn btn-outline-secondary toggle-column" data-column="17">Acciones</button>
                 </div>
                 <div class="row col-12 table-container">
-                    <table id="queja-table" class="table table-striped table-bordered table-responsive table-sm">
+                    <table id="queja-table" class="table table-striped table-bordered table-sm">
                         <thead>
                             <tr>
                                 <th class="text-nowrap">Fecha en sistema</th>
@@ -114,7 +116,7 @@
                                     {% if perms.dpv_quejas.delete_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_del' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}-->
-                                    {% if perms.dpv_quejas.add_asignaquejadpto %}
+                                    {% if perms.dpv_quejas.add_asignaquejadpto and not queja. %}
                                         <a onclick="return abrir_modal('{% url 'quejas_asig_depto' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejatecnico %}
@@ -171,18 +173,28 @@
     <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/dataTables.fixedColumns.js' %}"></script>
+<!--    <script src="{% static 'dpv_quejas/js/fixedColumns.bootstrap.js' %}"></script>-->
     <script type="text/javascript">
         $(document).ready(function() {
             var table = $('#queja-table').DataTable({
                 responsive: true,
-                //scrollX: 800,
-                //order: [ 0, 'asc' ],
-                dom:
-                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                        "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>" +
-                        "<'row'<'col-sm-12'tr>>" +
-                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // read more: https://datatables.net/examples/basic_init/dom.html
+                //scrollX: 850,
+                // scrollX: true,
+                // scrollCollapse: true,
+                order: [ 0, 'desc' ],
+  		        sScrollX: "100%",
+ 		        // sScrollXInner: "150%",
+                fixedColumns:   {
+                    leftColumns: 2,
+                    rightColumns: 1,
+                },
+                // dom:
+                //         "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                //         "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>" +
+                //         "<'row'<'col-sm-12'tr>>" +
+                //         "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                //         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // read more: https://datatables.net/examples/basic_init/dom.html
                 language: {
                     "decimal": "",
                     "emptyTable": "{% trans 'No hay Quejas que mostrar' %}",
