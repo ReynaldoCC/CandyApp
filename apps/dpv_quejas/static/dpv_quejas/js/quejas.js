@@ -446,7 +446,7 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
             onChange: function(value) {
                 if (!value.length) return;
-                $("#id_person_procedence-cpopular")[0].load(function(callback) {
+                $("#id_person_procedence-cpopular").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/consejopopular/filter/' + value,
@@ -458,7 +458,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_person_procedence-direccion_calle")[0].load(function(callback) {
+                $("#id_person_procedence-direccion_calle").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
@@ -470,7 +470,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_person_procedence-direccion_entrecalle1")[0].load(function(callback) {
+                $("#id_person_procedence-direccion_entrecalle1").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
@@ -482,7 +482,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_person_procedence-direccion_entrecalle2")[0].load(function(callback) {
+                $("#id_person_procedence-direccion_entrecalle2").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
