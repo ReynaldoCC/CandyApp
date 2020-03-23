@@ -260,7 +260,7 @@ var DPVQuejas = function () {
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
                         success: function(results) {
-                            console.log(results);
+                            // console.log(results);
                             callback(results);
                         },
                         error: function() {
@@ -901,7 +901,7 @@ var DPVQuejas = function () {
 
         var _disableOrEnablePNButton = function (element) {
             //console.log('element', element);
-            console.log(submit_button);
+            // console.log(submit_button);
             let element_li;
             if (element[0].nodeName === "DIV") {
                 element_li = element;
@@ -957,7 +957,7 @@ var DPVQuejas = function () {
                 success: function(data) {
                     persona = data;
                     _setValuesAddressPerson();
-                    console.log(persona);
+                    // console.log(persona);
                 },
                 error: function() {
                     console.log(xhr, error, status);
@@ -1104,7 +1104,7 @@ var DPVQuejas = function () {
             } else {
                 data = {};
             }
-            console.log(data);
+            // console.log(data);
             return data;
         };
         var _makeSumary = function () {
@@ -1164,7 +1164,7 @@ var DPVQuejas = function () {
                 if (persona != null)
                     quejoso_data.persona_data = persona;
             };
-            console.log(quejoso_data.persona_data);
+            // console.log(quejoso_data.persona_data);
             let data = {
                 type_procedence: type_procedence,
                 type_procedence_value: type_procedence_value,
@@ -1175,8 +1175,8 @@ var DPVQuejas = function () {
                 empty_procedence_msg: empty_procedence_msg,
                 empty_quejoso_msg: empty_quejoso_msg,
                 empty_queja_msg: empty_queja_msg,
-            }
-            console.log(data);
+            };
+            // console.log(data);
             var contenido = `
                 {{if ((type_procedence_value != "" && type_procedence != "" ) || (quejoso_data.ci != "" || quejoso_data.persona_data.ci != "") || (queja_data.texto != "" && queja_data.asunto_texto != "" ))}}
                 <div class="col-md-12">
@@ -2221,7 +2221,7 @@ var DPVQuejas = function () {
                     dataType: 'json',
                     data: data,
                     success: function (json) {
-                        //console.log(json)
+                        // console.log(json)
                         _prepare_list(JSON.parse(JSON.stringify(json)), params.awesomplete);
                     },
                     error: function (xhr,errmsg,err) {
@@ -2243,9 +2243,9 @@ var DPVQuejas = function () {
                     dataType: 'json',
                     data: data,
                     success: function (json) {
-                        console.log(json);
+                        // console.log(json);
                         let data = _prepare_data(json, params.object)
-                        console.log('data', data);
+                        // console.log('data', data);
                         let accept="Usar estos datos";
                         let title="Aviso";
                         let plus=json;
@@ -2265,28 +2265,32 @@ var DPVQuejas = function () {
                 return false;
             };
             let listilla = [];
-            console.log('prepare json', json);
+            // console.log('prepare json', json);
             let model = json[item];
-            console.log('prepare_model', model);
+            // console.log('prepare_model', model);
             for(let key in model)
             {
                 //console.log(key);
                 if (key.search('direccion_') == -1  && key.search('municipio') == -1  && key.search('cpopular') == -1  &&  key.search('genero') == -1  )
                     listilla.push('<h6 class="text-left"><strong>'+key+': </strong>'+model[key]+'</h6>');
             }
-            console.log(listilla);
+            // console.log(listilla);
             return 'Coincidencia encontrada:<br>'.concat(listilla.join("")).concat('<br><p>Desea rellenar el formulario con estos datos si son correctos:</p>.');
         };
 
 		var _prepare_list = function (list, awesomplete) {
+		    console.log(list);
             let c_list = [];
             //console.log(awesomplete);
-            let field = awesomplete.input.name.split('-')[1]
-            //console.log('field', field);
-            list.forEach(item => {
-                c_list.push(item[field]);
-            });
-            awesomplete.list = c_list;
+            if (list.length > 0) {
+
+                let field = awesomplete.input.name.split('-')[1]
+                //console.log('field', field);
+                list.forEach(item => {
+                    c_list.push(item[field]);
+                });
+                awesomplete.list = c_list;
+            }
         };
         var _asigne_person_procedence = function (data) {
             //alert(data); id_person_procedence-ci
@@ -2306,12 +2310,12 @@ var DPVQuejas = function () {
             $("#id_person_procedence-cpopular")[0].selectize.setValue(data.person.cpopular, false);
             //$("#")[0].selectize.setValue(data.person., false);
             //$('.form-control').trigger('change');
-            console.log(data);
+            // console.log(data);
             tmp = null;
         };
         var _asigne_pe = function (data) {
             //alert(data);
-            console.log(data);
+            // console.log(data);
             $("#id_pe-nombre").val(data.prensaescrita.nombre);
             $("#id_pe-siglas").val(data.prensaescrita.siglas);
             tmp = null;

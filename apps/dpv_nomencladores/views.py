@@ -399,14 +399,11 @@ def delete_organismo(request, id_organismo):
 
 def autofill_organismo(request):
     if request.method == 'POST':
-        data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             if len(nombre) >= 3:
                 organismos = [model_to_dict(mot) for mot in Organismo.objects.filter(nombre__icontains=nombre)[:10]]
-                data['organismos'] = organismos
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=organismos, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -967,14 +964,11 @@ def delete_prensaescrita(request, id_prensaescrita):
 
 def autofill_prensaescrita(request):
     if request.method == 'POST':
-        data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             if len(nombre) >= 3:
                 prensasescritas = [model_to_dict(mot) for mot in PrensaEscrita.objects.filter(nombre__icontains=nombre)[:10]]
-                data['prensasescritas'] = prensasescritas
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=prensasescritas, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -1044,14 +1038,11 @@ def delete_telefono(request, id_telefono):
 
 def autofill_telefono(request):
     if request.method == 'POST':
-        data = dict()
         numero = request.POST.get('numero')
-        print(numero)
         if numero:
             if len(numero) >= 3:
                 telefonos = [model_to_dict(mot) for mot in Telefono.objects.filter(numero__icontains=numero)[:10]]
-                data['telefonos'] = telefonos
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=telefonos, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -1121,14 +1112,11 @@ def delete_email(request, id_email):
 
 def autofill_email(request):
     if request.method == 'POST':
-        data = dict()
         email = request.POST.get('email')
-        print(email)
         if email:
             if len(email) >= 3:
                 emails = [model_to_dict(mot) for mot in Email.objects.filter(email__icontains=email)[:10]]
-                data['emails'] = emails
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=emails, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -1198,14 +1186,11 @@ def delete_gobierno(request, id_email):
 
 def autofill_gobierno(request):
     if request.method == 'POST':
-        data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             if len(nombre) >= 3:
                 gobiernos = [model_to_dict(mot) for mot in Gobierno.objects.filter(nombre__icontains=nombre)[:10]]
-                data['gobiernos'] = gobiernos
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=gobiernos, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -1275,14 +1260,11 @@ def delete_organizacion(request, id_organizacion):
 
 def autofill_organizacion(request):
     if request.method == 'POST':
-        data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             if len(nombre) >= 3:
                 organizaciones = [model_to_dict(mot) for mot in Organizacion.objects.filter(nombre__icontains=nombre)[:10]]
-                data['organizaciones'] = organizaciones
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=organizaciones, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
