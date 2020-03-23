@@ -246,7 +246,13 @@ def get_person_data(request, id_person):
 @login_required()
 def verify_personat(request):
     if request.method == 'GET':
-        movil = request.GET.get('movil')
+        if request.GET.get('movil'):
+            movil = request.GET.get('movil')
+        if request.GET.get('person_queja-movil'):
+            movil = request.GET.get('person_queja-movil')
+        if request.GET.get('person_procedence-movil'):
+            movil = request.GET.get('person_procedence-movil')
+
         id = request.GET.get('id')
 
         if not id:
