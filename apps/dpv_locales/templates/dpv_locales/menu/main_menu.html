@@ -6,14 +6,19 @@
             Locales
         </a>
         <ul class="sub-menu children dropdown-menu">
-            {% if perms.dpv_viviendas.view_vivienda %}
+            {% if perms.dpv_viviendas.view_local %}
             <li class="{% if '/local/' == request.path %} active {% endif %}">
                 <a href="{% url 'locales_list' %}"><i class="fa fa-building-o"></i>Locales </a>
             </li>
             {% endif %}
             {% if perms.dpv_viviendas.view_vivienda %}
+            <li class="{% if '/vivienda/vivienda/' in request.path %} active {% endif %}">
+                <a href="{% url 'vivienda_list' %}"><i class="fa fa-home"></i>Viviendas</a>
+            </li>
+            {% endif %}
+            {% if perms.dpv_viviendas.view_local %}
             <li class="{% if '/local/estadistico/' == request.path %} active {% endif %}">
-                <a href="{% url 'locales_stats' %}"><i class="fa fa-building-o"></i>Estadístico </a>
+                <a href="{% url 'locales_stats' %}"><i class="fa fa-table"></i>Estadístico </a>
             </li>
             {% endif %}
         </ul>
