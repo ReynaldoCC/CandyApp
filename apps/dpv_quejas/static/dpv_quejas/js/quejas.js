@@ -15,7 +15,6 @@ function cerrar_modal()
     return false;
 }
 
-
 var DPVQuejas = function () {
     var queja_form;
     var personas;
@@ -32,7 +31,7 @@ var DPVQuejas = function () {
             showCloseButton: true,
             showCancelButton: true,
             focusConfirm: false,
-            confirmButtonText: accept || '<i class="fa fa-thumbs-up"></i> OK',
+            confirmButtonText: accept || '<i class="fa fa-thumbs-up"></i> Si',
             confirmButtonAriaLabel: 'Correto',
             cancelButtonText: cancel || '<i class="fa fa-thumbs-down"></i> No',
             cancelButtonAriaLabel: 'Cancelar',
@@ -112,7 +111,7 @@ var DPVQuejas = function () {
             previous_tab.find('a.nav-link').addClass('active show');
             content_list.removeClass('active show in');
             $(conten_selector).addClass('active show in');
-            if (previous_tab[0] == first_tab[0]) {
+            if (previous_tab[0] === first_tab[0]) {
                 prev_button.addClass('disabled');
             }
             if (next_button.hasClass('disabled')) {
@@ -195,7 +194,7 @@ var DPVQuejas = function () {
                     $dir_municipio[0].selectize.setValue('', false);
                     $dir_cpopular[0].selectize.setValue('', false);
                     $("#id_queja-dir_num").val('');
-                } ;
+                }
             } else {
                 if (this.checked) {
                     _getPersonData($('#id_personas_list').val());
@@ -207,7 +206,7 @@ var DPVQuejas = function () {
                     $dir_cpopular[0].selectize.setValue('', false);
                     $("#id_queja-dir_num").val('');
                 } ;
-            };
+            }
         });
         $("#id_personas_list").on('change', function (e) {
             _loadPersonData(this.value);
@@ -271,7 +270,6 @@ var DPVQuejas = function () {
             },
         });
         var $pj_cpopular = $("#id_empresa-cpopular").selectize({
-            create: true,
             placeholder: "Selecione un Consejo Popular",
             allowEmptyOption: false,
             sortField: 'text',
@@ -295,7 +293,6 @@ var DPVQuejas = function () {
             },
         });
         var $pj_direccion_calle = $("#id_empresa-direccion_calle").selectize({
-            create: true,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             sortField: 'text',
@@ -319,7 +316,6 @@ var DPVQuejas = function () {
             },
         });
         var $pj_direccion_entrecalle2 = $("#id_empresa-direccion_entrecalle2").selectize({
-            create: true,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             sortField: 'text',
@@ -343,7 +339,6 @@ var DPVQuejas = function () {
             },
         });
         var $pj_direccion_entrecalle1 = $("#id_empresa-direccion_entrecalle1").selectize({
-            create: true,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             sortField: 'text',
@@ -377,7 +372,6 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
         });
         var $aq_direccion_calle = $("#id_person_procedence-direccion_calle").selectize({
-            create: true,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             sortField: 'text',
@@ -401,7 +395,6 @@ var DPVQuejas = function () {
             },
         });
         var $aq_direccion_entrecalle1 = $("#id_person_procedence-direccion_entrecalle1").selectize({
-            create: true,
             placeholder: "Selecione un ",
             allowEmptyOption: false,
             sortField: 'text',
@@ -425,7 +418,6 @@ var DPVQuejas = function () {
             },
         });
         var $aq_direccion_entrecalle2 = $("#id_person_procedence-direccion_entrecalle2").selectize({
-            create: true,
             placeholder: "Selecione un ",
             allowEmptyOption: false,
             sortField: 'text',
@@ -505,7 +497,6 @@ var DPVQuejas = function () {
             },
         });
         var $aq_cpopular = $("#id_person_procedence-cpopular").selectize({
-            create: true,
             placeholder: "Selecione un consejo popular",
             allowEmptyOption: false,
             sortField: 'text',
@@ -534,7 +525,6 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
         });
         var $q_direccion_calle = $("#id_person_queja-direccion_calle").selectize({
-            create: true,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             sortField: 'text',
@@ -558,7 +548,6 @@ var DPVQuejas = function () {
             },
         });
         var $q_direccion_entrecalle1 = $("#id_person_queja-direccion_entrecalle1").selectize({
-            create: true,
             placeholder: "Selecione un ",
             allowEmptyOption: false,
             sortField: 'text',
@@ -582,7 +571,6 @@ var DPVQuejas = function () {
             },
         });
         var $q_direccion_entrecalle2 = $("#id_person_queja-direccion_entrecalle2").selectize({
-            create: true,
             placeholder: "Selecione un ",
             allowEmptyOption: false,
             sortField: 'text',
@@ -611,7 +599,7 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
             onChange: function(value) {
                 if (!value.length) return;
-                $("#id_person_queja-cpopular")[0].load(function(callback) {
+                $("#id_person_queja-cpopular").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/consejopopular/filter/' + value,
@@ -623,7 +611,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_person_queja-direccion_calle")[0].load(function(callback) {
+                $("#id_person_queja-direccion_calle").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
@@ -635,7 +623,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_person_queja-direccion_entrecalle1")[0].load(function(callback) {
+                $("#id_person_queja-direccion_entrecalle1").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
@@ -647,7 +635,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_person_queja-direccion_entrecalle2")[0].load(function(callback) {
+                $("#id_person_queja-direccion_entrecalle2").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
@@ -662,7 +650,6 @@ var DPVQuejas = function () {
             },
         });
         var $q_cpopular = $("#id_person_queja-cpopular").selectize({
-            create: true,
             placeholder: "Selecione un consejo popular",
             allowEmptyOption: false,
             sortField: 'text',
@@ -686,7 +673,6 @@ var DPVQuejas = function () {
             },
         });
         var $dir_calle = $("#id_queja-dir_calle").selectize({
-            create: true,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             sortField: 'text',
@@ -710,7 +696,6 @@ var DPVQuejas = function () {
             },
         });
         var $dir_entrecalle1 = $("#id_queja-dir_entrecalle1").selectize({
-            create: true,
             placeholder: "Selecione una calle ",
             allowEmptyOption: false,
             sortField: 'text',
@@ -734,7 +719,6 @@ var DPVQuejas = function () {
             },
         });
         var $dir_entrecalle2 = $("#id_queja-dir_entrecalle2").selectize({
-            create: true,
             required: false,
             placeholder: "Selecione una calle ",
             allowEmptyOption: false,
@@ -764,7 +748,7 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
             onChange: function(value) {
                 if (!value.length) return;
-                $("#id_queja-dir_cpopular")[0].load(function(callback) {
+                $("#id_queja-dir_cpopular").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/consejopopular/filter/' + value,
@@ -776,7 +760,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_queja-dir_calle")[0].load(function(callback) {
+                $("#id_queja-dir_calle").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
@@ -788,7 +772,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_queja-dir_entrecalle1")[0].load(function(callback) {
+                $("#id_queja-dir_entrecalle1").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
@@ -800,7 +784,7 @@ var DPVQuejas = function () {
                         }
                     })
                 });
-                $("#id_queja-dir_entrecalle2")[0].load(function(callback) {
+                $("#id_queja-dir_entrecalle2").load(function(callback) {
                     xhr && xhr.abort();
                     xhr = $.ajax({
                         url: '/nomenclador/calle/filter/' + value,
@@ -815,7 +799,6 @@ var DPVQuejas = function () {
             },
         });
         var $dir_cpopular = $("#id_queja-dir_cpopular").selectize({
-            create: true,
             placeholder: "Selecione un consejo popular",
             allowEmptyOption: false,
             sortField: 'text',
@@ -844,7 +827,6 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
         });
         var $respondera = $("#id_queja-responder_a").selectize({
-            create: true,
             sortField: 'text',
             selectOnTab: true,
             createOnBlur: true,
@@ -873,7 +855,7 @@ var DPVQuejas = function () {
         });
         var $personas_list = $("#id_personas_list").selectize({
             create: false,
-            maxItems: null,
+            maxItems: 1,
             placeholder: "Selecione una persona",
             allowEmptyOption: false,
             valueField: 'id',
