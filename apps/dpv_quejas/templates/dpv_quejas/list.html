@@ -116,11 +116,39 @@
                                     {% if perms.dpv_quejas.delete_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_del' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}-->
-                                    {% if perms.dpv_quejas.add_asignaquejadpto and not queja. %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_asig_depto' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
+                                    {% if perms.dpv_quejas.add_asignaquejadpto %}
+                                        {% if not queja.asignada_depto %}
+                                        <a onclick="return abrir_modal('{% url 'quejas_asig_depto' queja.id %}')"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="Asignar a Dpto"
+                                           type="button"
+                                           class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
+                                        {% else %}
+                                        <a data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="Asignada al Dpto {{queja.quejadpto.first.dpto.nombre}}"
+                                           disabled="true"
+                                           type="button"
+                                           class="btn btn-sm btn-outline-info"><i class="fa fa-caret-square-o-right"></i></a>
+                                        {% endif %}
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejatecnico %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_asig_tec' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
+                                        {% if not queja.asignada_tecnico %}
+                                        <a onclick="return abrir_modal('{% url 'quejas_asig_tec' queja.id %}')"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="Asignar a Tecnico"
+                                           type="button"
+                                           class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
+                                        {% else %}
+                                        <a data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="Asignada al Tecnico {{queja.quejatecnico.first.tecnico.profile}}"
+                                           disabled="true"
+                                           type="button"
+                                           class="btn btn-sm btn-outline-info"><i class="fa fa-align-justify"></i></a>
+                                        {% endif %}
                                     {% endif %}
                                     <!--{% if perms.dpv_quejas.add_quejarechazada %}
                                         <a onclick="return abrir_modal('{% url 'quejas_deny' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
