@@ -292,6 +292,7 @@ def asignar_depto_ap(instance):
         qd.observaciones = "Asignado por el sistema."
         qd.save()
 
+
 # Signals
 @receiver(pre_save, sender=Queja)
 def preset_queja(sender, **kwargs):
@@ -311,3 +312,38 @@ def postset_queja(sender, **kwargs):
         instance = kwargs.get('instance')
         if kwargs.get('created', True):
             asignar_depto_ap(instance)
+
+
+@receiver(post_save, sender=AsignaQuejaTecnico)
+def set_queja_asigtec_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.quejatecnico.save()
+
+
+@receiver(post_save, sender=AsignaQuejaDpto)
+def set_queja_asigdpto_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.quejadpto.save()
+
+
+@receiver(post_save, sender=QuejaNotificada)
+def set_queja_noti_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.queja.save()
+
+
+@receiver(post_save, sender=RespuestaAQueja)
+def set_queja_resp_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.queja.save()
+
+
+@receiver(post_save, sender=QuejaRedirigida)
+def set_queja_redir_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.queja.save()
