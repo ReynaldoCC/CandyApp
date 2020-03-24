@@ -47,9 +47,10 @@
                                 {% if perms.dpv_nomencladores.change_procedencia %}
                                 <a onclick="return abrir_modal('{% url 'procedencia_edit' procedencia.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-pencil"></i></a>
                                 {% endif %}
+                                <!--
                                 {% if perms.dpv_nomencladores.delete_procedencia %}
                                 <a onclick="return abrir_modal('{% url 'procedencia_delete' procedencia.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
-                                {% endif %}
+                                {% endif %}-->
                             </td>
                         </tr>
                     {% endfor %}

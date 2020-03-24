@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import permission_required, login_required
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 from .forms import *
 from .models import *
 
@@ -772,7 +774,8 @@ def delete_procedencia(request, id_procedencia):
     procedencia = Procedencia.objects.get(id=id_procedencia)
     if request.method == 'POST':
         procedencia.perform_log(request=request, af=2)
-        procedencia.delete()
+        messages.warning(request=request, message=_("No se puede eliminar procedencias de esta lista verifique con el administrador del sistema para ver que desea hacer y si es posible"))
+        # procedencia.delete()
         return redirect('nomenclador_procedencia')
     return render(request, 'dpv_nomencladores/delete_procedencia.html', {'procedencia': procedencia})
 
