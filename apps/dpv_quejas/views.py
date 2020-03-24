@@ -36,7 +36,8 @@ def index(request):
                                                       aprobada_dir=Case(When(respuesta__apruebadtr__isnull=False, then=True),
                                                                         default=False,
                                                                         output_field=BooleanField()),
-                                                      )
+                                                      )\
+                                            .distinct()
             else:
                 quejas = Queja.objects.filter(dir_municipio=ct.municipio,
                                               radicado_por__perfil_usuario__centro_trabajo__municipio=ct.municipio)\
@@ -58,7 +59,8 @@ def index(request):
                                                 aprobada_dir=Case(When(respuesta__apruebadtr__isnull=False, then=True),
                                                                   default=False,
                                                                   output_field=BooleanField()),
-                                                )
+                                                )\
+                                      .distinct()
         except:
             print("no tiene centro de trabajo asociado")
     except:
