@@ -157,6 +157,10 @@ CHARGE_DATA_DEFAULT = True
 
 UPDATING_LOCALS = 0
 
+CELERY_BROKER_URL = 'amqp://guest@localhost//'
+# CELERY_RESULT_BACKEND = 'pyamqp://guest@localhost//'
+CELERY_RESULT_PERSISTENT = False
+
 # Email configuration to do
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

@@ -7,4 +7,5 @@
 .idea*
 db.sqlite3
 media/*
+celerybeat-schedule
 
