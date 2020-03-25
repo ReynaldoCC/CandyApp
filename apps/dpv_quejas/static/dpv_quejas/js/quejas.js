@@ -174,7 +174,6 @@ var DPVQuejas = function () {
                 $("#is_indb").removeClass('no-show');
                 $("#not_indb").addClass('no-show');
                 $("#id_personas_list")[0].selectize.clear();
-                //console.log(queja_form);
             };
         });
         $("#same_address").on('change', function (e) {
@@ -1330,7 +1329,16 @@ var DPVQuejas = function () {
             $("#id_person_queja-direccion_entrecalle1")[0].selectize.setValue(data.direccion_entrecalle1);
             $("#id_person_queja-direccion_entrecalle2")[0].selectize.setValue(data.direccion_entrecalle2);
         };
+        var _perform_show_person_queja = function() {
+            console.log("revisando", $("#id_queja-damnificado_not_indb"));
+            if ($("#id_queja-damnificado_not_indb")[0].checked) {
+                 $("#is_indb").addClass('no-show');
+                 $("#not_indb").removeClass('no-show');
+            }
+        };
+
         _toggleProcedenciaForms();
+        _perform_show_person_queja();
         //console.log('algo', $('input[id$="-selectized"]'));
     };
     var _initQuejaForm = function () {

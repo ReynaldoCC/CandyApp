@@ -36,3 +36,7 @@ a.back-link {
 .DTFC_LeftHeadWrapper table, .DTFC_RightHeadWrapper table {
     background-color: #fff;
 }
+ul.errorlist {
+    color: #dc3545 !important;
+    font-size: .8rem !important;
+}
