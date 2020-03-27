@@ -123,14 +123,14 @@
                                            data-placement="top"
                                            title="Asignar a Dpto"
                                            type="button"
-                                           class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
+                                           class="btn btn-sm btn-info"><i class="fa fa-group"></i></a>
                                         {% else %}
                                         <a data-toggle="tooltip"
                                            data-placement="top"
                                            title="Asignada al Dpto {{queja.quejadpto.first.dpto.nombre}}"
                                            disabled="true"
                                            type="button"
-                                           class="btn btn-sm btn-outline-info"><i class="fa fa-caret-square-o-right"></i></a>
+                                           class="btn btn-sm btn-outline-info"><i class="fa fa-group"></i></a>
                                         {% endif %}
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejatecnico %}
@@ -140,14 +140,14 @@
                                            data-placement="top"
                                            title="Asignar a Tecnico"
                                            type="button"
-                                           class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
+                                           class="btn btn-sm btn-info"><i class="fa fa-hand-o-right"></i></a>
                                         {% else %}
                                         <a data-toggle="tooltip"
                                            data-placement="top"
                                            title="Asignada al Tecnico {{queja.quejatecnico.first.tecnico.profile}}"
                                            disabled="true"
                                            type="button"
-                                           class="btn btn-sm btn-outline-info"><i class="fa fa-align-justify"></i></a>
+                                           class="btn btn-sm btn-outline-info"><i class="fa fa-hand-o-right"></i></a>
                                         {% endif %}
                                     {% endif %}
                                     <!--{% if perms.dpv_quejas.add_quejarechazada %}

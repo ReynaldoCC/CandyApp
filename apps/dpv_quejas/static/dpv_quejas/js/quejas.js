@@ -660,7 +660,7 @@ var DPVQuejas = function () {
                     type: 'POST',
                     data: {
                         csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
-                        municipio: $("#id_person_queja-municipio").getValue(),
+                        municipio: $("#id_person_queja-municipio").getValue() || 0,
                         nombre: input,
                     },
                     success: function (result) {
@@ -673,73 +673,104 @@ var DPVQuejas = function () {
         });
         var $dir_calle = $("#id_queja-dir_calle").selectize({
             placeholder: "Selecione una calle",
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
             allowEmptyOption: false,
-            sortField: 'text',
             selectOnTab: true,
-            createOnBlur: true,
-            create: function (input, callback){
-                $.ajax({
-                    url: '/nomenclador/calle/add/',
-                    type: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
-                        municipio: $("#id_queja-dir_municipio").getValue(),
-                        nombre: input,
-                    },
-                    success: function (result) {
-                        if (result) {
-                            callback({ value: result.id, text: result.nombre });
-                        }
-                    }
-                });
-            },
+            createOnBlur: false,
+            create: false,
+            // create: function (input, callback){
+            //     if (!$dir_municipio[0].selectize.getValue()){
+            //         let type = "warning";
+            //         let text = "Para agregar una calle debe primero seccionar el municipio.";
+            //         _makeAlert(type, text, null, null, "Cuidado");
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $dir_municipio[0].selectize.getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             console.log(result.nombre);
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $dir_entrecalle1 = $("#id_queja-dir_entrecalle1").selectize({
             placeholder: "Selecione una calle ",
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
             allowEmptyOption: false,
-            sortField: 'text',
             selectOnTab: true,
             createOnBlur: true,
-            create: function (input, callback){
-                $.ajax({
-                    url: '/nomenclador/calle/add/',
-                    type: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
-                        municipio: $("#id_queja-dir_municipio").getValue(),
-                        nombre: input,
-                    },
-                    success: function (result) {
-                        if (result) {
-                            callback({ value: result.id, text: result.nombre });
-                        }
-                    }
-                });
-            },
+            create: false,
+            // create: function (input, callback){
+            //     if (!$dir_municipio[0].selectize.getValue()){
+            //         let type = "warning";
+            //         let text = "Para agregar una calle debe primero seccionar el municipio.";
+            //         _makeAlert(type, text, null, null, "Cuidado");
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $dir_municipio[0].selectize.getValue() || 0,
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $dir_entrecalle2 = $("#id_queja-dir_entrecalle2").selectize({
             required: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
             placeholder: "Selecione una calle ",
             allowEmptyOption: false,
-            sortField: 'text',
             selectOnTab: true,
-            createOnBlur: true,
-            create: function (input, callback){
-                $.ajax({
-                    url: '/nomenclador/calle/add/',
-                    type: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
-                        municipio: $("#id_queja-dir_municipio").getValue(),
-                        nombre: input,
-                    },
-                    success: function (result) {
-                        if (result) {
-                            callback({ value: result.id, text: result.nombre });
-                        }
-                    }
-                });
-            },
+            createOnBlur: false,
+            create: false,
+            // create: function (input, callback){
+            //     if (!$dir_municipio[0].selectize.getValue()){
+            //         let type = "warning";
+            //         let text = "Para agregar una calle debe primero seccionar el municipio.";
+            //         _makeAlert(type, text, null, null, "Cuidado");
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $dir_municipio[0].selectize.getValue() || 0,
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $dir_municipio = $("#id_queja-dir_municipio").selectize({
             create: false,
@@ -747,78 +778,74 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
             onChange: function(value) {
                 if (!value.length) return;
-                $("#id_queja-dir_cpopular").load(function(callback) {
-                    xhr && xhr.abort();
-                    xhr = $.ajax({
-                        url: '/nomenclador/consejopopular/filter/' + value,
-                        success: function(results) {
+                let cpopulares, calles;
+                $.ajax({
+                    url: '/nomenclador/consejopopular/filter/' + value,
+                    success: function(results) {
+                        console.log($("#id_queja-dir_cpopular"));
+                        $dir_cpopular[0].selectize.clear();
+                        $dir_cpopular[0].selectize.clearOptions();
+                        $dir_cpopular[0].selectize.load(function (callback) {
                             callback(results);
-                        },
-                        error: function() {
-                            callback();
-                        }
-                    })
+                        });
+                    }
                 });
-                $("#id_queja-dir_calle").load(function(callback) {
-                    xhr && xhr.abort();
-                    xhr = $.ajax({
-                        url: '/nomenclador/calle/filter/' + value,
-                        success: function(results) {
+                $.ajax({
+                    url: '/nomenclador/calle/filter/' + value,
+                    success: function(results) {
+                        $dir_calle[0].selectize.clear();
+                        $dir_calle[0].selectize.clearOptions();
+                        $dir_calle[0].selectize.load(function (callback) {
                             callback(results);
-                        },
-                        error: function() {
-                            callback();
-                        }
-                    })
-                });
-                $("#id_queja-dir_entrecalle1").load(function(callback) {
-                    xhr && xhr.abort();
-                    xhr = $.ajax({
-                        url: '/nomenclador/calle/filter/' + value,
-                        success: function(results) {
+                        });
+                        $dir_entrecalle1[0].selectize.clear();
+                        $dir_entrecalle1[0].selectize.clearOptions();
+                        $dir_entrecalle1[0].selectize.load(function (callback) {
                             callback(results);
-                        },
-                        error: function() {
-                            callback();
-                        }
-                    })
-                });
-                $("#id_queja-dir_entrecalle2").load(function(callback) {
-                    xhr && xhr.abort();
-                    xhr = $.ajax({
-                        url: '/nomenclador/calle/filter/' + value,
-                        success: function(results) {
+                        });
+                        $dir_entrecalle2[0].selectize.clear();
+                        $dir_entrecalle2[0].selectize.clearOptions();
+                        $dir_entrecalle2[0].selectize.load(function (callback) {
                             callback(results);
-                        },
-                        error: function() {
-                            callback();
-                        }
-                    })
+                        });
+                    }
                 });
             },
         });
         var $dir_cpopular = $("#id_queja-dir_cpopular").selectize({
             placeholder: "Selecione un consejo popular",
             allowEmptyOption: false,
-            sortField: 'text',
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
             selectOnTab: true,
-            createOnBlur: true,
-            create: function (input, callback){
-                $.ajax({
-                    url: '/nomenclador/consejopopular/add/',
-                    type: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
-                        municipio: $("#id_queja-dir_municipio").getValue(),
-                        nombre: input,
-                    },
-                    success: function (result) {
-                        if (result) {
-                            callback({ value: result.id, text: result.nombre });
-                        }
-                    }
-                });
-            },
+            createOnBlur: false,
+            create: false,
+            // create: function (input, callback){
+            //     if (!$dir_municipio[0].selectize.getValue()){
+            //         let type = "warning";
+            //         let text = "Para agregar un consejo popular debe primero seccionar el municipio.";
+            //         _makeAlert(type, text, null, null, "Cuidado");
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/nomenclador/consejopopular/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $dir_municipio[0].selectize.getValue(),
+            //             numero: 0,
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             console.log(result);
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $asunto = $("#id_queja-asunto").selectize({
             create: false,
@@ -1394,9 +1421,6 @@ var DPVQuejas = function () {
 				'queja-tipo_procedencia': {
 				    required: true,
 				},
-//				'queja-tipo_procedencia-selectized': {
-//				    required: true,
-//				},
 				'email-email': {
 				    required: true,
 				    email: true,
@@ -1426,9 +1450,6 @@ var DPVQuejas = function () {
 				'person_procedence-genero': {
 				    required: true,
 				},
-//				'person_procedence-genero-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-email_address': {
 				    email: true,
 				},
@@ -1450,36 +1471,21 @@ var DPVQuejas = function () {
 				'person_procedence-direccion_calle': {
 				    required: true,
 				},
-//				'person_procedence-direccion_calle-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-direccion_numero': {
 				    required: true,
 				},
 				'person_procedence-direccion_entrecalle1': {
 				    required: true,
 				},
-//				'person_procedence-direccion_entrecalle1-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-direccion_entrecalle2': {
 				    required: true,
 				},
-//				'person_procedence-direccion_entrecalle2-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-municipio': {
 				    required: true,
 				},
-//				'person_procedence-municipio-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-cpopular': {
 				    required: true,
 				},
-//				'person_procedence-cpopular-selectized': {
-//				    required: true,
-//				},
 				'telefono-numero': {
 				    required: true,
                     digits: true,
@@ -1528,33 +1534,18 @@ var DPVQuejas = function () {
 				'empresa-cpopular': {
 				    required: true,
 				},
-//				'empresa-municipio-selectized': {
-//				    required: true,
-//				},
-//				'empresa-cpopular-selectized': {
-//				    required: true,
-//				},
 				'empresa-direccion_calle': {
 				    required: true,
 				},
-//				'empresa-direccion_calle-selectized': {
-//				    required: true,
-//				},
 				'empresa-direccion_numero': {
 				    required: true,
 				},
 				'empresa-direccion_entrecalle1': {
 				    required: true,
 				},
-//				'empresa-direccion_entrecalle1-selectized': {
-//				    required: true,
-//				},
 				'empresa-direccion_entrecalle2': {
 				    required: true,
 				},
-//				'empresa-direccion_entrecalle2-selectized': {
-//				    required: true,
-//				},
 				'gob-nombre': {
 				    required: true,
 				    maxlength: 50,
@@ -1566,9 +1557,6 @@ var DPVQuejas = function () {
 				'personas_list': {
 				    required: true,
 				},
-//				'personas_list-selectized': {
-//				    required: true,
-//				},
 				'person_queja-ci': {
 				    required: true,
 				    digits: true,
@@ -1586,9 +1574,6 @@ var DPVQuejas = function () {
 				'person_queja-genero': {
 				    required: true,
 				},
-//				'person_queja-genero-selectized': {
-//				    required: true,
-//				},
 				'person_queja-email_address': {
 				    email: true,
 				},
@@ -1610,90 +1595,51 @@ var DPVQuejas = function () {
 				'person_queja-direccion_calle': {
 				    required: true,
 				},
-//				'person_queja-direccion_calle-selectized': {
-//				    required: true,
-//				},
 				'person_queja-direccion_numero': {
 				    required: true,
 				},
 				'person_queja-direccion_entrecalle1': {
 				    required: true,
 				},
-//				'person_queja-direccion_entrecalle1-selectized': {
-//				    required: true,
-//				},
 				'person_queja-direccion_entrecalle2': {
 				    required: true,
 				},
-//				'person_queja-direccion_entrecalle2-selectized': {
-//				    required: true,
-//				},
 				'person_queja-cpopular': {
 				    required: true,
 				},
-//				'person_queja-cpopular-selectized': {
-//				    required: true,
-//				},
 				'person_queja-municipio': {
 				    required: true,
 				},
-//				'person_queja-municipio-selectized': {
-//				    required: true,
-//				},
 				'queja-no_procendencia': {},
 				'queja-no_radicacion': {},
 				'queja-dir_calle': {
 				    required: true,
 				},
-//				'queja-dir_calle-selectized': {
-//				    required: true,
-//				},
 				'queja-dir_num': {
 				    required: true,
 				},
 				'queja-dir_entrecalle1': {
 				    required: true,
 				},
-//				'queja-dir_entrecalle1-selectized': {
-//				    required: true,
-//				},
 				'queja-dir_entrecalle2': {
 				    required: true,
 				},
-//				'queja-dir_entrecalle2-selectized': {
-//				    required: true,
-//				},
 				'queja-dir_municipio': {
 				    required: true,
 				},
-//				'queja-dir_municipio-selectized': {
-//				    required: true,
-//				},
 				'queja-dir_cpopular': {
 				    required: true,
 				},
-//				'queja-dir_cpopular-selectized': {
-//				    required: true,
-//				},
 				'queja-referencia': {},
 				'queja-asunto': {
 				    required: true,
 				},
-//				'queja-asunto-selectized': {
-//				    required: true,
-//				},
 				'queja-tipo': {
 				    required: true,
 				},
 				'queja-responder_a': {
 				    required: true,
 				},
-//				'queja-responder_a-selectized': {
-//				    required: true,
-//				},
-//				'queja-tipo-selectized': {
-//				    required: true,
-//				},
 				'queja-asunto_texto': {
 				    required: true,
                     maxlength: 300,

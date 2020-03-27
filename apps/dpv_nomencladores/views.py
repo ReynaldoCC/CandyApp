@@ -163,9 +163,13 @@ def add_cpopular_json(request):
         if form.is_valid():
             nombre_cpop = form.cleaned_data.get('nombre')
             municipio = form.cleaned_data.get('municipio')
-            cpop, created = Calle.objects.get_or_create(nombre=nombre_cpop)
-            if municipio and not cpop.municipio:
-                cpop.municipio = get_object_or_404(Municipio, id=municipio)
+            numero = form.cleaned_data.get('numero')
+            if int(numero) <= 0:
+                ultimo_numero_str = ConsejoPopular.objects.order_by('id').last().numero
+                ultimo_numero = int(ultimo_numero_str)
+                numero = str(ultimo_numero + 1)
+            cpop, created = ConsejoPopular.objects.get_or_create(nombre=nombre_cpop, defaults={"municipio": municipio,
+                                                                                               "numero": numero})
             data = model_to_dict(cpop)
             if created:
                 status = 201
@@ -274,7 +278,7 @@ def add_calle_json(request):
 @login_required()
 def filter_by_municipio(request, id_municipio):
     try:
-        calles = list(model_to_dict(calle) for calle in Calle.objects.filter(municipio__id=id_municipio))
+        calles = list(model_to_dict(calle, fields=["id", "nombre"]) for calle in Calle.objects.filter(municipios__id=id_municipio))
         return JsonResponse(data=calles, safe=False, status=200)
     except:
         return JsonResponse({"error": "Invalid id value"}, status=400)

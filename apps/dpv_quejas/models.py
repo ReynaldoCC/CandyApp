@@ -335,11 +335,11 @@ def set_queja_noti_state(sender, **kwargs):
         instance.queja.save()
 
 
-@receiver(post_save, sender=RespuestaAQueja)
-def set_queja_resp_state(sender, **kwargs):
-    if kwargs.get('instance'):
-        instance = kwargs.get('instance')
-        instance.queja.save()
+# @receiver(post_save, sender=RespuestaAQueja)
+# def set_queja_resp_state(sender, **kwargs):
+#     if kwargs.get('instance'):
+#         instance = kwargs.get('instance')
+#         instance.queja.save()
 
 
 @receiver(post_save, sender=QuejaRedirigida)

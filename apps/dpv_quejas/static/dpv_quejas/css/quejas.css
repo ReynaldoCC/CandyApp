@@ -40,3 +40,7 @@ ul.errorlist {
     color: #dc3545 !important;
     font-size: .8rem !important;
 }
+.form-group .text-danger {
+    color: #dc3545 !important;
+    font-size: .8rem !important;
+}
