@@ -1,4 +1,4 @@
-{% extends 'dpv_locales/list.html' %}
+{% extends 'dpv_quejas/list.html' %}
 {% block page_title %} | Formulario {% endblock page_title %}
 {% load static %}
 {% block extra_style %}
@@ -12,11 +12,7 @@
 {% block breadcrumb_title %} Crear {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% if '/local/form/' == request.path %}
     <li class="active">Crear</li>
-    {% else %}
-    <li class="active">Actualizar</li>
-    {% endif %}
 {% endblock breadcrumbs %}
 {% block content_page %}
     <div class="col-md-12">
