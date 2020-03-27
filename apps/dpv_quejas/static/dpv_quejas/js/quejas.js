@@ -1348,7 +1348,7 @@ var DPVQuejas = function () {
             $("#id_person_queja-direccion_entrecalle2")[0].selectize.setValue(data.direccion_entrecalle2);
         };
         var _perform_show_person_queja = function() {
-            console.log("revisando", $("#id_queja-damnificado_not_indb"));
+            // console.log("revisando", $("#id_queja-damnificado_not_indb"));
             if ($("#id_queja-damnificado_not_indb")[0].checked) {
                  $("#is_indb").addClass('no-show');
                  $("#not_indb").removeClass('no-show');
@@ -2171,14 +2171,14 @@ var DPVQuejas = function () {
                     data: data,
                     success: function (json) {
                         // console.log(json);
-                        let data = _prepare_data(json, params.object)
+                        let data = _prepare_data(json, params.object);
                         // console.log('data', data);
                         let accept="Usar estos datos";
                         let title="Aviso";
                         let plus=json;
                         tmp = json;
                         if (data) {
-                            _makeAlert('info', data, params.asigne, title=title, accept=accept)
+                            _makeAlert('info', data, params.asigne, null, title=title, accept=accept)
                         };
                     },
                     error: function (xhr,errmsg,err) {
@@ -2206,7 +2206,7 @@ var DPVQuejas = function () {
         };
 
 		var _prepare_list = function (list, awesomplete) {
-		    console.log(list);
+		    // console.log(list);
             let c_list = [];
             //console.log(awesomplete);
             if (list.length > 0) {
@@ -2220,7 +2220,7 @@ var DPVQuejas = function () {
             }
         };
         var _asigne_person_procedence = function (data) {
-            //alert(data); id_person_procedence-ci
+            //console.log(data);
             $("#id_person_procedence-ci").val(data.person.ci);
             $("#id_person_procedence-nombre").val(data.person.nombre);
             $("#id_person_procedence-apellidos").val(data.person.apellidos);
