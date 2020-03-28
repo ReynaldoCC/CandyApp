@@ -2305,7 +2305,7 @@ var DPVQuejas = function () {
             },
 
         });
-        let validator_form = queja_form.validate({
+        let validator_form = response_form.validate({
 			rules: {
 				'gestion': {
 				    required: true,
