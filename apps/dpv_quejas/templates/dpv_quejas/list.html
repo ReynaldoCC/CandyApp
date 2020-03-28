@@ -155,11 +155,13 @@
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_quejaredirigida %}
                                         <a href="{% url 'quejas_redirct' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
-                                    {% endif %}
+                                    {% endif %}-->
                                     {% if perms.dpv_quejas.add_respuestaqueja %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_response' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
+                                        {% if request.user == queja.get_tecnico_asignado.profile.datos_usuario or request.user.is_superuser %}
+                                        <a href="{% url 'quejas_response' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-comment"></i></a>
+                                        {% endif %}
                                     {% endif %}
-                                    {% if perms.dpv_respuesta.add_apruebajefe %}
+                                    <!--{% if perms.dpv_respuesta.add_apruebajefe %}
                                         <a href="{% url 'quejas_ajdepto' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_respuesta.add_apruebadtr %}

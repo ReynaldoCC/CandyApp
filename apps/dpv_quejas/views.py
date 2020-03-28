@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import F, Q, When, Case, BooleanField, Value
+from django.http import HttpResponseForbidden
+from django.contrib import messages
 from django.db.models.functions import Concat
 from django.core import serializers
 from django.forms.models import model_to_dict
@@ -258,7 +260,24 @@ def asignar_queja_tecnico(request, id_queja):
 
 
 def responder_queja(request, id_queja):
-    return render(request, 'dpv_quejas/responder.html')
+    queja = get_object_or_404(Queja, id=id_queja)
+    if request.user and queja.get_tecnico_asignado:
+        if request.user != queja.get_tecnico_asignado.profile.datos_usuario:
+            return HttpResponseForbidden()
+    respuesta = RespuestaQueja()
+    respuesta.queja = queja
+    form = QRespuestaForm(instance=respuesta)
+    if request.method == "POST":
+        form = QRespuestaForm(request.POST, instance=respuesta)
+        if form.is_valid():
+            respuesta = form.save(commit=False)
+            respuesta.responde = request.user.perfil_usuario.tecnico.first()
+            respuesta.save_and_log(request=request, af=0)
+            messages.success(request=request, message="Respuesta de la queja guardada satisfacoriamente")
+            return redirect(reverse_lazy("quejas_list"))
+        else:
+            messages.success(request=request, message="Existen errores en el fomrulario de respuesta por lo que no se pudo guardar.")
+    return render(request, 'dpv_quejas/response_form.html', {"form": form, "queja": queja})
 
 
 def aprobar_respuesta_tecnico(request, id_queja):

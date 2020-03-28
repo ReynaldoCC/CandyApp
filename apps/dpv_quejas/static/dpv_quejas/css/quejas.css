@@ -44,3 +44,7 @@ ul.errorlist {
     color: #dc3545 !important;
     font-size: .8rem !important;
 }
+.my-hidden {
+    display: none !important;
+    visibility: hidden !important;
+}

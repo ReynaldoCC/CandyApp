@@ -17,6 +17,7 @@ function cerrar_modal()
 
 var DPVQuejas = function () {
     var queja_form;
+    var response_form;
     var personas;
     var persona;
     var tmp;
@@ -2270,6 +2271,67 @@ var DPVQuejas = function () {
 
 		validator_form.resetForm();
     };
+    var _initResponse = function () {
+        $("#show_form").on("click", function (e) {
+            $("#show_detail").removeClass("my-hidden");
+
+            $("#show_form").addClass("my-hidden");
+            $("#show_form_div").removeClass("my-hidden");
+            $("#show_detail_div").addClass("my-hidden");
+            if ($('button[type="submit"]').hasClass("disabled")) $('button[type="submit"]').removeClass("disabled");
+        });
+        $("#show_detail").on("click", function (e) {
+            $("#show_detail").addClass("my-hidden");
+            $("#show_form").removeClass("my-hidden");
+            $("#show_form_div").addClass("my-hidden");
+            $("#show_detail_div").removeClass("my-hidden");
+            $('button[type="submit"]').addClass("disabled");
+        });
+    };
+    var _initResponseForm = function () {
+        $.validator.setDefaults({
+            errorClass: 'text-danger',
+            highlight: function(element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element) {
+                $(element).removeClass('is-invalid');
+            },
+            // Validate only visible fields
+			ignore: ":hidden",
+
+            errorPlacement: function(error, element) {
+                error.insertBefore(element);
+            },
+
+        });
+        let validator_form = queja_form.validate({
+			rules: {
+				'gestion': {
+				    required: true,
+                    maxlength: 3000,
+                    minlength: 20,
+				},
+				'texto': {
+				    required: true,
+                    maxlength: 3000,
+                    minlength: 20,
+				},
+			},
+			messages:{
+				'gestion': {
+				    required: "No puede dejar texto de la gestion en blanco.",
+                    maxlength: "El texto de la gestion no puede tener mas de 3000 caracteres.",
+                    minlength: "El texto de la gestion no puede tener menos de 20 caracteres.",
+				},
+				'texto': {
+				    required: "No puede dejar el texto de la respuesta en blanco.",
+                    maxlength: "El texto de la respuesta no puede tener mas de 3000 caracteres.",
+                    minlength: "El texto de la respuesta no puede tener menos de 20 caracteres.",
+				},
+			},
+		});
+    };
     return {
         init: function () {
             _initQuejas();
@@ -2278,6 +2340,11 @@ var DPVQuejas = function () {
             queja_form = $("#queja_form");
             _initTabWizard();
             _initQuejaForm();
+        },
+        initResponse: function () {
+            response_form = $("#response_form");
+            _initResponse();
+            _initResponseForm();
         },
     };
 }();

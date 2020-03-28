@@ -61,6 +61,13 @@ class Queja(LoggerMixin):
     def get_quejoso(self):
         return self.damnificado.first().objecto_contenido
 
+    @property
+    def get_tecnico_asignado(self):
+        if self.quejatecnico.filter(rechazada__isnull=True).exists():
+            return self.quejatecnico.filter(rechazada__isnull=True).first().tecnico
+        else:
+            return None
+
 
 class Damnificado(LoggerMixin):
     queja = models.ForeignKey(Queja, on_delete=models.CASCADE, related_name='damnificado')
@@ -132,6 +139,17 @@ class QuejaRedirigida(LoggerMixin):
 class RespuestaQueja(Respuesta):
     queja = models.ForeignKey(Queja, related_name='respuesta', on_delete=models.CASCADE,
                               blank=True, null=True, default='')
+    gestion = models.TextField(verbose_name=_("Gestion realizada"),
+                               blank=True,
+                               default="",
+                               help_text=_("Gestion realizada por parte del tecnico para dar respuesta a la queja"))
+
+    class Meta:
+        verbose_name = _("Respuesta a Queja")
+        verbose_name_plural = _("Respuestas a Quejas")
+
+    def __str__(self):
+        return self.codigo
 
 
 class QuejaNotificada(LoggerMixin):
@@ -347,3 +365,13 @@ def set_queja_redir_state(sender, **kwargs):
     if kwargs.get('instance'):
         instance = kwargs.get('instance')
         instance.queja.save()
+
+
+@receiver(pre_save, sender=RespuestaQueja)
+def preset_respuesta(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        if instance.queja and not instance.codigo:
+            counter = instance.queja.respuesta.count() + 1
+            instance.codigo = instance.queja.numero + str(counter)
+

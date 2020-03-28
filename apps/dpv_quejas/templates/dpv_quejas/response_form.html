@@ -1,0 +1,108 @@
+{% extends 'dpv_quejas/list.html' %}
+{% block page_title %} | Formulario {% endblock page_title %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/lib/jquery-ui/css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/awesomplete/awesomplete.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Responder {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">Responder</li>
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="col-md-12">
+        <form novalidate method="POST" action="{% url 'quejas_response' queja.id %}" id="response_form">
+            {% csrf_token %}
+            {% if form.errors or form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {% if form.errors|length == 1 %}"Por favor, corrija el error señalado a continuación."{% else %}"Por favor, corrija los errores señalados a continuación."{% endif %} <br>
+            </div>
+            {% endif %}
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Responder Queja</strong>
+                    <span class="float-right">
+                        <button id="show_form" type="button" class="btn btn-sm btn-outline-link">Formulario de Respuesta</button>
+                        <button id="show_detail" type="button" class="btn btn-sm btn-outline-link my-hidden">Detalles de la Queja</button>
+                    </span>
+                </div>
+                <div class="card-body row">
+                    <div id="show_form_div" class="my-hidden col-12">
+                        {% for field in form %}
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3"><label for="{{field.id_for_label}}" class=" form-control-label">{{field.label_tag}}</label></div>
+                            <div class="col-12 col-md-9">
+                                {{field.errors}}
+                                {{field}}
+                                <small class="form-text text-muted">{{field.help_text}}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div id="show_detail_div" class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title mb-3">Procedencia</h4>
+                                <p><strong>Procede de: </strong> {{queja.procedencia}}</p>
+                                <hr>
+                                <h4 class="card-title mb-3">Datos de damnificado</h4>
+                                <p><strong>Daminificado: </strong> {{queja.get_quejoso}}
+                                    {% if queja.get_quejoso.movil or queja.get_quejoso.telefono %}
+                                    <span class="float-right"><strong>Contacto: </strong>{{queja.get_quejoso.movil}}{% if queja.get_quejoso.movil and queja.get_quejoso.telefono %}/{% endif %}{{queja.get_quejoso.telefono}}</span>
+                                    {% endif %}
+                                </p>
+                                <p><strong>Vecino de: </strong> {{queja.get_quejoso.direccion_calle}} No. {{queja.get_quejoso.direccion_numero}} entre {{queja.get_quejoso.direccion_entrecalle1}} y {{queja.get_quejoso.direccion_entrecalle2}}, del consejo popular {{queja.get_quejoso.cpopular}} perteneciente al municipio {{queja.get_quejoso.municipio}} </p>
+                                <p><strong>Email: </strong>{% if queja.get_quejoso.email_address %} {{queja.get_quejoso.email_address}} {% else %} No tiene  {% endif %}</p>
+                                <hr>
+                                <h4 class="card-title mb-3">Datos de la Queja</h4>
+                                <p><strong>Radicada por: </strong> {{queja.radicado_por.first_name}} {{queja.radicado_por.last_name}}</p>
+                                <p><strong>Numero: </strong> {{queja.numero}}<span class="float-right"><strong>Tipo: </strong> {{queja.tipo}}</span></p>
+                                <p><strong>Codigo: </strong> {{queja.codigo_numero}}<span class="float-right"><strong>Clasificador Asunto: </strong> {{queja.asunto}}</span></p>
+                                <p><strong>Direccion: </strong> {{queja.dir_calle}} No. {{queja.dir_num}} entre {{queja.dir_entrecalle1}} y {{queja.dir_entrecalle2}}, del consejo popular {{queja.dir_cpopular}} perteneciente al municipio {{queja.dir_municipio}} </p>
+                                <p><strong>No. Procedencia: </strong> {{queja.no_procendencia}}<span class="float-right"><strong>Referencia: </strong> {{queja.referencia}}</span></p>
+                                <p><strong>Fecha Radicacion: </strong> {{queja.fecha_radicacion}} (Hace {{queja.tiempo}} dia{% if queja.tiempo != 1 %}s{% endif %})
+                                    <span class="float-right"><strong>Fecha Termino: </strong> {{queja.fecha_termino}}</span>
+                                </p>
+                                <p><strong>Asunto: </strong> {{queja.asunto_texto}}</p>
+                                <p><strong>Cuerpo de la queja: </strong> {{queja.texto}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a type="reset" class="btn btn-secondary" href="{% url 'quejas_list' %}">
+                        <i class="fa fa-reply"></i>
+                        Volver
+                    </a>
+                    <button type="submit" class="pull-right btn btn-primary disabled">
+                        <i class="fa fa-check"></i>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade modal-show modal-center" id="popup" role="dialog">
+
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/awesomplete/awesomplete.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/jsrender/jsrender.min.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
+    <script>
+        DPVQuejas.initResponse();
+    </script>
+{% endblock extra_scripts %}
