@@ -10,9 +10,9 @@ class DpvDocumentoConfig(AppConfig):
     active = True  # Si el modulo esta activo, es como si esta instalado
     parent = True  # Si el modulo es un submodulo de otro en el menu (y solo en el menu)
     child_of = ''  # Si el modulo es hijo de otro en el menu se coloca aqui el nombre(atributo name) del modulo padre
-    model_data = ['Documento']
+    model_data = ['DPVDocumento']
     name_data = 'Documentos Registrados'  # Nombre o texto a mostrar del sisginificado de dichos registros
-    route_data = 'documentos_index'  # ruta principal del modulo
+    route_data = 'docs_index'  # ruta principal del modulo
 
     def ready(self):
         pass

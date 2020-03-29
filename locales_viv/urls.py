@@ -10,6 +10,7 @@ from apps.dpv_events import urls as events_url
 from apps.email_sender import urls as email_url
 from apps.dpv_quejas import urls as quejas_url
 from apps.dpv_respuesta import urls as respuestas_url
+from apps.dpv_documento import urls as docs_url
 # from django.conf.urls import handler404, handler403, handler500, handler400
 # from apps.dpv_base.views import error400, error403, error404, error500
 # from apps.dpv_base.views import tesview
@@ -35,5 +36,6 @@ urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
     path('dpv_events/', include(events_url)),
     path('emailing/', include(email_url)),
     path('respuesta/', include(respuestas_url)),
+    path('docs/', include(docs_url)),
 
 ]
