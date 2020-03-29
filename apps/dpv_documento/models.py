@@ -6,6 +6,7 @@ from apps.dpv_persona.models import PersonaNatural
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from apps.dpv_nomencladores.models import AreaTrabajo, Municipio, Procedencia, Calle, ConsejoPopular, RespuestaAQueja
+from .utils import configurar_numero_registro
 import uuid
 
 
@@ -72,4 +73,7 @@ class DPVDocumento(LoggerMixin):
 # signals
 @receiver(pre_save, sender=DPVDocumento)
 def preset_document(sender, **kwargs):
-    pass
+    if kwargs.get("instance"):
+        instance = kwargs.get("instance")
+        if not instance.no_registro:
+            configurar_numero_registro(instance)
