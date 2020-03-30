@@ -57,7 +57,7 @@ class DPVDocumento(LoggerMixin):
                                     null=True, blank=True, default="",
                                     on_delete=models.CASCADE, related_name="doc_dir_cpopular")
     municipio = models.ForeignKey(Municipio, blank=True,
-                                  on_delete=models.CASCADE, verbose_name=_("Destino"))
+                                  on_delete=models.CASCADE, verbose_name=_("Municipio"))
     dias = models.PositiveSmallIntegerField(verbose_name=_("Dias"), default=0, blank=True)
     registrado_por = models.ForeignKey(User, blank=True,
                                        on_delete=models.CASCADE, verbose_name=_("Registrado por"))
