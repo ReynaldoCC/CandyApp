@@ -221,6 +221,13 @@ var DPVQuejas = function () {
                 $.ajax({
                     url: '/nomenclador/consejopopular/filter/' + value,
                     success: function(results) {
+                        let current_value = $pj_cpopular[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
                         $pj_cpopular[0].selectize.clear();
                         $pj_cpopular[0].selectize.clearOptions();
                         $pj_cpopular[0].selectize.load(function (callback) {
@@ -231,17 +238,35 @@ var DPVQuejas = function () {
                 $.ajax({
                     url: '/nomenclador/calle/filter/' + value,
                     success: function(results) {
+                        let current_value1 = $pj_direccion_calle[0].selectize.getValue();
+                        let current_value2 = $pj_direccion_entrecalle1[0].selectize.getValue();
+                        let current_value3 = $pj_direccion_entrecalle2[0].selectize.getValue();
+                        let exist1, exist2, exist3 = false;
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].id == current_value1) {
+                                exist1 = true;
+                            }
+                            if (results[i].id == current_value2) {
+                                exist2 = true;
+                            }
+                            if (results[i].id == current_value3) {
+                                exist3 = true;
+                            }
+                        }
+                        if (!exist1)
                         $pj_direccion_calle[0].selectize.clear();
                         $pj_direccion_calle[0].selectize.clearOptions();
                         $pj_direccion_calle[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        $pj_direccion_entrecalle1[0].selectize.clear();
+                        if (!exist2)
+                            $pj_direccion_entrecalle1[0].selectize.clear();
                         $pj_direccion_entrecalle1[0].selectize.clearOptions();
                         $pj_direccion_entrecalle1[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        $pj_direccion_entrecalle2[0].selectize.clear();
+                        if (!exist3)
+                            $pj_direccion_entrecalle2[0].selectize.clear();
                         $pj_direccion_entrecalle2[0].selectize.clearOptions();
                         $pj_direccion_entrecalle2[0].selectize.load(function (callback) {
                             callback(results);
@@ -458,6 +483,13 @@ var DPVQuejas = function () {
                 $.ajax({
                     url: '/nomenclador/consejopopular/filter/' + value,
                     success: function(results) {
+                        let current_value = $aq_cpopular[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
                         $aq_cpopular[0].selectize.clear();
                         $aq_cpopular[0].selectize.clearOptions();
                         $aq_cpopular[0].selectize.load(function (callback) {
@@ -468,17 +500,35 @@ var DPVQuejas = function () {
                 $.ajax({
                     url: '/nomenclador/calle/filter/' + value,
                     success: function(results) {
-                        $aq_direccion_calle[0].selectize.clear();
+                        let current_value1 = $aq_direccion_calle[0].selectize.getValue();
+                        let current_value2 = $aq_direccion_entrecalle1[0].selectize.getValue();
+                        let current_value3 = $aq_direccion_entrecalle2[0].selectize.getValue();
+                        let exist1, exist2, exist3 = false;
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].id == current_value1) {
+                                exist1 = true;
+                            }
+                            if (results[i].id == current_value2) {
+                                exist2 = true;
+                            }
+                            if (results[i].id == current_value3) {
+                                exist3 = true;
+                            }
+                        }
+                        if (!exist1)
+                            $aq_direccion_calle[0].selectize.clear();
                         $aq_direccion_calle[0].selectize.clearOptions();
                         $aq_direccion_calle[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        $aq_direccion_entrecalle1[0].selectize.clear();
+                        if (!exist2)
+                            $aq_direccion_entrecalle1[0].selectize.clear();
                         $aq_direccion_entrecalle1[0].selectize.clearOptions();
                         $aq_direccion_entrecalle1[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        $aq_direccion_entrecalle2[0].selectize.clear();
+                        if (!exist3)
+                            $aq_direccion_entrecalle2[0].selectize.clear();
                         $aq_direccion_entrecalle2[0].selectize.clearOptions();
                         $aq_direccion_entrecalle2[0].selectize.load(function (callback) {
                             callback(results);
@@ -609,7 +659,14 @@ var DPVQuejas = function () {
                 $.ajax({
                     url: '/nomenclador/consejopopular/filter/' + value,
                     success: function(results) {
-                        $q_cpopular[0].selectize.clear();
+                        let current_value = $q_cpopular[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
+                            $q_cpopular[0].selectize.clear();
                         $q_cpopular[0].selectize.clearOptions();
                         $q_cpopular[0].selectize.load(function (callback) {
                             callback(results);
@@ -619,17 +676,35 @@ var DPVQuejas = function () {
                 $.ajax({
                     url: '/nomenclador/calle/filter/' + value,
                     success: function(results) {
-                        $q_direccion_calle[0].selectize.clear();
+                        let current_value1 = $q_direccion_calle[0].selectize.getValue();
+                        let current_value2 = $q_direccion_entrecalle1[0].selectize.getValue();
+                        let current_value3 = $q_direccion_entrecalle2[0].selectize.getValue();
+                        let exist1, exist2, exist3 = false;
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].id == current_value1) {
+                                exist1 = true;
+                            }
+                            if (results[i].id == current_value2) {
+                                exist2 = true;
+                            }
+                            if (results[i].id == current_value3) {
+                                exist3 = true;
+                            }
+                        }
+                        if (!exist1)
+                            $q_direccion_calle[0].selectize.clear();
                         $q_direccion_calle[0].selectize.clearOptions();
                         $q_direccion_calle[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        $q_direccion_entrecalle1[0].selectize.clear();
+                        if (!exist2)
+                            $q_direccion_entrecalle1[0].selectize.clear();
                         $q_direccion_entrecalle1[0].selectize.clearOptions();
                         $q_direccion_entrecalle1[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        $q_direccion_entrecalle2[0].selectize.clear();
+                        if (!exist3)
+                            $q_direccion_entrecalle2[0].selectize.clear();
                         $q_direccion_entrecalle2[0].selectize.clearOptions();
                         $q_direccion_entrecalle2[0].selectize.load(function (callback) {
                             callback(results);
@@ -775,27 +850,53 @@ var DPVQuejas = function () {
                 $.ajax({
                     url: '/nomenclador/consejopopular/filter/' + value,
                     success: function(results) {
-                        $dir_cpopular[0].selectize.clear();
+                        let current_value = $q_cpopular[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
+                            $dir_cpopular[0].selectize.clear();
                         $dir_cpopular[0].selectize.clearOptions();
                         $dir_cpopular[0].selectize.load(function (callback) {
                             callback(results);
                         });
+
                     }
                 });
                 $.ajax({
                     url: '/nomenclador/calle/filter/' + value,
                     success: function(results) {
-                        $dir_calle[0].selectize.clear();
+                        let current_value1 = $dir_calle[0].selectize.getValue();
+                        let current_value2 = $dir_entrecalle1[0].selectize.getValue();
+                        let current_value3 = $dir_entrecalle2[0].selectize.getValue();
+                        let exist1, exist2, exist3 = false;
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].id == current_value1) {
+                                exist1 = true;
+                            }
+                            if (results[i].id == current_value2) {
+                                exist2 = true;
+                            }
+                            if (results[i].id == current_value3) {
+                                exist3 = true;
+                            }
+                        }
+                        if (!exist1)
+                            $dir_calle[0].selectize.clear();
                         $dir_calle[0].selectize.clearOptions();
                         $dir_calle[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        $dir_entrecalle1[0].selectize.clear();
+                        if (!exist2)
+                            $dir_entrecalle1[0].selectize.clear();
                         $dir_entrecalle1[0].selectize.clearOptions();
                         $dir_entrecalle1[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        $dir_entrecalle2[0].selectize.clear();
+                        if (!exist13)
+                            $dir_entrecalle2[0].selectize.clear();
                         $dir_entrecalle2[0].selectize.clearOptions();
                         $dir_entrecalle2[0].selectize.load(function (callback) {
                             callback(results);
@@ -934,7 +1035,7 @@ var DPVQuejas = function () {
                     success: function (data) {
                         persona = data;
                         _asigne_person_queja(data);
-                        //console.log(personas);
+                        console.log(persona);
                     },
                     error: function (data, error, status) {
                         console.log(data, error, status)
@@ -1348,12 +1449,15 @@ var DPVQuejas = function () {
             $("#id_person_queja-direccion_entrecalle1")[0].selectize.setValue(data.direccion_entrecalle1);
             $("#id_person_queja-direccion_entrecalle2")[0].selectize.setValue(data.direccion_entrecalle2);
         };
-        var _perform_show_person_queja = function() {
+        var _perform_show_person_queja = function () {
             // console.log("revisando", $("#id_queja-damnificado_not_indb"));
             if ($("#id_queja-damnificado_not_indb")[0].checked) {
                  $("#is_indb").addClass('no-show');
                  $("#not_indb").removeClass('no-show');
             }
+        };
+        var _fill_selectizes_with_values = function () {
+
         };
 
         _toggleProcedenciaForms();
