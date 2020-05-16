@@ -242,7 +242,10 @@ def get_person_data(request, id_person):
     person_dic['direccion_calle_nombre'] = person.direccion_calle.nombre
     person_dic['direccion_entrecalle1_nombre'] = person.direccion_entrecalle1.nombre
     person_dic['direccion_entrecalle2_nombre'] = person.direccion_entrecalle2.nombre
-    person_dic['cpopular_nombre'] = person.cpopular.nombre
+    if person.cpopular:
+        person_dic['cpopular_nombre'] = person.cpopular.nombre
+    else:
+        person_dic['cpopular_nombre'] = ''
     person_dic['municipio_nombre'] = person.municipio.nombre
     return JsonResponse(data=person_dic, status=200)
 
