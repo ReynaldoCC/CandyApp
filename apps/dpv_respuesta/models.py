@@ -6,7 +6,7 @@ from apps.dpv_base.mixins import LoggerMixin
 
 
 class Tecnico (LoggerMixin):
-    profile = models.ForeignKey(Perfil, on_delete=False, related_name='profile')
+    profile = models.ForeignKey(Perfil, on_delete=False, related_name='tecnico')
 
     def __str__(self):
         return '{}'.format(self.profile.datos_personales.nombre + ' ' + self.profile.datos_personales.apellidos)
@@ -15,14 +15,14 @@ class Tecnico (LoggerMixin):
 class Respuesta(LoggerMixin):
     fecha_respuesta = models.DateTimeField(auto_now_add=True, verbose_name=_("Fecha de Respuesta"))
     rechazada = models.DateTimeField(default=None, null=True)
-    codigo = models.CharField(verbose_name=_("Código de la Respuesta"), max_length=14)
+    codigo = models.CharField(verbose_name=_("Código de la Respuesta"), max_length=16)
     texto = models.TextField(max_length=1000, default='', blank=True, verbose_name='Texto de la Respuesta')
     responde = models.ForeignKey(Tecnico, on_delete=models.CASCADE, default='', blank=True)
     clasificacion = models.ForeignKey(ClasificacionRespuesta, verbose_name='Clasificación de la Respuesta', on_delete=models.CASCADE, blank=True, null=True, default='')
 
     class Meta:
         verbose_name = _("Respuesta")
-        verbose_name_plural = _("RespuestaS")
+        verbose_name_plural = _("Respuestas")
 
 
 class ApruebaJefe(LoggerMixin):

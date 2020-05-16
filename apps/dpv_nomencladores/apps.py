@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-# from .models import ConsejoPopular
 
 
 class DpvNomencladoresConfig(AppConfig):

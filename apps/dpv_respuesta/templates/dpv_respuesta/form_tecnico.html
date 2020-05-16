@@ -1,0 +1,32 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if tecnico %}
+        <form role="form" action="{% url 'tecnico_edit' tecnico.id %}" method="post" id="form_tecnico">
+        {% else %}
+        <form role="form" action="{% url 'tecnico_new' %}" method="post" id="form_tecnico">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Técnico</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-control-sm">
+                    <label>Técnicos</label>
+                    {{ form.non_field_errors }}
+                    {{ form.profile }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#form_tecnico').validate();
+</script>

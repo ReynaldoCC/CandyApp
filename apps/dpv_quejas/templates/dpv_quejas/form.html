@@ -1,4 +1,4 @@
-{% extends 'dpv_locales/list.html' %}
+{% extends 'dpv_quejas/list.html' %}
 {% block page_title %} | Formulario {% endblock page_title %}
 {% load static %}
 {% block extra_style %}
@@ -12,11 +12,7 @@
 {% block breadcrumb_title %} Crear {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% if '/local/form/' == request.path %}
     <li class="active">Crear</li>
-    {% else %}
-    <li class="active">Actualizar</li>
-    {% endif %}
 {% endblock breadcrumbs %}
 {% block content_page %}
     <div class="col-md-12">
@@ -25,75 +21,75 @@
             {% if form.errors or pnform.errors or pjform.errors or tform.errors or eform.errors or peform.errors or oform.errors or aqform.errors or gform.errors %}
             <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                {% if form.errors|length == 1 %}"Por favor, corrija el error señalado a continuación."{% else %}"Por favor, corrija los errores señalados a continuación."{% endif %}
+                {% if form.errors|length == 1 %}"Por favor, corrija el error señalado a continuación."{% else %}"Por favor, corrija los errores señalados a continuación."{% endif %} <br>
+                {% if aqform.errors or pjform.errors or tform.errors or eform.errors or orgform.errors or oform.errors or peform.errors or gform.errors %}
+                    Verifique los errores en la pestaña de procedencia.<br>
+                {% endif %}
+                {% if pnform.errors %}
+                    Verifique los errores en la pestaña del aquejado.<br>
+                {% endif %}
                 {% if form.errors %}
+                    Verifique los errores en la pestaña de la queja.<br>
+                {% endif %}
+                {% if form.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Queja</h4>
-                    <p>{{form.errors}}</p>
                     <hr>
                     <p class="mb-0">{{form.non_field_errors}}</p>
                 </div>
                 {% endif %}
-                {% if aqform.errors %}
+                {% if aqform.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Procedencia Persona</h4>
-                    <p>{{aqform.errors}}</p>
                     <hr>
                     <p class="mb-0">{{aqform.non_field_errors}}</p>
                 </div>
                 {% endif %}
-                {% if pjform.errors %}
+                {% if pjform.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Procedencia Empresa</h4>
-                    <p>{{pjform.errors}}</p>
                     <hr>
                     <p class="mb-0">{{pjform.non_field_errors}}</p>
                 </div>
                 {% endif %}
-                {% if tform.errors %}
+                {% if tform.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Procedencia Teléfono</h4>
-                    <p>{{tform.errors}}</p>
                     <hr>
                     <p class="mb-0">{{tform.non_field_errors}}</p>
                 </div>
                 {% endif %}
-                {% if eform.errors %}
+                {% if eform.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Procedencia Email</h4>
-                    <p>{{eform.errors}}</p>
                     <hr>
                     <p class="mb-0">{{eform.non_field_errors}}</p>
                 </div>
                 {% endif %}
-                {% if oform.errors %}
+                {% if oform.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Procedencia Organización</h4>
-                    <p>{{oform.errors}}</p>
                     <hr>
                     <p class="mb-0">{{oform.non_field_errors}}</p>
                 </div>
                 {% endif %}
-                {% if gform.errors %}
+                {% if gform.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Procedencia Gobierno</h4>
-                    <p>{{gform.errors}}</p>
                     <hr>
                     <p class="mb-0">{{gform.non_field_errors}}</p>
                 </div>
                 {% endif %}
-                {% if peform.errors %}
+                {% if peform.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Procedencia Prensa Escrita</h4>
-                    <p>{{peform.errors}}</p>
                     <hr>
                     <p class="mb-0">{{peform.non_field_errors}}</p>
                 </div>
                 {% endif %}
-                {% if pnform.errors %}
+                {% if pnform.non_field_errors %}
                 <div class="alert alert-danger border border-danger">
                     <h4 class="alert-heading">Persona que se queja</h4>
-                    <p>{{pnform.errors}}</p>
                     <hr>
                     <p class="mb-0">{{pnform.non_field_errors}}</p>
                 </div>
@@ -192,6 +188,7 @@
                                         <div class="row form-group col-lg-12">
                                             <div class="col col-md-3"><label for="{{form.tipo_procedencia.id_for_label}}" class=" form-control-label">{{form.tipo_procedencia.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.tipo_procedencia.errors}}
                                                 {{form.tipo_procedencia}}
                                                 <small class="form-text text-muted">{{form.tipo_procedencia.help_text}}</small>
                                             </div>
@@ -209,6 +206,7 @@
                                             <div class="col-md-12 row">
                                                 <div class="col col-md-3"><label for="{{peform.nombre.id_for_label}}" class=" form-control-label">{{peform.nombre.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{peform.nombre.errors}}
                                                     {{peform.nombre}}
                                                     <small class="form-text text-muted">{{peform.nombre.help_text}}</small>
                                                 </div>
@@ -216,6 +214,7 @@
                                             <div class="col-md-12 row">
                                                 <div class="col col-md-3"><label for="{{peform.siglas.id_for_label}}" class=" form-control-label">{{peform.siglas.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{peform.siglas.errors}}
                                                     {{peform.siglas}}
                                                     <small class="form-text text-muted">{{peform.siglas.help_text}}</small>
                                                 </div>
@@ -225,6 +224,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.ci.id_for_label}}" class=" form-control-label">{{aqform.ci.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.ci.errors}}
                                                     {{aqform.ci}}
                                                     <small class="form-text text-muted">{{aqform.ci.help_text}}</small>
                                                 </div>
@@ -232,6 +232,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.nombre.id_for_label}}" class=" form-control-label">{{aqform.nombre.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.nombre.errors}}
                                                     {{aqform.nombre}}
                                                     <small class="form-text text-muted">{{aqform.nombre.help_text}}</small>
                                                 </div>
@@ -239,6 +240,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.apellidos.id_for_label}}" class=" form-control-label">{{aqform.apellidos.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.apellidos.errors}}
                                                     {{aqform.apellidos}}
                                                     <small class="form-text text-muted">{{aqform.apellidos.help_text}}</small>
                                                 </div>
@@ -246,6 +248,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.genero.id_for_label}}" class=" form-control-label">{{aqform.genero.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.genero.errors}}
                                                     {{aqform.genero}}
                                                     <small class="form-text text-muted">{{aqform.genero.help_text}}</small>
                                                 </div>
@@ -253,6 +256,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.email_address.id_for_label}}" class=" form-control-label">{{aqform.email_address.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.email_address.errors}}
                                                     {{aqform.email_address}}
                                                     <small class="form-text text-muted">{{aqform.email_address.help_text}}</small>
                                                 </div>
@@ -260,6 +264,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.movil.id_for_label}}" class=" form-control-label">{{aqform.movil.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.movil.errors}}
                                                     {{aqform.movil}}
                                                     <small class="form-text text-muted">{{aqform.movil.help_text}}</small>
                                                 </div>
@@ -267,41 +272,15 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.telefono.id_for_label}}" class=" form-control-label">{{aqform.telefono.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.telefono.errors}}
                                                     {{aqform.telefono}}
                                                     <small class="form-text text-muted">{{aqform.telefono.help_text}}</small>
                                                 </div>
                                             </div>
                                             <div class="row form-group col-md-6">
-                                                <div class="col col-md-3"><label for="{{aqform.direccion_calle.id_for_label}}" class=" form-control-label">{{aqform.direccion_calle.label_tag}}</label></div>
-                                                <div class="col-12 col-md-9">
-                                                    {{aqform.direccion_calle}}
-                                                    <small class="form-text text-muted">{{aqform.direccion_calle.help_text}}</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group col-md-6">
-                                                <div class="col col-md-3"><label for="{{aqform.direccion_numero.id_for_label}}" class=" form-control-label">{{aqform.direccion_numero.label_tag}}</label></div>
-                                                <div class="col-12 col-md-9">
-                                                    {{aqform.direccion_numero}}
-                                                    <small class="form-text text-muted">{{aqform.direccion_numero.help_text}}</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group col-md-6">
-                                                <div class="col col-md-3"><label for="{{aqform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{aqform.direccion_entrecalle1.label_tag}}</label></div>
-                                                <div class="col-12 col-md-9">
-                                                    {{aqform.direccion_entrecalle1}}
-                                                    <small class="form-text text-muted">{{aqform.direccion_entrecalle1.help_text}}</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group col-md-6">
-                                                <div class="col col-md-3"><label for="{{aqform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{aqform.direccion_entrecalle2.label_tag}}</label></div>
-                                                <div class="col-12 col-md-9">
-                                                    {{aqform.direccion_entrecalle2}}
-                                                    <small class="form-text text-muted">{{aqform.direccion_entrecalle2.help_text}}</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.municipio.id_for_label}}" class=" form-control-label">{{aqform.municipio.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.municipio.errors}}
                                                     {{aqform.municipio}}
                                                     <small class="form-text text-muted">{{aqform.municipio.help_text}}</small>
                                                 </div>
@@ -309,8 +288,41 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{aqform.cpopular.id_for_label}}" class=" form-control-label">{{aqform.cpopular.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{aqform.cpopular.errors}}
                                                     {{aqform.cpopular}}
                                                     <small class="form-text text-muted">{{aqform.cpopular.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.direccion_calle.id_for_label}}" class=" form-control-label">{{aqform.direccion_calle.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.direccion_calle.errors}}
+                                                    {{aqform.direccion_calle}}
+                                                    <small class="form-text text-muted">{{aqform.direccion_calle.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.direccion_numero.id_for_label}}" class=" form-control-label">{{aqform.direccion_numero.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.direccion_numero.errors}}
+                                                    {{aqform.direccion_numero}}
+                                                    <small class="form-text text-muted">{{aqform.direccion_numero.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{aqform.direccion_entrecalle1.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.direccion_entrecalle1.errors}}
+                                                    {{aqform.direccion_entrecalle1}}
+                                                    <small class="form-text text-muted">{{aqform.direccion_entrecalle1.help_text}}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group col-md-6">
+                                                <div class="col col-md-3"><label for="{{aqform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{aqform.direccion_entrecalle2.label_tag}}</label></div>
+                                                <div class="col-12 col-md-9">
+                                                    {{aqform.direccion_entrecalle2.errors}}
+                                                    {{aqform.direccion_entrecalle2}}
+                                                    <small class="form-text text-muted">{{aqform.direccion_entrecalle2.help_text}}</small>
                                                 </div>
                                             </div>
                                             <div class="row form-group col-12">
@@ -327,6 +339,7 @@
                                         <div class="row form-group col-lg-12 no-show procedent" id="telefono_block">
                                             <div class="col col-md-3"><label for="{{tform.numero.id_for_label}}" class=" form-control-label">{{tform.numero.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{tform.numero.errors}}
                                                 {{tform.numero}}
                                                 <small class="form-text text-muted">{{tform.numero.help_text}}</small>
                                             </div>
@@ -334,6 +347,7 @@
                                         <div class="row form-group col-lg-12 no-show procedent" id="correo_block">
                                             <div class="col col-md-3"><label for="{{eform.email.id_for_label}}" class=" form-control-label">{{eform.email.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{eform.email.errors}}
                                                 {{eform.email}}
                                                 <small class="form-text text-muted">{{eform.email.help_text}}</small>
                                             </div>
@@ -342,6 +356,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.nombre.id_for_label}}" class=" form-control-label">{{pjform.nombre.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.nombre.errors}}
                                                     {{pjform.nombre}}
                                                     <small class="form-text text-muted">{{pjform.nombre.help_text}}</small>
                                                 </div>
@@ -349,6 +364,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.sigla.id_for_label}}" class=" form-control-label">{{pjform.sigla.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.sigla.errors}}
                                                     {{pjform.sigla}}
                                                     <small class="form-text text-muted">{{pjform.sigla.help_text}}</small>
                                                 </div>
@@ -356,6 +372,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.telefono.id_for_label}}" class=" form-control-label">{{pjform.telefono.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.telefono.errors}}
                                                     {{pjform.telefono}}
                                                     <small class="form-text text-muted">{{pjform.telefono.help_text}}</small>
                                                 </div>
@@ -363,6 +380,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.movil.id_for_label}}" class=" form-control-label">{{pjform.movil.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.movil.errors}}
                                                     {{pjform.movil}}
                                                     <small class="form-text text-muted">{{pjform.movil.help_text}}</small>
                                                 </div>
@@ -370,6 +388,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.nombre_contacto.id_for_label}}" class=" form-control-label">{{pjform.nombre_contacto.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.nombre_contacto.errors}}
                                                     {{pjform.nombre_contacto}}
                                                     <small class="form-text text-muted">{{pjform.nombre_contacto.help_text}}</small>
                                                 </div>
@@ -377,6 +396,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.email_address.id_for_label}}" class=" form-control-label">{{pjform.email_address.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.email_address.errors}}
                                                     {{pjform.email_address}}
                                                     <small class="form-text text-muted">{{pjform.email_address.help_text}}</small>
                                                 </div>
@@ -384,6 +404,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.codigo_nit.id_for_label}}" class=" form-control-label">{{pjform.codigo_nit.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.codigo_nit.errors}}
                                                     {{pjform.codigo_nit}}
                                                     <small class="form-text text-muted">{{pjform.codigo_nit.help_text}}</small>
                                                 </div>
@@ -391,6 +412,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.codigo_reuup.id_for_label}}" class=" form-control-label">{{pjform.codigo_reuup.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.codigo_reuup.errors}}
                                                     {{pjform.codigo_reuup}}
                                                     <small class="form-text text-muted">{{pjform.codigo_reuup.help_text}}</small>
                                                 </div>
@@ -398,6 +420,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.municipio.id_for_label}}" class=" form-control-label">{{pjform.municipio.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.municipio.errors}}
                                                     {{pjform.municipio}}
                                                     <small class="form-text text-muted">{{pjform.municipio.help_text}}</small>
                                                 </div>
@@ -405,6 +428,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.cpopular.id_for_label}}" class=" form-control-label">{{pjform.cpopular.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.cpopular.errors}}
                                                     {{pjform.cpopular}}
                                                     <small class="form-text text-muted">{{pjform.cpopular.help_text}}</small>
                                                 </div>
@@ -412,6 +436,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.direccion_calle.id_for_label}}" class=" form-control-label">{{pjform.direccion_calle.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.direccion_calle.errors}}
                                                     {{pjform.direccion_calle}}
                                                     <small class="form-text text-muted">{{pjform.direccion_calle.help_text}}</small>
                                                 </div>
@@ -419,6 +444,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.direccion_numero.id_for_label}}" class=" form-control-label">{{pjform.direccion_numero.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.direccion_numero.errors}}
                                                     {{pjform.direccion_numero}}
                                                     <small class="form-text text-muted">{{pjform.direccion_numero.help_text}}</small>
                                                 </div>
@@ -426,6 +452,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{pjform.direccion_entrecalle1.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.direccion_entrecalle1.errors}}
                                                     {{pjform.direccion_entrecalle1}}
                                                     <small class="form-text text-muted">{{pjform.direccion_entrecalle1.help_text}}</small>
                                                 </div>
@@ -433,6 +460,7 @@
                                             <div class="row form-group col-md-6">
                                                 <div class="col col-md-3"><label for="{{pjform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{pjform.direccion_entrecalle2.label_tag}}</label></div>
                                                 <div class="col-12 col-md-9">
+                                                    {{pjform.direccion_entrecalle2.errors}}
                                                     {{pjform.direccion_entrecalle2}}
                                                     <small class="form-text text-muted">{{pjform.direccion_entrecalle2.help_text}}</small>
                                                 </div>
@@ -441,6 +469,7 @@
                                         <div class="row form-group col-lg-12 no-show procedent" id="gob_block">
                                             <div class="col col-md-3"><label for="{{gform.nombre.id_for_label}}" class=" form-control-label">{{gform.nombre.label}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{gform.nombre.errors}}
                                                 {{gform.nombre}}
                                                 <small class="form-text text-muted">{{gform.nombre.help_text}}</small>
                                             </div>
@@ -448,6 +477,7 @@
                                         <div class="row form-group col-lg-12 no-show procedent" id="org_block">
                                             <div class="col col-md-3"><label for="{{oform.nombre.id_for_label}}" class=" form-control-label">{{oform.nombre.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{oform.nombre.errors}}
                                                 {{oform.nombre}}
                                                 <small class="form-text text-muted">{{oform.nombre.help_text}}</small>
                                             </div>
@@ -478,6 +508,7 @@
                                         </div>
                                         <div class="row col-lg-5">
                                             <div class="form-group">
+                                                    {{form.damnificado_not_indb.errors}}
                                                 <label for="{{form.damnificado_not_indb.id_for_label}}" class="form-control-label">{{form.damnificado_not_indb.label}} </label>
                                                 <label class="switch switch-3d switch-primary mr-3">
                                                     {{form.damnificado_not_indb}}
@@ -495,6 +526,7 @@
                                                     <div class="row form-group col-lg-6">
                                                         <div class="col col-md-3"><label for="{{pnform.ci.id_for_label}}" class=" form-control-label">{{pnform.ci.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
+                                                            {{pnform.ci.errors}}
                                                             {{pnform.ci}}
                                                             <small class="form-text text-muted">{{pnform.ci.help_text}}</small>
                                                         </div>
@@ -502,6 +534,7 @@
                                                     <div class="row form-group col-lg-6">
                                                         <div class="col col-md-3"><label for="{{pnform.nombre.id_for_label}}" class=" form-control-label">{{pnform.nombre.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
+                                                            {{pnform.nombre.errors}}
                                                             {{pnform.nombre}}
                                                             <small class="form-text text-muted">{{pnform.nombre.help_text}}</small>
                                                         </div>
@@ -509,6 +542,7 @@
                                                     <div class="row form-group col-lg-6">
                                                         <div class="col col-md-3"><label for="{{pnform.apellidos.id_for_label}}" class=" form-control-label">{{pnform.apellidos.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
+                                                            {{pnform.apellidos.errors}}
                                                             {{pnform.apellidos}}
                                                             <small class="form-text text-muted">{{pnform.apellidos.help_text}}</small>
                                                         </div>
@@ -516,6 +550,7 @@
                                                     <div class="row form-group col-lg-6">
                                                         <div class="col col-md-3"><label for="{{pnform.genero.id_for_label}}" class=" form-control-label">{{pnform.genero.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
+                                                            {{pnform.genero.errors}}
                                                             {{pnform.genero}}
                                                             <small class="form-text text-muted">{{pnform.genero.help_text}}</small>
                                                         </div>
@@ -530,16 +565,19 @@
                                                     <div class="card-block row">
                                                         <div class="form-group col-md-6">
                                                             <label for="{{pnform.email_address.id_for_label}}" class=" form-control-label">{{pnform.email_address.label}}</label>
+                                                            {{pnform.email_address.errors}}
                                                             {{pnform.email_address}}
                                                             <small class="form-text text-muted">{{pnform.email_address.help_text}}</small>
                                                         </div>
                                                         <div class="form-group col-md-3">
                                                             <label for="{{pnform.movil.id_for_label}}" class=" form-control-label">{{pnform.movil.label}}</label>
+                                                            {{pnform.movil.errors}}
                                                             {{pnform.movil}}
                                                             <small class="form-text text-muted">{{pnform.movil.help_text}}</small>
                                                         </div>
                                                         <div class="form-group col-md-3">
                                                             <label for="{{pnform.telefono.id_for_label}}" class=" form-control-label">{{pnform.telefono.label}}</label>
+                                                            {{pnform.telefono.errors}}
                                                             {{pnform.telefono}}
                                                             <small class="form-text text-muted">{{pnform.telefono.help_text}}</small>
                                                         </div>
@@ -552,36 +590,9 @@
                                                 </div>
                                                 <div class="row card-body">
                                                     <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pnform.direccion_calle.id_for_label}}" class=" form-control-label">{{pnform.direccion_calle.label_tag}}</label></div>
-                                                        <div class="col-12 col-md-9">
-                                                            {{pnform.direccion_calle}}
-                                                            <small class="form-text text-muted">{{pnform.direccion_calle.help_text}}</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pnform.direccion_numero.id_for_label}}" class=" form-control-label">{{pnform.direccion_numero.label_tag}}</label></div>
-                                                        <div class="col-12 col-md-9">
-                                                            {{pnform.direccion_numero}}
-                                                            <small class="form-text text-muted">{{pnform.direccion_numero.help_text}}</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pnform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{pnform.direccion_entrecalle1.label_tag}}</label></div>
-                                                        <div class="col-12 col-md-9">
-                                                            {{pnform.direccion_entrecalle1}}
-                                                            <small class="form-text text-muted">{{pnform.direccion_entrecalle1.help_text}}</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row form-group col-lg-6">
-                                                        <div class="col col-md-3"><label for="{{pnform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{pnform.direccion_entrecalle2.label_tag}}</label></div>
-                                                        <div class="col-12 col-md-9">
-                                                            {{pnform.direccion_entrecalle2}}
-                                                            <small class="form-text text-muted">{{pnform.direccion_entrecalle2.help_text}}</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row form-group col-lg-6">
                                                         <div class="col col-md-3"><label for="{{pnform.cpopular.id_for_label}}" class=" form-control-label">{{pnform.cpopular.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
+                                                            {{pnform.cpopular.errors}}
                                                             {{pnform.cpopular}}
                                                             <small class="form-text text-muted">{{pnform.cpopular.help_text}}</small>
                                                         </div>
@@ -589,8 +600,41 @@
                                                     <div class="row form-group col-lg-6">
                                                         <div class="col col-md-3"><label for="{{pnform.municipio.id_for_label}}" class=" form-control-label">{{pnform.municipio.label_tag}}</label></div>
                                                         <div class="col-12 col-md-9">
+                                                            {{pnform.municipio.errors}}
                                                             {{pnform.municipio}}
                                                             <small class="form-text text-muted">{{pnform.municipio.help_text}}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group col-lg-6">
+                                                        <div class="col col-md-3"><label for="{{pnform.direccion_calle.id_for_label}}" class=" form-control-label">{{pnform.direccion_calle.label_tag}}</label></div>
+                                                        <div class="col-12 col-md-9">
+                                                            {{pnform.direccion_calle.errors}}
+                                                            {{pnform.direccion_calle}}
+                                                            <small class="form-text text-muted">{{pnform.direccion_calle.help_text}}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group col-lg-6">
+                                                        <div class="col col-md-3"><label for="{{pnform.direccion_numero.id_for_label}}" class=" form-control-label">{{pnform.direccion_numero.label_tag}}</label></div>
+                                                        <div class="col-12 col-md-9">
+                                                            {{pnform.direccion_numero.errors}}
+                                                            {{pnform.direccion_numero}}
+                                                            <small class="form-text text-muted">{{pnform.direccion_numero.help_text}}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group col-lg-6">
+                                                        <div class="col col-md-3"><label for="{{pnform.direccion_entrecalle1.id_for_label}}" class=" form-control-label">{{pnform.direccion_entrecalle1.label_tag}}</label></div>
+                                                        <div class="col-12 col-md-9">
+                                                            {{pnform.direccion_entrecalle1.errors}}
+                                                            {{pnform.direccion_entrecalle1}}
+                                                            <small class="form-text text-muted">{{pnform.direccion_entrecalle1.help_text}}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group col-lg-6">
+                                                        <div class="col col-md-3"><label for="{{pnform.direccion_entrecalle2.id_for_label}}" class=" form-control-label">{{pnform.direccion_entrecalle2.label_tag}}</label></div>
+                                                        <div class="col-12 col-md-9">
+                                                            {{pnform.direccion_entrecalle2.errors}}
+                                                            {{pnform.direccion_entrecalle2}}
+                                                            <small class="form-text text-muted">{{pnform.direccion_entrecalle2.help_text}}</small>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -610,6 +654,7 @@
                                         <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.no_procendencia.id_for_label}}" class=" form-control-label">{{form.no_procendencia.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.no_procendencia.errors}}
                                                 {{form.no_procendencia}}
                                                 <small class="form-text text-muted">{{form.no_procendencia.help_text}}</small>
                                             </div>
@@ -617,6 +662,7 @@
                                         <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.no_radicacion.id_for_label}}" class=" form-control-label">{{form.no_radicacion.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.no_radicacion.errors}}
                                                 {{form.no_radicacion}}
                                                 <small class="form-text text-muted">{{form.no_radicacion.help_text}}</small>
                                             </div>
@@ -632,36 +678,9 @@
                                             </div>
                                         </div>
                                         <div class="row form-group col-lg-6">
-                                            <div class="col col-md-3"><label for="{{form.dir_calle.id_for_label}}" class=" form-control-label">{{form.dir_calle.label_tag}}</label></div>
-                                            <div class="col-12 col-md-9">
-                                                {{form.dir_calle}}
-                                                <small class="form-text text-muted">{{form.dir_calle.help_text}}</small>
-                                            </div>
-                                        </div>
-                                        <div class="row form-group col-lg-6">
-                                            <div class="col col-md-3"><label for="{{form.dir_num.id_for_label}}" class=" form-control-label">{{form.dir_num.label_tag}}</label></div>
-                                            <div class="col-12 col-md-9">
-                                                {{form.dir_num}}
-                                                <small class="form-text text-muted">{{form.dir_num.help_text}}</small>
-                                            </div>
-                                        </div>
-                                        <div class="row form-group col-lg-6">
-                                            <div class="col col-md-3"><label for="{{form.dir_entrecalle1.id_for_label}}" class=" form-control-label">{{form.dir_entrecalle1.label_tag}}</label></div>
-                                            <div class="col-12 col-md-9">
-                                                {{form.dir_entrecalle1}}
-                                                <small class="form-text text-muted">{{form.dir_entrecalle1.help_text}}</small>
-                                            </div>
-                                        </div>
-                                        <div class="row form-group col-lg-6">
-                                            <div class="col col-md-3"><label for="{{form.dir_entrecalle2.id_for_label}}" class=" form-control-label">{{form.dir_entrecalle2.label_tag}}</label></div>
-                                            <div class="col-12 col-md-9">
-                                                {{form.dir_entrecalle2}}
-                                                <small class="form-text text-muted">{{form.dir_entrecalle2.help_text}}</small>
-                                            </div>
-                                        </div>
-                                        <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.dir_municipio.id_for_label}}" class=" form-control-label">{{form.dir_municipio.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.dir_municipio.errors}}
                                                 {{form.dir_municipio}}
                                                 <small class="form-text text-muted">{{form.dir_municipio.help_text}}</small>
                                             </div>
@@ -669,13 +688,47 @@
                                         <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.dir_cpopular.id_for_label}}" class=" form-control-label">{{form.dir_cpopular.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.dir_cpopular.errors}}
                                                 {{form.dir_cpopular}}
                                                 <small class="form-text text-muted">{{form.dir_cpopular.help_text}}</small>
                                             </div>
                                         </div>
                                         <div class="row form-group col-lg-6">
+                                            <div class="col col-md-3"><label for="{{form.dir_calle.id_for_label}}" class=" form-control-label">{{form.dir_calle.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.dir_calle.errors}}
+                                                {{form.dir_calle}}
+                                                <small class="form-text text-muted">{{form.dir_calle.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-6">
+                                            <div class="col col-md-3"><label for="{{form.dir_num.id_for_label}}" class=" form-control-label">{{form.dir_num.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.dir_num.errors}}
+                                                {{form.dir_num}}
+                                                <small class="form-text text-muted">{{form.dir_num.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-6">
+                                            <div class="col col-md-3"><label for="{{form.dir_entrecalle1.id_for_label}}" class=" form-control-label">{{form.dir_entrecalle1.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.dir_entrecalle1.errors}}
+                                                {{form.dir_entrecalle1}}
+                                                <small class="form-text text-muted">{{form.dir_entrecalle1.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-6">
+                                            <div class="col col-md-3"><label for="{{form.dir_entrecalle2.id_for_label}}" class=" form-control-label">{{form.dir_entrecalle2.label_tag}}</label></div>
+                                            <div class="col-12 col-md-9">
+                                                {{form.dir_entrecalle2.errors}}
+                                                {{form.dir_entrecalle2}}
+                                                <small class="form-text text-muted">{{form.dir_entrecalle2.help_text}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.referencia.id_for_label}}" class=" form-control-label">{{form.referencia.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.referencia.errors}}
                                                 {{form.referencia}}
                                                 <small class="form-text text-muted">{{form.referencia.help_text}}</small>
                                             </div>
@@ -683,6 +736,7 @@
                                         <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.asunto.id_for_label}}" class=" form-control-label">{{form.asunto.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.asunto.errors}}
                                                 {{form.asunto}}
                                                 <small class="form-text text-muted">{{form.asunto.help_text}}</small>
                                             </div>
@@ -690,6 +744,7 @@
                                         <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.tipo.id_for_label}}" class=" form-control-label">{{form.tipo.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.tipo.errors}}
                                                 {{form.tipo}}
                                                 <small class="form-text text-muted">{{form.tipo.help_text}}</small>
                                             </div>
@@ -697,6 +752,7 @@
                                         <div class="row form-group col-lg-12">
                                             <div class="col col-md-3"><label for="{{form.asunto_texto.id_for_label}}" class=" form-control-label">{{form.asunto_texto.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.asunto_texto.errors}}
                                                 {{form.asunto_texto}}
                                                 <small class="form-text text-muted">{{form.asunto_texto.help_text}}</small>
                                             </div>
@@ -704,6 +760,7 @@
                                         <div class="row form-group col-lg-12">
                                             <div class="col col-md-3"><label for="{{form.texto.id_for_label}}" class=" form-control-label">{{form.texto.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.texto.errors}}
                                                 {{form.texto}}
                                                 <small class="form-text text-muted">{{form.texto.help_text}}</small>
                                             </div>
@@ -711,6 +768,7 @@
                                         <div class="row form-group col-lg-12">
                                             <div class="col col-md-3"><label for="{{form.responder_a.id_for_label}}" class=" form-control-label">{{form.responder_a.label_tag}}</label></div>
                                             <div class="col-12 col-md-9">
+                                                {{form.responder_a.errors}}
                                                 {{form.responder_a}}
                                                 <small class="form-text text-muted">{{form.responder_a.help_text}}</small>
                                             </div>

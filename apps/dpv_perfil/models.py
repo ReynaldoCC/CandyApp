@@ -9,6 +9,7 @@ from random import randint
 import uuid
 import datetime
 
+
 # Create your models here.
 def scramble_upload_avatar(instance, filename, subdiretory='avatars'):
     ext = filename.split('.')[-1]
@@ -29,6 +30,16 @@ class Perfil(LoggerMixin):
     class Meta:
         verbose_name = "Perfil"
         verbose_name_plural = "Perfiles"
+
+    def __str__(self):
+        if self.datos_usuario:
+            if self.datos_usuario.first_name:
+                return "{} {}".format(self.datos_usuario.first_name, self.datos_usuario.last_name)
+            else:
+               return "{}".format(self.datos_usuario.username)
+        else:
+            return "Perfil sin usuario"
+
 
 
  # Signals

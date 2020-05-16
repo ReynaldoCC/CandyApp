@@ -15,9 +15,9 @@ function cerrar_modal()
     return false;
 }
 
-
 var DPVQuejas = function () {
     var queja_form;
+    var response_form;
     var personas;
     var persona;
     var tmp;
@@ -32,7 +32,7 @@ var DPVQuejas = function () {
             showCloseButton: true,
             showCancelButton: true,
             focusConfirm: false,
-            confirmButtonText: accept || '<i class="fa fa-thumbs-up"></i> OK',
+            confirmButtonText: accept || '<i class="fa fa-thumbs-up"></i> Si',
             confirmButtonAriaLabel: 'Correto',
             cancelButtonText: cancel || '<i class="fa fa-thumbs-down"></i> No',
             cancelButtonAriaLabel: 'Cancelar',
@@ -112,7 +112,7 @@ var DPVQuejas = function () {
             previous_tab.find('a.nav-link').addClass('active show');
             content_list.removeClass('active show in');
             $(conten_selector).addClass('active show in');
-            if (previous_tab[0] == first_tab[0]) {
+            if (previous_tab[0] === first_tab[0]) {
                 prev_button.addClass('disabled');
             }
             if (next_button.hasClass('disabled')) {
@@ -175,7 +175,6 @@ var DPVQuejas = function () {
                 $("#is_indb").removeClass('no-show');
                 $("#not_indb").addClass('no-show');
                 $("#id_personas_list")[0].selectize.clear();
-                //console.log(queja_form);
             };
         });
         $("#same_address").on('change', function (e) {
@@ -195,7 +194,7 @@ var DPVQuejas = function () {
                     $dir_municipio[0].selectize.setValue('', false);
                     $dir_cpopular[0].selectize.setValue('', false);
                     $("#id_queja-dir_num").val('');
-                } ;
+                }
             } else {
                 if (this.checked) {
                     _getPersonData($('#id_personas_list').val());
@@ -207,7 +206,7 @@ var DPVQuejas = function () {
                     $dir_cpopular[0].selectize.setValue('', false);
                     $("#id_queja-dir_num").val('');
                 } ;
-            };
+            }
         });
         $("#id_personas_list").on('change', function (e) {
             _loadPersonData(this.value);
@@ -217,26 +216,172 @@ var DPVQuejas = function () {
             create: false,
             placeholder: "Selecione un municipio",
             allowEmptyOption: false,
+            onChange: function(value) {
+                if (!value.length) return;
+                $.ajax({
+                    url: '/nomenclador/consejopopular/filter/' + value,
+                    success: function(results) {
+                        let current_value = $pj_cpopular[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
+                        $pj_cpopular[0].selectize.clear();
+                        $pj_cpopular[0].selectize.clearOptions();
+                        $pj_cpopular[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                    }
+                });
+                $.ajax({
+                    url: '/nomenclador/calle/filter/' + value,
+                    success: function(results) {
+                        let current_value1 = $pj_direccion_calle[0].selectize.getValue();
+                        let current_value2 = $pj_direccion_entrecalle1[0].selectize.getValue();
+                        let current_value3 = $pj_direccion_entrecalle2[0].selectize.getValue();
+                        let exist1, exist2, exist3 = false;
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].id == current_value1) {
+                                exist1 = true;
+                            }
+                            if (results[i].id == current_value2) {
+                                exist2 = true;
+                            }
+                            if (results[i].id == current_value3) {
+                                exist3 = true;
+                            }
+                        }
+                        if (!exist1)
+                        $pj_direccion_calle[0].selectize.clear();
+                        $pj_direccion_calle[0].selectize.clearOptions();
+                        $pj_direccion_calle[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                        if (!exist2)
+                            $pj_direccion_entrecalle1[0].selectize.clear();
+                        $pj_direccion_entrecalle1[0].selectize.clearOptions();
+                        $pj_direccion_entrecalle1[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                        if (!exist3)
+                            $pj_direccion_entrecalle2[0].selectize.clear();
+                        $pj_direccion_entrecalle2[0].selectize.clearOptions();
+                        $pj_direccion_entrecalle2[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                    }
+                });
+            },
         });
         var $pj_cpopular = $("#id_empresa-cpopular").selectize({
-            create: false,
             placeholder: "Selecione un Consejo Popular",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/consejopopular/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_empresa-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $pj_direccion_calle = $("#id_empresa-direccion_calle").selectize({
-            create: false,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_empresa-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $pj_direccion_entrecalle2 = $("#id_empresa-direccion_entrecalle2").selectize({
-            create: false,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_empresa-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $pj_direccion_entrecalle1 = $("#id_empresa-direccion_entrecalle1").selectize({
-            create: false,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_empresa-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $tipo_procedencia = $("#id_queja-tipo_procedencia").selectize({
             create: false,
@@ -249,29 +394,175 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
         });
         var $aq_direccion_calle = $("#id_person_procedence-direccion_calle").selectize({
-            create: false,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_person_procedence-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $aq_direccion_entrecalle1 = $("#id_person_procedence-direccion_entrecalle1").selectize({
-            create: false,
             placeholder: "Selecione un ",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_person_procedence-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $aq_direccion_entrecalle2 = $("#id_person_procedence-direccion_entrecalle2").selectize({
-            create: false,
             placeholder: "Selecione un ",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_person_procedence-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $aq_municipio = $("#id_person_procedence-municipio").selectize({
             create: false,
             placeholder: "Selecione un municipio",
             allowEmptyOption: false,
+            onChange: function(value) {
+                if (!value.length) return;
+                $.ajax({
+                    url: '/nomenclador/consejopopular/filter/' + value,
+                    success: function(results) {
+                        let current_value = $aq_cpopular[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
+                        $aq_cpopular[0].selectize.clear();
+                        $aq_cpopular[0].selectize.clearOptions();
+                        $aq_cpopular[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                    }
+                });
+                $.ajax({
+                    url: '/nomenclador/calle/filter/' + value,
+                    success: function(results) {
+                        let current_value1 = $aq_direccion_calle[0].selectize.getValue();
+                        let current_value2 = $aq_direccion_entrecalle1[0].selectize.getValue();
+                        let current_value3 = $aq_direccion_entrecalle2[0].selectize.getValue();
+                        let exist1, exist2, exist3 = false;
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].id == current_value1) {
+                                exist1 = true;
+                            }
+                            if (results[i].id == current_value2) {
+                                exist2 = true;
+                            }
+                            if (results[i].id == current_value3) {
+                                exist3 = true;
+                            }
+                        }
+                        if (!exist1)
+                            $aq_direccion_calle[0].selectize.clear();
+                        $aq_direccion_calle[0].selectize.clearOptions();
+                        $aq_direccion_calle[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                        if (!exist2)
+                            $aq_direccion_entrecalle1[0].selectize.clear();
+                        $aq_direccion_entrecalle1[0].selectize.clearOptions();
+                        $aq_direccion_entrecalle1[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                        if (!exist3)
+                            $aq_direccion_entrecalle2[0].selectize.clear();
+                        $aq_direccion_entrecalle2[0].selectize.clearOptions();
+                        $aq_direccion_entrecalle2[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                    }
+                });
+            },
         });
         var $aq_cpopular = $("#id_person_procedence-cpopular").selectize({
-            create: false,
             placeholder: "Selecione un consejo popular",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/consejopopular/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_person_procedence-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $q_genero = $("#id_person_queja-genero").selectize({
             create: false,
@@ -279,55 +570,375 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
         });
         var $q_direccion_calle = $("#id_person_queja-direccion_calle").selectize({
-            create: false,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_person_queja-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $q_direccion_entrecalle1 = $("#id_person_queja-direccion_entrecalle1").selectize({
-            create: false,
             placeholder: "Selecione un ",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_person_queja-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $q_direccion_entrecalle2 = $("#id_person_queja-direccion_entrecalle2").selectize({
-            create: false,
             placeholder: "Selecione un ",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_person_queja-municipio").getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $q_municipio = $("#id_person_queja-municipio").selectize({
             create: false,
             placeholder: "Selecione un municipio",
             allowEmptyOption: false,
+            onChange: function(value) {
+                if (!value.length) return;
+                $.ajax({
+                    url: '/nomenclador/consejopopular/filter/' + value,
+                    success: function(results) {
+                        let current_value = $q_cpopular[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
+                            $q_cpopular[0].selectize.clear();
+                        $q_cpopular[0].selectize.clearOptions();
+                        $q_cpopular[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                    }
+                });
+                $.ajax({
+                    url: '/nomenclador/calle/filter/' + value,
+                    success: function(results) {
+                        let current_value1 = $q_direccion_calle[0].selectize.getValue();
+                        let current_value2 = $q_direccion_entrecalle1[0].selectize.getValue();
+                        let current_value3 = $q_direccion_entrecalle2[0].selectize.getValue();
+                        let exist1, exist2, exist3 = false;
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].id == current_value1) {
+                                exist1 = true;
+                            }
+                            if (results[i].id == current_value2) {
+                                exist2 = true;
+                            }
+                            if (results[i].id == current_value3) {
+                                exist3 = true;
+                            }
+                        }
+                        if (!exist1)
+                            $q_direccion_calle[0].selectize.clear();
+                        $q_direccion_calle[0].selectize.clearOptions();
+                        $q_direccion_calle[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                        if (!exist2)
+                            $q_direccion_entrecalle1[0].selectize.clear();
+                        $q_direccion_entrecalle1[0].selectize.clearOptions();
+                        $q_direccion_entrecalle1[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                        if (!exist3)
+                            $q_direccion_entrecalle2[0].selectize.clear();
+                        $q_direccion_entrecalle2[0].selectize.clearOptions();
+                        $q_direccion_entrecalle2[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                    }
+                });
+            },
         });
         var $q_cpopular = $("#id_person_queja-cpopular").selectize({
-            create: false,
             placeholder: "Selecione un consejo popular",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     $.ajax({
+            //         url: '/nomenclador/consejopopular/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $("#id_person_queja-municipio").getValue() || 0,
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $dir_calle = $("#id_queja-dir_calle").selectize({
-            create: false,
             placeholder: "Selecione una calle",
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
             allowEmptyOption: false,
+            selectOnTab: true,
+            createOnBlur: false,
+            create: false,
+            // create: function (input, callback){
+            //     if (!$dir_municipio[0].selectize.getValue()){
+            //         let type = "warning";
+            //         let text = "Para agregar una calle debe primero seccionar el municipio.";
+            //         _makeAlert(type, text, null, null, "Cuidado");
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $dir_municipio[0].selectize.getValue(),
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             console.log(result.nombre);
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $dir_entrecalle1 = $("#id_queja-dir_entrecalle1").selectize({
-            create: false,
             placeholder: "Selecione una calle ",
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
             allowEmptyOption: false,
+            selectOnTab: true,
+            createOnBlur: true,
+            create: false,
+            // create: function (input, callback){
+            //     if (!$dir_municipio[0].selectize.getValue()){
+            //         let type = "warning";
+            //         let text = "Para agregar una calle debe primero seccionar el municipio.";
+            //         _makeAlert(type, text, null, null, "Cuidado");
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $dir_municipio[0].selectize.getValue() || 0,
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $dir_entrecalle2 = $("#id_queja-dir_entrecalle2").selectize({
-            create: false,
             required: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
             placeholder: "Selecione una calle ",
             allowEmptyOption: false,
+            selectOnTab: true,
+            createOnBlur: false,
+            create: false,
+            // create: function (input, callback){
+            //     if (!$dir_municipio[0].selectize.getValue()){
+            //         let type = "warning";
+            //         let text = "Para agregar una calle debe primero seccionar el municipio.";
+            //         _makeAlert(type, text, null, null, "Cuidado");
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/nomenclador/calle/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $dir_municipio[0].selectize.getValue() || 0,
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $dir_municipio = $("#id_queja-dir_municipio").selectize({
             create: false,
             placeholder: "Selecione un municipio",
             allowEmptyOption: false,
+            onChange: function(value) {
+                if (!value.length) return;
+                $.ajax({
+                    url: '/nomenclador/consejopopular/filter/' + value,
+                    success: function(results) {
+                        let current_value = $q_cpopular[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
+                            $dir_cpopular[0].selectize.clear();
+                        $dir_cpopular[0].selectize.clearOptions();
+                        $dir_cpopular[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+
+                    }
+                });
+                $.ajax({
+                    url: '/nomenclador/calle/filter/' + value,
+                    success: function(results) {
+                        let current_value1 = $dir_calle[0].selectize.getValue();
+                        let current_value2 = $dir_entrecalle1[0].selectize.getValue();
+                        let current_value3 = $dir_entrecalle2[0].selectize.getValue();
+                        let exist1, exist2, exist3 = false;
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].id == current_value1) {
+                                exist1 = true;
+                            }
+                            if (results[i].id == current_value2) {
+                                exist2 = true;
+                            }
+                            if (results[i].id == current_value3) {
+                                exist3 = true;
+                            }
+                        }
+                        if (!exist1)
+                            $dir_calle[0].selectize.clear();
+                        $dir_calle[0].selectize.clearOptions();
+                        $dir_calle[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                        if (!exist2)
+                            $dir_entrecalle1[0].selectize.clear();
+                        $dir_entrecalle1[0].selectize.clearOptions();
+                        $dir_entrecalle1[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                        if (!exist13)
+                            $dir_entrecalle2[0].selectize.clear();
+                        $dir_entrecalle2[0].selectize.clearOptions();
+                        $dir_entrecalle2[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                    }
+                });
+            },
         });
         var $dir_cpopular = $("#id_queja-dir_cpopular").selectize({
-            create: false,
             placeholder: "Selecione un consejo popular",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: false,
+            create: false,
+            // create: function (input, callback){
+            //     if (!$dir_municipio[0].selectize.getValue()){
+            //         let type = "warning";
+            //         let text = "Para agregar un consejo popular debe primero seccionar el municipio.";
+            //         _makeAlert(type, text, null, null, "Cuidado");
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/nomenclador/consejopopular/add/',
+            //         type: 'POST',
+            //         data: {
+            //             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            //             municipio: $dir_municipio[0].selectize.getValue(),
+            //             numero: 0,
+            //             nombre: input,
+            //         },
+            //         success: function (result) {
+            //             console.log(result);
+            //             if (result) {
+            //                 callback({ value: result.id, text: result.nombre });
+            //             }
+            //         }
+            //     });
+            // },
         });
         var $asunto = $("#id_queja-asunto").selectize({
             create: false,
@@ -335,7 +946,6 @@ var DPVQuejas = function () {
             allowEmptyOption: false,
         });
         var $respondera = $("#id_queja-responder_a").selectize({
-            create: true,
             sortField: 'text',
             selectOnTab: true,
             createOnBlur: true,
@@ -364,7 +974,7 @@ var DPVQuejas = function () {
         });
         var $personas_list = $("#id_personas_list").selectize({
             create: false,
-            maxItems: null,
+            maxItems: 1,
             placeholder: "Selecione una persona",
             allowEmptyOption: false,
             valueField: 'id',
@@ -392,7 +1002,7 @@ var DPVQuejas = function () {
 
         var _disableOrEnablePNButton = function (element) {
             //console.log('element', element);
-            console.log(submit_button);
+            // console.log(submit_button);
             let element_li;
             if (element[0].nodeName === "DIV") {
                 element_li = element;
@@ -425,7 +1035,7 @@ var DPVQuejas = function () {
                     success: function (data) {
                         persona = data;
                         _asigne_person_queja(data);
-                        //console.log(personas);
+                        console.log(persona);
                     },
                     error: function (data, error, status) {
                         console.log(data, error, status)
@@ -448,7 +1058,7 @@ var DPVQuejas = function () {
                 success: function(data) {
                     persona = data;
                     _setValuesAddressPerson();
-                    console.log(persona);
+                    // console.log(persona);
                 },
                 error: function() {
                     console.log(xhr, error, status);
@@ -595,7 +1205,7 @@ var DPVQuejas = function () {
             } else {
                 data = {};
             }
-            console.log(data);
+            // console.log(data);
             return data;
         };
         var _makeSumary = function () {
@@ -655,7 +1265,7 @@ var DPVQuejas = function () {
                 if (persona != null)
                     quejoso_data.persona_data = persona;
             };
-            console.log(quejoso_data.persona_data);
+            // console.log(quejoso_data.persona_data);
             let data = {
                 type_procedence: type_procedence,
                 type_procedence_value: type_procedence_value,
@@ -666,8 +1276,8 @@ var DPVQuejas = function () {
                 empty_procedence_msg: empty_procedence_msg,
                 empty_quejoso_msg: empty_quejoso_msg,
                 empty_queja_msg: empty_queja_msg,
-            }
-            console.log(data);
+            };
+            // console.log(data);
             var contenido = `
                 {{if ((type_procedence_value != "" && type_procedence != "" ) || (quejoso_data.ci != "" || quejoso_data.persona_data.ci != "") || (queja_data.texto != "" && queja_data.asunto_texto != "" ))}}
                 <div class="col-md-12">
@@ -839,7 +1449,19 @@ var DPVQuejas = function () {
             $("#id_person_queja-direccion_entrecalle1")[0].selectize.setValue(data.direccion_entrecalle1);
             $("#id_person_queja-direccion_entrecalle2")[0].selectize.setValue(data.direccion_entrecalle2);
         };
+        var _perform_show_person_queja = function () {
+            // console.log("revisando", $("#id_queja-damnificado_not_indb"));
+            if ($("#id_queja-damnificado_not_indb")[0].checked) {
+                 $("#is_indb").addClass('no-show');
+                 $("#not_indb").removeClass('no-show');
+            }
+        };
+        var _fill_selectizes_with_values = function () {
+
+        };
+
         _toggleProcedenciaForms();
+        _perform_show_person_queja();
         //console.log('algo', $('input[id$="-selectized"]'));
     };
     var _initQuejaForm = function () {
@@ -895,9 +1517,6 @@ var DPVQuejas = function () {
 				'queja-tipo_procedencia': {
 				    required: true,
 				},
-//				'queja-tipo_procedencia-selectized': {
-//				    required: true,
-//				},
 				'email-email': {
 				    required: true,
 				    email: true,
@@ -927,9 +1546,6 @@ var DPVQuejas = function () {
 				'person_procedence-genero': {
 				    required: true,
 				},
-//				'person_procedence-genero-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-email_address': {
 				    email: true,
 				},
@@ -937,6 +1553,10 @@ var DPVQuejas = function () {
                     digits: true,
                     maxlength: 8,
                     minlength: 8,
+                    remote: {
+                        url: '/persona/natural/verify',
+                        type: 'GET',
+                    },
                 },
 				'person_procedence-telefono': {
 				    required: true,
@@ -947,36 +1567,21 @@ var DPVQuejas = function () {
 				'person_procedence-direccion_calle': {
 				    required: true,
 				},
-//				'person_procedence-direccion_calle-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-direccion_numero': {
 				    required: true,
 				},
 				'person_procedence-direccion_entrecalle1': {
 				    required: true,
 				},
-//				'person_procedence-direccion_entrecalle1-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-direccion_entrecalle2': {
 				    required: true,
 				},
-//				'person_procedence-direccion_entrecalle2-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-municipio': {
 				    required: true,
 				},
-//				'person_procedence-municipio-selectized': {
-//				    required: true,
-//				},
 				'person_procedence-cpopular': {
 				    required: true,
 				},
-//				'person_procedence-cpopular-selectized': {
-//				    required: true,
-//				},
 				'telefono-numero': {
 				    required: true,
                     digits: true,
@@ -1001,6 +1606,10 @@ var DPVQuejas = function () {
                     digits: true,
                     maxlength: 8,
                     minlength: 8,
+                    remote: {
+                        url: '/persona/natural/verify',
+                        type: 'GET',
+                    },
                 },
 				'empresa-nombre_contacto': {
 				    required: true,
@@ -1021,33 +1630,18 @@ var DPVQuejas = function () {
 				'empresa-cpopular': {
 				    required: true,
 				},
-//				'empresa-municipio-selectized': {
-//				    required: true,
-//				},
-//				'empresa-cpopular-selectized': {
-//				    required: true,
-//				},
 				'empresa-direccion_calle': {
 				    required: true,
 				},
-//				'empresa-direccion_calle-selectized': {
-//				    required: true,
-//				},
 				'empresa-direccion_numero': {
 				    required: true,
 				},
 				'empresa-direccion_entrecalle1': {
 				    required: true,
 				},
-//				'empresa-direccion_entrecalle1-selectized': {
-//				    required: true,
-//				},
 				'empresa-direccion_entrecalle2': {
 				    required: true,
 				},
-//				'empresa-direccion_entrecalle2-selectized': {
-//				    required: true,
-//				},
 				'gob-nombre': {
 				    required: true,
 				    maxlength: 50,
@@ -1059,9 +1653,6 @@ var DPVQuejas = function () {
 				'personas_list': {
 				    required: true,
 				},
-//				'personas_list-selectized': {
-//				    required: true,
-//				},
 				'person_queja-ci': {
 				    required: true,
 				    digits: true,
@@ -1079,9 +1670,6 @@ var DPVQuejas = function () {
 				'person_queja-genero': {
 				    required: true,
 				},
-//				'person_queja-genero-selectized': {
-//				    required: true,
-//				},
 				'person_queja-email_address': {
 				    email: true,
 				},
@@ -1089,6 +1677,10 @@ var DPVQuejas = function () {
                     digits: true,
                     maxlength: 8,
                     minlength: 8,
+                    remote: {
+                        url: '/persona/natural/verify',
+                        type: 'GET',
+                    },
                 },
 				'person_queja-telefono': {
 				    required: true,
@@ -1099,90 +1691,51 @@ var DPVQuejas = function () {
 				'person_queja-direccion_calle': {
 				    required: true,
 				},
-//				'person_queja-direccion_calle-selectized': {
-//				    required: true,
-//				},
 				'person_queja-direccion_numero': {
 				    required: true,
 				},
 				'person_queja-direccion_entrecalle1': {
 				    required: true,
 				},
-//				'person_queja-direccion_entrecalle1-selectized': {
-//				    required: true,
-//				},
 				'person_queja-direccion_entrecalle2': {
 				    required: true,
 				},
-//				'person_queja-direccion_entrecalle2-selectized': {
-//				    required: true,
-//				},
 				'person_queja-cpopular': {
 				    required: true,
 				},
-//				'person_queja-cpopular-selectized': {
-//				    required: true,
-//				},
 				'person_queja-municipio': {
 				    required: true,
 				},
-//				'person_queja-municipio-selectized': {
-//				    required: true,
-//				},
 				'queja-no_procendencia': {},
 				'queja-no_radicacion': {},
 				'queja-dir_calle': {
 				    required: true,
 				},
-//				'queja-dir_calle-selectized': {
-//				    required: true,
-//				},
 				'queja-dir_num': {
 				    required: true,
 				},
 				'queja-dir_entrecalle1': {
 				    required: true,
 				},
-//				'queja-dir_entrecalle1-selectized': {
-//				    required: true,
-//				},
 				'queja-dir_entrecalle2': {
 				    required: true,
 				},
-//				'queja-dir_entrecalle2-selectized': {
-//				    required: true,
-//				},
 				'queja-dir_municipio': {
 				    required: true,
 				},
-//				'queja-dir_municipio-selectized': {
-//				    required: true,
-//				},
 				'queja-dir_cpopular': {
 				    required: true,
 				},
-//				'queja-dir_cpopular-selectized': {
-//				    required: true,
-//				},
 				'queja-referencia': {},
 				'queja-asunto': {
 				    required: true,
 				},
-//				'queja-asunto-selectized': {
-//				    required: true,
-//				},
 				'queja-tipo': {
 				    required: true,
 				},
 				'queja-responder_a': {
 				    required: true,
 				},
-//				'queja-responder_a-selectized': {
-//				    required: true,
-//				},
-//				'queja-tipo-selectized': {
-//				    required: true,
-//				},
 				'queja-asunto_texto': {
 				    required: true,
                     maxlength: 300,
@@ -1239,6 +1792,7 @@ var DPVQuejas = function () {
                     digits: "El movil solo puede tener dígitos.",
                     maxlength: "El movil no pueden tener más de 8 dígitos.",
                     minlength: "El movil no puede tener menos de 8 dígitos.",
+                    remote: "Ya existe otra persona registrada con ese movil",
                 },
 				'person_procedence-telefono': {
 				    required: "El teléfono no puede quedar en blanco.",
@@ -1391,6 +1945,7 @@ var DPVQuejas = function () {
                     digits: "El movil solo puede tener dígitos.",
                     maxlength: "El movil no pueden tener más de 8 dígitos.",
                     minlength: "El movil no puede tener menos de 8 dígitos.",
+                    remote: "Ya existe otra persona registrada con ese movil",
                 },
 				'person_queja-telefono': {
 				    required: "El teléfono no puede quedar en blanco.",
@@ -1698,7 +2253,7 @@ var DPVQuejas = function () {
                     dataType: 'json',
                     data: data,
                     success: function (json) {
-                        //console.log(json)
+                        // console.log(json)
                         _prepare_list(JSON.parse(JSON.stringify(json)), params.awesomplete);
                     },
                     error: function (xhr,errmsg,err) {
@@ -1720,15 +2275,15 @@ var DPVQuejas = function () {
                     dataType: 'json',
                     data: data,
                     success: function (json) {
-                        console.log(json);
-                        let data = _prepare_data(json, params.object)
-                        console.log('data', data);
+                        // console.log(json);
+                        let data = _prepare_data(json, params.object);
+                        // console.log('data', data);
                         let accept="Usar estos datos";
                         let title="Aviso";
                         let plus=json;
                         tmp = json;
                         if (data) {
-                            _makeAlert('info', data, params.asigne, title=title, accept=accept)
+                            _makeAlert('info', data, params.asigne, null, title=title, accept=accept)
                         };
                     },
                     error: function (xhr,errmsg,err) {
@@ -1742,31 +2297,35 @@ var DPVQuejas = function () {
                 return false;
             };
             let listilla = [];
-            console.log('prepare json', json);
+            // console.log('prepare json', json);
             let model = json[item];
-            console.log('prepare_model', model);
+            // console.log('prepare_model', model);
             for(let key in model)
             {
                 //console.log(key);
                 if (key.search('direccion_') == -1  && key.search('municipio') == -1  && key.search('cpopular') == -1  &&  key.search('genero') == -1  )
                     listilla.push('<h6 class="text-left"><strong>'+key+': </strong>'+model[key]+'</h6>');
             }
-            console.log(listilla);
+            // console.log(listilla);
             return 'Coincidencia encontrada:<br>'.concat(listilla.join("")).concat('<br><p>Desea rellenar el formulario con estos datos si son correctos:</p>.');
         };
 
 		var _prepare_list = function (list, awesomplete) {
+		    // console.log(list);
             let c_list = [];
             //console.log(awesomplete);
-            let field = awesomplete.input.name.split('-')[1]
-            //console.log('field', field);
-            list.forEach(item => {
-                c_list.push(item[field]);
-            });
-            awesomplete.list = c_list;
+            if (list.length > 0) {
+
+                let field = awesomplete.input.name.split('-')[1]
+                //console.log('field', field);
+                list.forEach(item => {
+                    c_list.push(item[field]);
+                });
+                awesomplete.list = c_list;
+            }
         };
         var _asigne_person_procedence = function (data) {
-            //alert(data); id_person_procedence-ci
+            //console.log(data);
             $("#id_person_procedence-ci").val(data.person.ci);
             $("#id_person_procedence-nombre").val(data.person.nombre);
             $("#id_person_procedence-apellidos").val(data.person.apellidos);
@@ -1783,12 +2342,12 @@ var DPVQuejas = function () {
             $("#id_person_procedence-cpopular")[0].selectize.setValue(data.person.cpopular, false);
             //$("#")[0].selectize.setValue(data.person., false);
             //$('.form-control').trigger('change');
-            console.log(data);
+            // console.log(data);
             tmp = null;
         };
         var _asigne_pe = function (data) {
             //alert(data);
-            console.log(data);
+            // console.log(data);
             $("#id_pe-nombre").val(data.prensaescrita.nombre);
             $("#id_pe-siglas").val(data.prensaescrita.siglas);
             tmp = null;
@@ -1816,6 +2375,67 @@ var DPVQuejas = function () {
 
 		validator_form.resetForm();
     };
+    var _initResponse = function () {
+        $("#show_form").on("click", function (e) {
+            $("#show_detail").removeClass("my-hidden");
+
+            $("#show_form").addClass("my-hidden");
+            $("#show_form_div").removeClass("my-hidden");
+            $("#show_detail_div").addClass("my-hidden");
+            if ($('button[type="submit"]').hasClass("disabled")) $('button[type="submit"]').removeClass("disabled");
+        });
+        $("#show_detail").on("click", function (e) {
+            $("#show_detail").addClass("my-hidden");
+            $("#show_form").removeClass("my-hidden");
+            $("#show_form_div").addClass("my-hidden");
+            $("#show_detail_div").removeClass("my-hidden");
+            $('button[type="submit"]').addClass("disabled");
+        });
+    };
+    var _initResponseForm = function () {
+        $.validator.setDefaults({
+            errorClass: 'text-danger',
+            highlight: function(element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element) {
+                $(element).removeClass('is-invalid');
+            },
+            // Validate only visible fields
+			ignore: ":hidden",
+
+            errorPlacement: function(error, element) {
+                error.insertBefore(element);
+            },
+
+        });
+        let validator_form = response_form.validate({
+			rules: {
+				'gestion': {
+				    required: true,
+                    maxlength: 3000,
+                    minlength: 20,
+				},
+				'texto': {
+				    required: true,
+                    maxlength: 3000,
+                    minlength: 20,
+				},
+			},
+			messages:{
+				'gestion': {
+				    required: "No puede dejar texto de la gestion en blanco.",
+                    maxlength: "El texto de la gestion no puede tener mas de 3000 caracteres.",
+                    minlength: "El texto de la gestion no puede tener menos de 20 caracteres.",
+				},
+				'texto': {
+				    required: "No puede dejar el texto de la respuesta en blanco.",
+                    maxlength: "El texto de la respuesta no puede tener mas de 3000 caracteres.",
+                    minlength: "El texto de la respuesta no puede tener menos de 20 caracteres.",
+				},
+			},
+		});
+    };
     return {
         init: function () {
             _initQuejas();
@@ -1824,6 +2444,11 @@ var DPVQuejas = function () {
             queja_form = $("#queja_form");
             _initTabWizard();
             _initQuejaForm();
+        },
+        initResponse: function () {
+            response_form = $("#response_form");
+            _initResponse();
+            _initResponseForm();
         },
     };
 }();

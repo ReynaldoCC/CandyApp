@@ -52,3 +52,11 @@ class RespuestaRechazadaForm(forms.ModelForm):
             'argumento': forms.Textarea(attrs={"placeholder": "Argumento", "class": "form-control"}),
         }
 
+class TecnicoForm(forms.ModelForm):
+
+    class Meta:
+        model = Tecnico
+        fields = ('profile',)
+        widgets = {
+           'profile': forms.Select(attrs={"class": "form-control select2"}),
+        }

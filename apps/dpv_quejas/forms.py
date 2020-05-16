@@ -70,22 +70,27 @@ class AsignaQuejaDptoForm(forms.ModelForm):
     class Meta:
         model = AsignaQuejaDpto
         fields = (
-                  'dpto',
+                  'dpto', 'observaciones',
                   )
         widgets = {
             'dpto': forms.Select(attrs={"placeholder": "Seleccione un Departamento.", "class": "form-control select2"}),
+            'observaciones': forms.Textarea(attrs={"placeholder": "Observasiones", "class":"form-control mtext"}),
         }
 
 
 class AsignaQuejaTecnicoForm(forms.ModelForm):
+    tecnico = forms.ModelChoiceField(queryset=Tecnico.objects.all(),
+                                     label=_("Técnicos"),
+                                     widget=forms.Select(attrs={"class": "form-control select2"}))
 
     class Meta:
         model = AsignaQuejaTecnico
         fields = (
-                  'tecnico',
+                  'tecnico', 'observaciones',
                   )
         widgets = {
-            'tecnico': forms.Select(attrs={"placeholder": "Seleccione un Técnico.", "class": "form-control select2"}),
+            'tecnico': forms.Select(attrs={"placeholder":"Seleccionar Técnico", "class": "form-control select2"}),
+            'observaciones': forms.Textarea(attrs={"placeholder": "Observasiones", "class": "form-control mtext"}),
         }
 
 
@@ -204,3 +209,14 @@ class QAnonimoForm(forms.Form):
 
     def save(self, *args, **kwargs):
         return None
+
+
+class QRespuestaForm(forms.ModelForm):
+
+    class Meta:
+        model = RespuestaQueja
+        fields = ["gestion", "texto", ]
+        widgets = {
+            "gestion": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
+            "texto": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
+        }

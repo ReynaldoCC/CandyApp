@@ -18,3 +18,33 @@ div.awesomplete {
 a.back-link {
     color: #4d16cb !important;
 }
+.modal {
+    opacity: 1 !important;
+    margin-top: 5%;
+    padding-top: 10%;
+}
+.DTFC_LeftBodyWrapper, .DTFC_RightBodyWrapper {
+    top: -15px !important;
+    overflow-y: hidden;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #e3e8e6;
+}
+.table-striped tbody tr {
+    background-color: #fff;
+}
+.DTFC_LeftHeadWrapper table, .DTFC_RightHeadWrapper table {
+    background-color: #fff;
+}
+ul.errorlist {
+    color: #dc3545 !important;
+    font-size: .8rem !important;
+}
+.form-group .text-danger {
+    color: #dc3545 !important;
+    font-size: .8rem !important;
+}
+.my-hidden {
+    display: none !important;
+    visibility: hidden !important;
+}

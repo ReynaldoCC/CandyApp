@@ -61,6 +61,13 @@ class Queja(LoggerMixin):
     def get_quejoso(self):
         return self.damnificado.first().objecto_contenido
 
+    @property
+    def get_tecnico_asignado(self):
+        if self.quejatecnico.filter(rechazada__isnull=True).exists():
+            return self.quejatecnico.filter(rechazada__isnull=True).first().tecnico
+        else:
+            return None
+
 
 class Damnificado(LoggerMixin):
     queja = models.ForeignKey(Queja, on_delete=models.CASCADE, related_name='damnificado')
@@ -84,7 +91,7 @@ class AsignaQuejaDpto(LoggerMixin):
                              blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
     fecha_asignacion = models.DateTimeField(verbose_name=_("Fecha Asignación"), auto_now_add=True)
-    rechazada = models.DateTimeField(default=None, null=True)
+    rechazada = models.DateTimeField(default=None, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Queja asignada a Depto")
@@ -98,7 +105,7 @@ class AsignaQuejaTecnico(LoggerMixin):
                                 blank=True, null=True, default='')
     observaciones = models.TextField(verbose_name=_("Observaciones"), blank=True, default='')
     fecha_asignacion = models.DateTimeField(verbose_name=_("Fecha Asignación"), auto_now_add=True)
-    rechazada = models.DateTimeField(default=None, null=True)
+    rechazada = models.DateTimeField(default=None, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Queja asignada a Técnico")
@@ -132,6 +139,17 @@ class QuejaRedirigida(LoggerMixin):
 class RespuestaQueja(Respuesta):
     queja = models.ForeignKey(Queja, related_name='respuesta', on_delete=models.CASCADE,
                               blank=True, null=True, default='')
+    gestion = models.TextField(verbose_name=_("Gestion realizada"),
+                               blank=True,
+                               default="",
+                               help_text=_("Gestion realizada por parte del tecnico para dar respuesta a la queja"))
+
+    class Meta:
+        verbose_name = _("Respuesta a Queja")
+        verbose_name_plural = _("Respuestas a Quejas")
+
+    def __str__(self):
+        return self.codigo
 
 
 class QuejaNotificada(LoggerMixin):
@@ -292,6 +310,7 @@ def asignar_depto_ap(instance):
         qd.observaciones = "Asignado por el sistema."
         qd.save()
 
+
 # Signals
 @receiver(pre_save, sender=Queja)
 def preset_queja(sender, **kwargs):
@@ -311,3 +330,48 @@ def postset_queja(sender, **kwargs):
         instance = kwargs.get('instance')
         if kwargs.get('created', True):
             asignar_depto_ap(instance)
+
+
+@receiver(post_save, sender=AsignaQuejaTecnico)
+def set_queja_asigtec_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.quejatecnico.save()
+
+
+@receiver(post_save, sender=AsignaQuejaDpto)
+def set_queja_asigdpto_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.quejadpto.save()
+
+
+@receiver(post_save, sender=QuejaNotificada)
+def set_queja_noti_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.queja.save()
+
+
+# @receiver(post_save, sender=RespuestaAQueja)
+# def set_queja_resp_state(sender, **kwargs):
+#     if kwargs.get('instance'):
+#         instance = kwargs.get('instance')
+#         instance.queja.save()
+
+
+@receiver(post_save, sender=QuejaRedirigida)
+def set_queja_redir_state(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        instance.queja.save()
+
+
+@receiver(pre_save, sender=RespuestaQueja)
+def preset_respuesta(sender, **kwargs):
+    if kwargs.get('instance'):
+        instance = kwargs.get('instance')
+        if instance.queja and not instance.codigo:
+            counter = instance.queja.respuesta.count() + 1
+            instance.codigo = instance.queja.numero + str(counter)
+

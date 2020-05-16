@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.db.models import Count, F, Value, functions
-from django.core import serializers
+from apps.dpv_quejas.models import Queja
 from .forms import PersonaJuridicaForm, PersonaNaturalForm
 from .models import PersonaNatural, PersonaJuridica
 
@@ -145,6 +145,10 @@ def found_person_by_ci(request):
             if person:
                 data['exist'] = True
                 data['person'] = model_to_dict(person, exclude=['id', 'deleted_at'])
+                # asociar la persona con las quejas que puede haber tenido, comentar si se quita el modulo de quejas
+                data['person']['quejas'] = list(Queja.objects.filter(damnificado__tipo_contenido__model="personanatural",
+                                                                     damnificado__id_objecto=person.id)
+                                                             .values("numero", "fecha_radicacion")) or "No tiene quejas a su nombre"
             else:
                 data['exist'] = False
         return JsonResponse(data=data, status=200)
@@ -241,3 +245,26 @@ def get_person_data(request, id_person):
     person_dic['cpopular_nombre'] = person.cpopular.nombre
     person_dic['municipio_nombre'] = person.municipio.nombre
     return JsonResponse(data=person_dic, status=200)
+
+
+@login_required()
+def verify_personat(request):
+    if request.method == 'GET':
+        if request.GET.get('movil'):
+            movil = request.GET.get('movil')
+        if request.GET.get('person_queja-movil'):
+            movil = request.GET.get('person_queja-movil')
+        if request.GET.get('person_procedence-movil'):
+            movil = request.GET.get('person_procedence-movil')
+
+        id = request.GET.get('id')
+
+        if not id:
+            id = 0
+        if movil:
+            if not PersonaNatural.objects.filter(movil=movil).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", safe=False, status=200)
+    return JsonResponse({"error": "method not Allowed"}, status=405)

@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import permission_required, login_required
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 from .forms import *
 from .models import *
 
@@ -54,14 +56,14 @@ def add_provincia(request):
 @permission_required('dpv_nomencladores.change_provincia')
 def update_provincia(request, id_provincia):
     provincia = Provincia.objects.get(id=id_provincia)
-    if request.method == 'GET':
-        form = ProvinciaForm(instance=provincia)
-    else:
+    if request.method == 'POST':
         form = ProvinciaForm(request.POST, instance=provincia)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_provincia')
+    else:
+        form = ProvinciaForm(instance=provincia)
     return render(request, 'dpv_nomencladores/form_provincia.html', {'form': form, 'provincia': provincia})
 
 
@@ -98,14 +100,14 @@ def add_municipio(request):
 @permission_required('dpv_nomencladores.change_municipio')
 def update_municipio(request, id_municipio):
     municipio = Municipio.objects.get(id=id_municipio)
-    if request.method == 'GET':
-        form = MunicipioForm(instance=municipio)
-    else:
+    if request.method == 'POST':
         form = MunicipioForm(request.POST, instance=municipio)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_municipio')
+    else:
+        form = MunicipioForm(instance=municipio)
     return render(request, 'dpv_nomencladores/form_municipio.html', {'form': form, 'municipio': municipio})
 
 
@@ -122,8 +124,21 @@ def delete_municipio(request, id_municipio):
 # ------------------------------------ ConsejoPopular -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_consejopopular', raise_exception=True)
 def index_consejopopular(request):
-    consejopopulars = ConsejoPopular.objects.all()
-    return render(request, 'dpv_nomencladores/list_consejopopular.html', {'consejopopulars': consejopopulars})
+    if request.is_ajax():
+        consejopopulars = list(model_to_dict(cpopular) for cpopular in ConsejoPopular.objects.all())
+        return JsonResponse(data=consejopopulars, safe=False, status=200)
+    else:
+        consejopopulars = ConsejoPopular.objects.all()
+        return render(request, 'dpv_nomencladores/list_consejopopular.html', {'consejopopulars': consejopopulars})
+
+
+@login_required()
+def filter_by_muncp(request, id_municipio):
+    try:
+        cpopulares = list(model_to_dict(cpop) for cpop in ConsejoPopular.objects.filter(municipio__id=id_municipio))
+        return JsonResponse(data=cpopulares, safe=False, status=200)
+    except:
+        return JsonResponse({"error": "Invalid id value"})
 
 
 @permission_required('dpv_nomencladores.add_consejopopular')
@@ -139,17 +154,43 @@ def add_consejopopular(request):
     return render(request, 'dpv_nomencladores/form_consejopopular.html', {'form': form})
 
 
+@login_required()
+def add_cpopular_json(request):
+    data = {}
+    status = 200
+    if request.method == 'POST':
+        form = ConsejoPopularForm(request.POST)
+        if form.is_valid():
+            nombre_cpop = form.cleaned_data.get('nombre')
+            municipio = form.cleaned_data.get('municipio')
+            numero = form.cleaned_data.get('numero')
+            if int(numero) <= 0:
+                ultimo_numero_str = ConsejoPopular.objects.order_by('id').last().numero
+                ultimo_numero = int(ultimo_numero_str)
+                numero = str(ultimo_numero + 1)
+            cpop, created = ConsejoPopular.objects.get_or_create(nombre=nombre_cpop, defaults={"municipio": municipio,
+                                                                                               "numero": numero})
+            data = model_to_dict(cpop)
+            if created:
+                status = 201
+            return JsonResponse(data=data, status=status)
+        data['errors'] = form.errors
+        status = 400
+        return JsonResponse(data=data, status=status)
+    return JsonResponse({"error": "method not allowed"}, status=405)
+
+
 @permission_required('dpv_nomencladores.change_consejopopular')
 def update_consejopopular(request, id_consejopopular):
     consejopopular = ConsejoPopular.objects.get(id=id_consejopopular)
-    if request.method == 'GET':
-        form = ConsejoPopularForm(instance=consejopopular)
-    else:
+    if request.method == 'POST':
         form = ConsejoPopularForm(request.POST, instance=consejopopular)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_consejopopular')
+    else:
+        form = ConsejoPopularForm(instance=consejopopular)
     return render(request, 'dpv_nomencladores/form_consejopopular.html', {'form': form,
                                                                           'consejopopular': consejopopular})
 
@@ -167,7 +208,11 @@ def delete_consejopopular(request, id_consejopopular):
 # ------------------------------------------- Calle -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_calle', raise_exception=True)
 def index_calle(request):
-    calles = Calle.objects.all()
+    if request.is_ajax():
+        calles = list(model_to_dict(calle) for calle in Calle.objects.all())
+        return JsonResponse(data=calles, safe=False, status=200)
+    else:
+        calles = Calle.objects.all()
     return render(request, 'dpv_nomencladores/list_calle.html', {'calles': calles})
 
 
@@ -205,6 +250,40 @@ def add_calle_on_user(request):
     return JsonResponse(data)
 
 
+@login_required()
+def add_calle_json(request):
+    data = {}
+    status = 200
+    if request.method == 'POST':
+        form = CalleForm(request.POST)
+        if form.is_valid():
+            nombre_calle = form.cleaned_data.get('nombre')
+            municipios = form.cleaned_data.get('municipios')
+            calle, created = Calle.objects.get_or_create(nombre=nombre_calle)
+            if municipios and not municipios in calle.municipios.all():
+                if calle.municipios.count() == 0:
+                    calle.municipios.set(municipios)
+                else:
+                    calle.municipios.add(municipios)
+            data = model_to_dict(calle)
+            if created:
+                status = 201
+            return JsonResponse(data=data, status=status)
+        data['errors'] = form.errors
+        status = 400
+        return JsonResponse(data=data, status=status)
+    return JsonResponse({"error": "method not allowed"}, status=405)
+
+
+@login_required()
+def filter_by_municipio(request, id_municipio):
+    try:
+        calles = list(model_to_dict(calle, fields=["id", "nombre"]) for calle in Calle.objects.filter(municipios__id=id_municipio))
+        return JsonResponse(data=calles, safe=False, status=200)
+    except:
+        return JsonResponse({"error": "Invalid id value"}, status=400)
+
+
 @permission_required('dpv_nomencladores.add_calle')
 def agree_calle(request):
     calleform = CalleForm()
@@ -215,14 +294,14 @@ def agree_calle(request):
 @permission_required('dpv_nomencladores.change_calle')
 def update_calle(request, id_calle):
     calle = Calle.objects.get(id=id_calle)
-    if request.method == 'GET':
-        form = CalleForm(instance=calle)
-    else:
+    if request.method == 'POST':
         form = CalleForm(request.POST, instance=calle)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_calle')
+    else:
+        form = CalleForm(instance=calle)
     return render(request, 'dpv_nomencladores/form_calle.html', {'form': form, 'calle': calle})
 
 
@@ -259,14 +338,14 @@ def add_piso(request):
 @permission_required('dpv_nomencladores.change_piso')
 def update_piso(request, id_piso):
     piso = Piso.objects.get(id=id_piso)
-    if request.method == 'GET':
-        form = PisoForm(instance=piso)
-    else:
+    if request.method == 'POST':
         form = PisoForm(request.POST, instance=piso)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_piso')
+    else:
+        form = PisoForm(instance=piso)
     return render(request, 'dpv_nomencladores/form_piso.html', {'form': form, 'piso': piso})
 
 
@@ -303,14 +382,14 @@ def add_organismo(request):
 @permission_required('dpv_nomencladores.change_organismo')
 def update_organismo(request, id_organismo):
     organismo = Organismo.objects.get(id=id_organismo)
-    if request.method == 'GET':
-        form = OrganismoForm(instance=organismo)
-    else:
+    if request.method == 'POST':
         form = OrganismoForm(request.POST, instance=organismo)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_organismo')
+    else:
+        form = OrganismoForm(instance=organismo)
     return render(request, 'dpv_nomencladores/form_organismo.html', {'form': form, 'organismo': organismo})
 
 
@@ -326,14 +405,11 @@ def delete_organismo(request, id_organismo):
 
 def autofill_organismo(request):
     if request.method == 'POST':
-        data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             if len(nombre) >= 3:
                 organismos = [model_to_dict(mot) for mot in Organismo.objects.filter(nombre__icontains=nombre)[:10]]
-                data['organismos'] = organismos
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=organismos, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -376,14 +452,14 @@ def add_destino(request):
 @permission_required('dpv_nomencladores.change_destino')
 def update_destino(request, id_destino):
     destino = Destino.objects.get(id=id_destino)
-    if request.method == 'GET':
-        form = DestinoForm(instance=destino)
-    else:
+    if request.method == 'POST':
         form = DestinoForm(request.POST, instance=destino)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_destino')
+    else:
+        form = DestinoForm(instance=destino)
     return render(request, 'dpv_nomencladores/form_destino.html', {'form': form, 'destino': destino})
 
 
@@ -420,14 +496,14 @@ def add_concepto(request):
 @permission_required('dpv_nomencladores.change_concepto')
 def update_concepto(request, id_concepto):
     concepto = Concepto.objects.get(id=id_concepto)
-    if request.method == 'GET':
-        form = ConceptoForm(instance=concepto)
-    else:
+    if request.method == 'POST':
         form = ConceptoForm(request.POST, instance=concepto)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_concepto')
+    else:
+        form = ConceptoForm(instance=concepto)
     return render(request, 'dpv_nomencladores/form_concepto.html', {'form': form, 'concepto': concepto})
 
 
@@ -464,14 +540,14 @@ def add_genero(request):
 @permission_required('dpv_nomencladores.change_genero')
 def update_genero(request, id_genero):
     genero = Genero.objects.get(id=id_genero)
-    if request.method == 'GET':
-        form = GeneroForm(instance=genero)
-    else:
+    if request.method == 'POST':
         form = GeneroForm(request.POST, instance=genero)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_genero')
+    else:
+        form = GeneroForm(instance=genero)
     return render(request, 'dpv_nomencladores/form_genero.html', {'form': form, 'genero': genero})
 
 
@@ -508,14 +584,14 @@ def add_areatrabajo(request):
 @permission_required('dpv_nomencladores.change_areatrabajo')
 def update_areatrabajo(request, id_areatrabajo):
     areatrabajo = AreaTrabajo.objects.get(id=id_areatrabajo)
-    if request.method == 'GET':
-        form = AreaTrabajoForm(instance=areatrabajo)
-    else:
+    if request.method == 'POST':
         form = AreaTrabajoForm(request.POST, instance=areatrabajo)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_areatrab')
+    else:
+        form = AreaTrabajoForm(instance=areatrabajo)
     return render(request, 'dpv_nomencladores/form_areatrabajo.html', {'form': form, 'areatrabajo': areatrabajo})
 
 
@@ -553,14 +629,14 @@ def add_centrotrabajo(request):
 @permission_required('dpv_nomencladores.change_centrotrabajo')
 def update_centrotrabajo(request, id_centrotrabajo):
     centrotrabajo = CentroTrabajo.objects.get(id=id_centrotrabajo)
-    if request.method == 'GET':
-        form = CentroTrabajoForm(instance=centrotrabajo)
-    else:
+    if request.method == 'POST':
         form = CentroTrabajoForm(request.POST, instance=centrotrabajo)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_centrab')
+    else:
+        form = CentroTrabajoForm(instance=centrotrabajo)
     return render(request, 'dpv_nomencladores/form_centrotrabajo.html', {'form': form, 'centrotrabajo': centrotrabajo})
 
 
@@ -597,14 +673,14 @@ def add_codificadorasunto(request):
 @permission_required('dpv_nomencladores.change_codificadorasunto')
 def update_codificadorasunto(request, id_codificadorasunto):
     codificadorasunto = CodificadorAsunto.objects.get(id=id_codificadorasunto)
-    if request.method == 'GET':
-        form = CodificadorAsuntoForm(instance=codificadorasunto)
-    else:
+    if request.method == 'POST':
         form = CodificadorAsuntoForm(request.POST, instance=codificadorasunto)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_codificadorasunto')
+    else:
+        form = CodificadorAsuntoForm(instance=codificadorasunto)
     return render(request, 'dpv_nomencladores/form_codificadorasunto.html', {'form': form,
                                                                              'codificadorasunto': codificadorasunto})
 
@@ -642,14 +718,14 @@ def add_tipoqueja(request):
 @permission_required('dpv_nomencladores.change_tipoqueja')
 def update_tipoqueja(request, id_tipoqueja):
     tipoqueja = TipoQueja.objects.get(id=id_tipoqueja)
-    if request.method == 'GET':
-        form = TipoQuejaForm(instance=tipoqueja)
-    else:
+    if request.method == 'POST':
         form = TipoQuejaForm(request.POST, instance=tipoqueja)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_tipoqueja')
+    else:
+        form = TipoQuejaForm(instance=tipoqueja)
     return render(request, 'dpv_nomencladores/form_tipoqueja.html', {'form': form, 'tipoqueja': tipoqueja})
 
 
@@ -686,14 +762,14 @@ def add_procedencia(request):
 @permission_required('dpv_nomencladores.change_procedencia')
 def update_procedencia(request, id_procedencia):
     procedencia = Procedencia.objects.get(id=id_procedencia)
-    if request.method == 'GET':
-        form = ProcedenciaForm(instance=procedencia)
-    else:
+    if request.method == 'POST':
         form = ProcedenciaForm(request.POST, instance=procedencia)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_procedencia')
+    else:
+        form = ProcedenciaForm(instance=procedencia)
     return render(request, 'dpv_nomencladores/form_procedencia.html', {'form': form, 'procedencia': procedencia})
 
 
@@ -702,7 +778,8 @@ def delete_procedencia(request, id_procedencia):
     procedencia = Procedencia.objects.get(id=id_procedencia)
     if request.method == 'POST':
         procedencia.perform_log(request=request, af=2)
-        procedencia.delete()
+        messages.warning(request=request, message=_("No se puede eliminar procedencias de esta lista verifique con el administrador del sistema para ver que desea hacer y si es posible"))
+        # procedencia.delete()
         return redirect('nomenclador_procedencia')
     return render(request, 'dpv_nomencladores/delete_procedencia.html', {'procedencia': procedencia})
 
@@ -730,16 +807,15 @@ def add_tipoprocedencia(request):
 @permission_required('dpv_nomencladores.change_tipoprocedencia')
 def update_tipoprocedencia(request, id_tipoprocedencia):
     tipoprocedencia = TipoProcedencia.objects.get(id=id_tipoprocedencia)
-    if request.method == 'GET':
-        form = TipoProcedenciaForm(instance=tipoprocedencia)
-    else:
+    if request.method == 'POST':
         form = TipoProcedenciaForm(request.POST, instance=tipoprocedencia)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_tipoprocedencia')
-    return render(request, 'dpv_nomencladores/form_tipoprocedencia.html', {'form': form,
-                                                                           'tipoprocedencia': tipoprocedencia})
+    else:
+        form = TipoProcedenciaForm(instance=tipoprocedencia)
+    return render(request, 'dpv_nomencladores/form_tipoprocedencia.html',{'form': form, 'tipoprocedencia': tipoprocedencia})
 
 
 @permission_required('dpv_nomencladores.delete_tipoprocedencia')
@@ -775,14 +851,14 @@ def add_estado(request):
 @permission_required('dpv_nomencladores.change_estado')
 def update_estado(request, id_estado):
     estado = Estado.objects.get(id=id_estado)
-    if request.method == 'GET':
-        form = EstadoForm(instance=estado)
-    else:
+    if request.method == 'POST':
         form = EstadoForm(request.POST, instance=estado)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_estado')
+    else:
+        form = EstadoForm(instance=estado)
     return render(request, 'dpv_nomencladores/form_estado.html', {'form': form, 'estado': estado})
 
 
@@ -821,16 +897,15 @@ def add_clasificacionrespuesta(request):
 @permission_required('dpv_nomencladores.change_clasificacionrespuesta')
 def update_clasificacionrespuesta(request, id_clasificacionrespuesta):
     clasificacionrespuesta = ClasificacionRespuesta.objects.get(id=id_clasificacionrespuesta)
-    if request.method == 'GET':
-        form = ClasificacionRespuestaForm(instance=clasificacionrespuesta)
-    else:
+    if request.method == 'POST':
         form = ClasificacionRespuestaForm(request.POST, instance=clasificacionrespuesta)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_clasificacionrespuesta')
-    return render(request,
-                  'dpv_nomencladores/form_clasificacionrespuesta.html',
+    else:
+        form = ClasificacionRespuestaForm(instance=clasificacionrespuesta)
+    return render(request, 'dpv_nomencladores/form_clasificacionrespuesta.html',
                   {'form': form, 'clasificacionrespuesta': clasificacionrespuesta})
 
 
@@ -846,7 +921,7 @@ def delete_clasificacionrespuesta(request, id_clasificacionrespuesta):
                   {'clasificacionrespuesta': clasificacionrespuesta})
 
 
-# --------------------------------------- Prensa Escrita ------------------------------------------------
+# --------------------------------------- PrensaEscrita ------------------------------------------------
 @permission_required('dpv_nomencladores.view_prensaescrita', raise_exception=True)
 def index_prensaescrita(request):
     prensasescritas = PrensaEscrita.objects.all()
@@ -871,17 +946,15 @@ def add_prensaescrita(request):
 @permission_required('dpv_nomencladores.change_prensaescrita')
 def update_prensaescrita(request, id_prensaescrita):
     prensaescrita = PrensaEscrita.objects.get(id=id_prensaescrita)
-    if request.method == 'GET':
-        form = PrensaEscritaForm(instance=prensaescrita)
-    else:
+    if request.method == 'POST':
         form = PrensaEscritaForm(request.POST, instance=prensaescrita)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_prensaescrita')
-    return render(request,
-                  'dpv_nomencladores/form_prensaescrita.html',
-                  {'form': form, 'prensaescrita': prensaescrita})
+    else:
+        form = PrensaEscritaForm(instance=prensaescrita)
+    return render(request, 'dpv_nomencladores/form_prensaescrita.html', {'form': form, 'prensaescrita': prensaescrita})
 
 
 @permission_required('dpv_nomencladores.delete_prensaescrita')
@@ -898,14 +971,11 @@ def delete_prensaescrita(request, id_prensaescrita):
 
 def autofill_prensaescrita(request):
     if request.method == 'POST':
-        data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             if len(nombre) >= 3:
                 prensasescritas = [model_to_dict(mot) for mot in PrensaEscrita.objects.filter(nombre__icontains=nombre)[:10]]
-                data['prensasescritas'] = prensasescritas
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=prensasescritas, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -950,17 +1020,15 @@ def add_telefono(request):
 @permission_required('dpv_nomencladores.change_telefono')
 def update_telefono(request, id_telefono):
     telefono = Telefono.objects.get(id=id_telefono)
-    if request.method == 'GET':
-        form = TelefonoForm(instance=telefono)
-    else:
+    if request.method == 'POST':
         form = TelefonoForm(request.POST, instance=telefono)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_telefono')
-    return render(request,
-                  'dpv_nomencladores/form_telefono.html',
-                  {'form': form, 'telefono': telefono})
+    else:
+        form = TelefonoForm(instance=telefono)
+    return render(request, 'dpv_nomencladores/form_telefono.html', {'form': form, 'telefono': telefono})
 
 
 @permission_required('dpv_nomencladores.delete_telefono')
@@ -977,14 +1045,11 @@ def delete_telefono(request, id_telefono):
 
 def autofill_telefono(request):
     if request.method == 'POST':
-        data = dict()
         numero = request.POST.get('numero')
-        print(numero)
         if numero:
             if len(numero) >= 3:
                 telefonos = [model_to_dict(mot) for mot in Telefono.objects.filter(numero__icontains=numero)[:10]]
-                data['telefonos'] = telefonos
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=telefonos, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -1029,17 +1094,15 @@ def add_email(request):
 @permission_required('dpv_nomencladores.change_email')
 def update_email(request, id_email):
     email = Email.objects.get(id=id_email)
-    if request.method == 'GET':
-        form = EmailForm(instance=email)
-    else:
+    if request.method == 'POST':
         form = EmailForm(request.POST, instance=email)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_email')
-    return render(request,
-                  'dpv_nomencladores/form_email.html',
-                  {'form': form, 'email': email})
+    else:
+        form = EmailForm(instance=email)
+    return render(request, 'dpv_nomencladores/form_email.html', {'form': form, 'email': email})
 
 
 @permission_required('dpv_nomencladores.delete_email')
@@ -1056,14 +1119,11 @@ def delete_email(request, id_email):
 
 def autofill_email(request):
     if request.method == 'POST':
-        data = dict()
         email = request.POST.get('email')
-        print(email)
         if email:
             if len(email) >= 3:
                 emails = [model_to_dict(mot) for mot in Email.objects.filter(email__icontains=email)[:10]]
-                data['emails'] = emails
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=emails, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -1108,17 +1168,15 @@ def add_gobierno(request):
 @permission_required('dpv_nomencladores.change_gobierno')
 def update_gobierno(request, id_gobierno):
     gobierno = Gobierno.objects.get(id=id_gobierno)
-    if request.method == 'GET':
-        form = GobiernoForm(instance=gobierno)
-    else:
+    if request.method == 'POST':
         form = GobiernoForm(request.POST, instance=gobierno)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_gobierno')
-    return render(request,
-                  'dpv_nomencladores/form_gobierno.html',
-                  {'form': form, 'gobierno': gobierno})
+    else:
+        form = GobiernoForm(instance=gobierno)
+    return render(request, 'dpv_nomencladores/form_gobierno.html', {'form': form, 'gobierno': gobierno})
 
 
 @permission_required('dpv_nomencladores.delete_gobierno')
@@ -1135,14 +1193,11 @@ def delete_gobierno(request, id_email):
 
 def autofill_gobierno(request):
     if request.method == 'POST':
-        data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             if len(nombre) >= 3:
                 gobiernos = [model_to_dict(mot) for mot in Gobierno.objects.filter(nombre__icontains=nombre)[:10]]
-                data['gobiernos'] = gobiernos
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=gobiernos, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
@@ -1187,17 +1242,15 @@ def add_organizacion(request):
 @permission_required('dpv_nomencladores.change_organizacion')
 def update_organizacion(request, id_organizacion):
     organizacion = Organizacion.objects.get(id=id_organizacion)
-    if request.method == 'GET':
-        form = OrganizationForm(instance=organizacion)
-    else:
+    if request.method == 'POST':
         form = OrganizationForm(request.POST, instance=organizacion)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_organizacion')
-    return render(request,
-                  'dpv_nomencladores/form_organizacion.html',
-                  {'form': form, 'organizacion': organizacion})
+    else:
+        form = OrganizationForm(instance=organizacion)
+    return render(request, 'dpv_nomencladores/form_organizacion.html', {'form': form, 'organizacion': organizacion})
 
 
 @permission_required('dpv_nomencladores.delete_organizacion')
@@ -1214,14 +1267,11 @@ def delete_organizacion(request, id_organizacion):
 
 def autofill_organizacion(request):
     if request.method == 'POST':
-        data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             if len(nombre) >= 3:
                 organizaciones = [model_to_dict(mot) for mot in Organizacion.objects.filter(nombre__icontains=nombre)[:10]]
-                data['organizaciones'] = organizaciones
-        return JsonResponse(data=data, status=200)
+        return JsonResponse(data=organizaciones, safe=False, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 

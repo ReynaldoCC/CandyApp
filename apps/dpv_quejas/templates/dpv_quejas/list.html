@@ -3,6 +3,9 @@
 {% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/fixedColumns.dataTables.scss' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/fixedColumns.bootstrap.scss' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Gestión de Quejas {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -60,7 +63,7 @@
                     <button type="button" class="btn btn-outline-secondary toggle-column" data-column="17">Acciones</button>
                 </div>
                 <div class="row col-12 table-container">
-                    <table id="queja-table" class="table table-striped table-bordered table-responsive table-sm">
+                    <table id="queja-table" class="table table-striped table-bordered table-sm">
                         <thead>
                             <tr>
                                 <th class="text-nowrap">Fecha en sistema</th>
@@ -104,7 +107,7 @@
                                 <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
                                 <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
                                 <td class="text-nowrap">
-                                    {% if perms.dpv_quejas.view_queja %}
+                                    <!--{% if perms.dpv_quejas.view_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_detail' queja.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.change_queja %}
@@ -112,23 +115,53 @@
                                     {% endif %}
                                     {% if perms.dpv_quejas.delete_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_del' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
-                                    {% endif %}
+                                    {% endif %}-->
                                     {% if perms.dpv_quejas.add_asignaquejadpto %}
-                                        <a href="{% url 'quejas_asig_depto' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
+                                        {% if not queja.asignada_depto %}
+                                        <a onclick="return abrir_modal('{% url 'quejas_asig_depto' queja.id %}')"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="Asignar a Dpto"
+                                           type="button"
+                                           class="btn btn-sm btn-info"><i class="fa fa-group"></i></a>
+                                        {% else %}
+                                        <a data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="Asignada al Dpto {{queja.quejadpto.first.dpto.nombre}}"
+                                           disabled="true"
+                                           type="button"
+                                           class="btn btn-sm btn-outline-info"><i class="fa fa-group"></i></a>
+                                        {% endif %}
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_asignaquejatecnico %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_asig_tec' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
+                                        {% if not queja.asignada_tecnico %}
+                                        <a onclick="return abrir_modal('{% url 'quejas_asig_tec' queja.id %}')"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="Asignar a Tecnico"
+                                           type="button"
+                                           class="btn btn-sm btn-info"><i class="fa fa-hand-o-right"></i></a>
+                                        {% else %}
+                                        <a data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="Asignada al Tecnico {{queja.quejatecnico.first.tecnico.profile}}"
+                                           disabled="true"
+                                           type="button"
+                                           class="btn btn-sm btn-outline-info"><i class="fa fa-hand-o-right"></i></a>
+                                        {% endif %}
                                     {% endif %}
-                                    {% if perms.dpv_quejas.add_quejarechazada %}
+                                    <!--{% if perms.dpv_quejas.add_quejarechazada %}
                                         <a onclick="return abrir_modal('{% url 'quejas_deny' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_quejaredirigida %}
                                         <a href="{% url 'quejas_redirct' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
-                                    {% endif %}
+                                    {% endif %}-->
                                     {% if perms.dpv_quejas.add_respuestaqueja %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_response' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
+                                        {% if request.user == queja.get_tecnico_asignado.profile.datos_usuario or request.user.is_superuser %}
+                                        <a href="{% url 'quejas_response' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-comment"></i></a>
+                                        {% endif %}
                                     {% endif %}
-                                    {% if perms.dpv_respuesta.add_apruebajefe %}
+                                    <!--{% if perms.dpv_respuesta.add_apruebajefe %}
                                         <a href="{% url 'quejas_ajdepto' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_respuesta.add_apruebadtr %}
@@ -136,7 +169,7 @@
                                     {% endif %}
                                     {% if perms.dpv_respuesta.add_quejanotificada %}
                                         <a onclick="return abrir_modal('{% url 'quejas_notify' queja.id %}')" type="button" class="btn btn-sm btn-success"><i class="fa fa-align-justify"></i></a>
-                                    {% endif %}
+                                    {% endif %}-->
                                 </td>
                             </tr>
                         {% endfor %}
@@ -168,18 +201,30 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/dataTables.fixedColumns.js' %}"></script>
+<!--    <script src="{% static 'dpv_quejas/js/fixedColumns.bootstrap.js' %}"></script>-->
     <script type="text/javascript">
         $(document).ready(function() {
             var table = $('#queja-table').DataTable({
                 responsive: true,
-                //scrollX: 800,
-                //order: [ 0, 'asc' ],
-                dom:
-                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                        "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>" +
-                        "<'row'<'col-sm-12'tr>>" +
-                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // read more: https://datatables.net/examples/basic_init/dom.html
+                //scrollX: 850,
+                // scrollX: true,
+                // scrollCollapse: true,
+                order: [ 0, 'desc' ],
+  		        sScrollX: "100%",
+ 		        // sScrollXInner: "150%",
+                fixedColumns:   {
+                    leftColumns: 2,
+                    rightColumns: 1,
+                },
+                // dom:
+                //         "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                //         "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>" +
+                //         "<'row'<'col-sm-12'tr>>" +
+                //         "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                //         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // read more: https://datatables.net/examples/basic_init/dom.html
                 language: {
                     "decimal": "",
                     "emptyTable": "{% trans 'No hay Quejas que mostrar' %}",

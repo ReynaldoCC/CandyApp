@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'apps.dpv_respuesta',
     'apps.dpv_quejas',
     'apps.email_sender',
+    'apps.dpv_documento',
 ]
 
 MIDDLEWARE = [
@@ -90,12 +91,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'candyappdb',
- #       'HOST': 'localhost',
-  #      'USER': 'sicoinadmin',
-   #     'PASSWORD': 'sicoinadmin',
-    #    'PORT': '5432',
+ 	   #  'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # 'NAME': 'candyappdb',
+        # 'HOST': 'localhost',
+        # 'USER': 'candyappadmin',
+        # 'PASSWORD': 'candyappadminpass',
+        # 'PORT': '5432',
     }
 }
 
@@ -156,6 +157,10 @@ BULK_URLS = []
 CHARGE_DATA_DEFAULT = True
 
 UPDATING_LOCALS = 0
+
+CELERY_BROKER_URL = 'amqp://guest@localhost//'
+# CELERY_RESULT_BACKEND = 'pyamqp://guest@localhost//'
+CELERY_RESULT_PERSISTENT = False
 
 # Email configuration to do
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

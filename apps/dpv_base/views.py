@@ -126,7 +126,7 @@ def user_add(request):
                     usr.delete()
                     prs.delete()
             except:
-                form.add_error('email', 'ya existe algún usuario que está usando ese email')
+                form.add_error('email', 'ya existe algún usuario que está usando ese email y es asi')
                 return render(request, 'layouts/admin/users_form.html', {'form': form, 'formprs': formprs, 'formprf': formprf })
             perform_log(obj=usr, request=request, af=0)
             return redirect('admin_user')

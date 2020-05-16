@@ -1,0 +1,92 @@
+{% extends 'dpv_nomencladores/list.html' %}
+{% block page_title %} | Técnicos {% endblock page_title %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Gestión de los Técnicos {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/nomenclador/tecnico/' == request.path %}
+    <li class="active">Técnico</li>
+    {% else %}
+    <li>
+        <a href="{% url 'nomenclador_tecnico' %}">
+            Técnico
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Técnicos</strong>
+                {% if perms.dpv_respuesta.add_tecnico %}
+                <button onclick="return abrir_modal('{% url 'tecnico_new' %}')" class="pull-right btn btn-success btn-sm">
+                <i class="fa fa-plus"></i>Agregar Técnico</button>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if tecnicos %}
+                <div class="table-responsive">
+                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for tecnico in tecnicos %}
+                            <tr>
+                                <td>{{tecnico.profile.datos_personales.nombre}} {{tecnico.profile.datos_personales.apellidos}}</td>
+                                <td>
+                                    {% if perms.dpv_respuesta.update_tecnico %}
+                                    <a onclick="return abrir_modal('{% url 'tecnico_edit' tecnico.id %}')" class=" btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-pencil"></i></a>
+                                    {% endif %}
+                                    {% if perms.dpv_respuesta.delete_tecnico %}
+                                    <a onclick="return abrir_modal('{% url 'tecnico_delete' tecnico.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <h2 class="text-center">No hay Técnicos registrados que mostrar</h2>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade modal-show" id="popup" role="dialog">
+
+</div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $('#bootstrap-data-table-export').DataTable();
+        } );
+    </script>
+{% endblock extra_scripts %}
+{% block init_jquery %} {% endblock init_jquery %}
