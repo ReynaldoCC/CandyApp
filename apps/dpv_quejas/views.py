@@ -157,8 +157,7 @@ def agregar_queja(request):
             persona_list = request.POST.get('personas_list')
             persona = PersonaNatural.objects.filter(id=persona_list[0]).first()
             if persona:
-                pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', empty_permitted=True,
-                                             use_required_attribute=False, instance=persona)
+                pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', instance=persona)
         else:
             persona = PersonaNatural.objects.filter(ci=request.POST.get('person_queja-ci'),
                                                     nombre__iexact=request.POST.get('person_queja-nombre'),
