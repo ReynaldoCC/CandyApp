@@ -2,9 +2,9 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save, post_init
 from django.dispatch import receiver
-from .validators import only_numbers, only_letters, not_numbers, not_letters, not_special_char
+from .validators import only_numbers, only_letters, not_special_char
 from django.core.validators import MaxLengthValidator, MinLengthValidator, EmailValidator
 from apps.dpv_base.mixins import LoggerMixin
 
@@ -391,6 +391,27 @@ class RespuestaAQueja(LoggerMixin):
 
     def __str__(self):
         return self.nombre
+
+
+class Anonimo(models.Model):
+    name = models.CharField(verbose_name=_('Anónimo'), max_length=8, default='Anónimo', blank=False, null=False)
+
+    class Meta:
+        verbose_name = 'Anónimo'
+        verbose_name_plural = 'Anónimos'
+
+    def __str__(self):
+        return 'Anónimo'
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if Anonimo.objects.exists():
+            self.id = Anonimo.objects.first().id
+            self.name = Anonimo.objects.first().name
+            super(Anonimo, self).save()
+        else:
+            super(Anonimo, self).save(force_insert=False, force_update=False, using=None,
+                                      update_fields=None)
 
 
 def configurar_nombre_procedencia(instance):
