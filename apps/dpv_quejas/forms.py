@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from apps.dpv_persona.forms import PersonaNaturalForm, PersonaJuridicaForm
 from apps.dpv_nomencladores.forms import TelefonoForm, EmailForm, OrganismoForm, OrganizationForm, PrensaEscritaForm, \
-    GobiernoForm
+    GobiernoForm, AnonimoForm
 from .models import *
 
 
@@ -202,13 +202,10 @@ class QGobiernoForm(GobiernoForm):
                                                    'placeholder': 'Nombre'})
 
 
-class QAnonimoForm(forms.Form):
+class QAnonimoForm(AnonimoForm):
 
     def is_valid(self):
         return True
-
-    def save(self, *args, **kwargs):
-        return None
 
 
 class QRespuestaForm(forms.ModelForm):
