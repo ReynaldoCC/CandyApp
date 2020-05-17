@@ -197,7 +197,8 @@ var DPVQuejas = function () {
                 }
             } else {
                 if (this.checked) {
-                    _getPersonData($('#id_personas_list').val());
+                    _setValuesAddressQueja();
+                    //_getPersonData($('#id_personas_list').val());
                 } else {
                     $dir_calle[0].selectize.setValue('', false);
                     $dir_entrecalle1[0].selectize.setValue('', false);
@@ -895,7 +896,7 @@ var DPVQuejas = function () {
                         $dir_entrecalle1[0].selectize.load(function (callback) {
                             callback(results);
                         });
-                        if (!exist13)
+                        if (!exist3)
                             $dir_entrecalle2[0].selectize.clear();
                         $dir_entrecalle2[0].selectize.clearOptions();
                         $dir_entrecalle2[0].selectize.load(function (callback) {
@@ -1042,13 +1043,21 @@ var DPVQuejas = function () {
                     },
                 })
         };
-        var _setValuesAddressPerson = function () {
+        var _setValuesAddressQueja = function () {
             $dir_calle[0].selectize.setValue(persona.direccion_calle, false);
             $dir_entrecalle1[0].selectize.setValue(persona.direccion_entrecalle1, false);
             $dir_entrecalle2[0].selectize.setValue(persona.direccion_entrecalle2, false);
             $dir_municipio[0].selectize.setValue(persona.municipio, false);
             $dir_cpopular[0].selectize.setValue(persona.cpopular, false);
             $("#id_queja-dir_num").val(persona.direccion_numero);
+        };
+        var _setValuesAddressPerson = function () {
+            $q_municipio[0].selectize.setValue(persona.municipio, false);
+            $q_cpopular[0].selectize.setValue(persona.cpopular, false);
+            $q_direccion_calle[0].selectize.setValue(persona.direccion_calle, false);
+            $q_direccion_entrecalle1[0].selectize.setValue(persona.direccion_entrecalle1, false);
+            $q_direccion_entrecalle2[0].selectize.setValue(persona.direccion_entrecalle2, false);
+            $("#id_person_queja-dir_num").val(persona.direccion_numero);
         };
         var _getPersonData = function (id) {
             $.ajax({
