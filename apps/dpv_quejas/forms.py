@@ -205,7 +205,13 @@ class QGobiernoForm(GobiernoForm):
 class QAnonimoForm(AnonimoForm):
 
     def is_valid(self):
+        super(QAnonimoForm, self).is_valid()
         return True
+
+    def save(self, commit=True):
+        a = Anonimo()
+        a.save()
+        return a
 
 
 class QRespuestaForm(forms.ModelForm):
