@@ -857,6 +857,7 @@ var DPVQuejas = function () {
                             if (results[i].id == current_value) {
                                 exist = true;
                             }
+                        // console.log(exist, 'pop');
                         if (!exist)
                             $dir_cpopular[0].selectize.clear();
                         $dir_cpopular[0].selectize.clearOptions();
@@ -872,7 +873,9 @@ var DPVQuejas = function () {
                         let current_value1 = $dir_calle[0].selectize.getValue();
                         let current_value2 = $dir_entrecalle1[0].selectize.getValue();
                         let current_value3 = $dir_entrecalle2[0].selectize.getValue();
-                        let exist1, exist2, exist3 = false;
+                        let exist1 = false;
+                        let exist2 = false;
+                        let exist3 = false;
                         for (let i = 0; i < results.length; i++) {
                             if (results[i].id == current_value1) {
                                 exist1 = true;
@@ -884,6 +887,7 @@ var DPVQuejas = function () {
                                 exist3 = true;
                             }
                         }
+                        // console.log(exist1, 1, exist2, 2, exist3, 3);
                         if (!exist1)
                             $dir_calle[0].selectize.clear();
                         $dir_calle[0].selectize.clearOptions();
@@ -1044,11 +1048,14 @@ var DPVQuejas = function () {
                 })
         };
         var _setValuesAddressQueja = function () {
-            $dir_calle[0].selectize.setValue(persona.direccion_calle, false);
-            $dir_entrecalle1[0].selectize.setValue(persona.direccion_entrecalle1, false);
-            $dir_entrecalle2[0].selectize.setValue(persona.direccion_entrecalle2, false);
-            $dir_municipio[0].selectize.setValue(persona.municipio, false);
-            $dir_cpopular[0].selectize.setValue(persona.cpopular, false);
+            // console.log(persona.cpopular, "pop");
+            // console.log(persona.direccion_entrecalle1, "1");
+            // console.log(persona.direccion_entrecalle2, "2");
+            $("#id_queja-dir_municipio")[0].selectize.setValue(persona.municipio, false);
+            $("#id_queja-dir_cpopular")[0].selectize.setValue(persona.cpopular, false);
+            $("#id_queja-dir_calle")[0].selectize.setValue(persona.direccion_calle, false);
+            $("#id_queja-dir_entrecalle1")[0].selectize.setValue(persona.direccion_entrecalle1, false);
+            $("#id_queja-dir_entrecalle2")[0].selectize.setValue(persona.direccion_entrecalle2, false);
             $("#id_queja-dir_num").val(persona.direccion_numero);
         };
         var _setValuesAddressPerson = function () {
@@ -1457,6 +1464,7 @@ var DPVQuejas = function () {
             $("#id_person_queja-direccion_calle")[0].selectize.setValue(data.direccion_calle);
             $("#id_person_queja-direccion_entrecalle1")[0].selectize.setValue(data.direccion_entrecalle1);
             $("#id_person_queja-direccion_entrecalle2")[0].selectize.setValue(data.direccion_entrecalle2);
+            //console.log($("#id_person_queja-direccion_entrecalle2").val(), 2, $("#id_person_queja-direccion_entrecalle1").val(), 1)
         };
         var _perform_show_person_queja = function () {
             // console.log("revisando", $("#id_queja-damnificado_not_indb"));
