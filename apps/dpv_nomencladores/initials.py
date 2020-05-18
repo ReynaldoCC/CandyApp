@@ -1,3 +1,4 @@
+from django.db.models import Q
 from .models import *
 
 
@@ -342,3 +343,10 @@ def create_initial():
         ])
     else:
         pass
+
+    if Calle.objects.exists() and Municipio.objects.exists():
+        for mun in Municipio.objects.exclude(Q(nombre__icontains="centro habana")|Q(nombre__icontains="habana vieja")):
+            mun.calle_set.set(Calle.objects.filter(id__gte="30"))
+        Municipio.objects.filter(nombre__icontains="centro habana").first().calle_set.set(
+            Calle.objects.filter(id__in=[33, 34, 35, ])
+        )
