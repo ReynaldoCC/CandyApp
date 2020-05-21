@@ -8,15 +8,23 @@ from .models import *
 
 
 class QuejaForm(forms.ModelForm):
+    personas_list = forms.ModelChoiceField(queryset=PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True),
+                                           widget=forms.Select(attrs={"class": "form-control"}),
+                                           label=_("Persona que sufre el daño"),
+                                           required=False,
+                                           help_text=_("Listado de personas existentes ya en la Base de Datos"),)
     tipo_procedencia = forms.ModelChoiceField(queryset=TipoProcedencia.objects.all(),
                                               label=_("Procedencia generica"),
                                               help_text=_("Aquí se expresa si la queja proviene de una Empresa, Persona, Organismo, Anónimo, etc.."),
                                               widget=forms.Select(attrs={"class": "form-control"}))
     damnificado_not_indb = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-check-input switch-input"}),
-                                              initial=False,
                                               required=False,
                                               label=_("El damnificado no está en la lista"),
-                                              help_text=_("Marque aqui si la persona que busca no está en la lista y se le mostrará un formulario para ingresar sus datos"))
+                                              help_text=_("Marque aquí si la persona que busca no está en la lista y se le mostrará un formulario para ingresar sus datos"))
+    same_address = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-check-input switch-input"}),
+                                      required=False,
+                                      label=_("Usar la misma dirección del dmanificado"),
+                                      help_text=_("Marque aquí para asignarle a la queja la misma dirección del damnificado"))
 
     class Meta:
         model = Queja
@@ -36,7 +44,9 @@ class QuejaForm(forms.ModelForm):
                   'responder_a',
                   'tipo_procedencia',
                   'damnificado_not_indb',
-                  'texto',)
+                  'texto',
+                  'personas_list',
+                  'same_address',)
         widgets = {
             'dir_num': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
             'dir_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
