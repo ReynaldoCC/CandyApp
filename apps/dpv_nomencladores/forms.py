@@ -262,3 +262,10 @@ class RespuestaAQuejaForm(forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
         }
+
+
+class AnonimoForm(forms.ModelForm):
+
+    class Meta:
+        model = Anonimo
+        fields = ["name", ]

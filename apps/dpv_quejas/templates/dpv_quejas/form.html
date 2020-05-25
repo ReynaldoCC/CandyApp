@@ -325,7 +325,7 @@
                                                     <small class="form-text text-muted">{{aqform.direccion_entrecalle2.help_text}}</small>
                                                 </div>
                                             </div>
-                                            <div class="row form-group col-12">
+                                            <div class="row form-group col-12 offset-sm-1">
                                                 <label for="id_same_quejoso" class="form-check-label">
                                                     Estos son los mismos datos del Aquejado
                                                     <label class="switch switch-3d switch-primary mr-3">
@@ -506,7 +506,7 @@
                                                 <small class="form-text text-muted">Listado de personas existentes ya en la Base de Datos</small>
                                             </div>
                                         </div>
-                                        <div class="row col-lg-5">
+                                        <div class="row col-lg-5 offset-sm-1">
                                             <div class="form-group">
                                                     {{form.damnificado_not_indb.errors}}
                                                 <label for="{{form.damnificado_not_indb.id_for_label}}" class="form-control-label">{{form.damnificado_not_indb.label}} </label>
@@ -516,6 +516,7 @@
                                                     <span class="switch-handle"></span>
                                                 </label>
                                             </div>
+                                            <small class="form-text text-muted">{{form.damnificado_not_indb.help_text}}</small>
                                         </div>
                                         <div class="row col-12 no-show" id="not_indb">
                                             <div class="card">
@@ -667,15 +668,17 @@
                                                 <small class="form-text text-muted">{{form.no_radicacion.help_text}}</small>
                                             </div>
                                         </div>
-                                        <div class="row col-lg-5 offset-lg-3">
+                                        <div class="row col-lg-5 offset-lg-3 offset-sm-1">
                                             <div class="form-group">
-                                                <label for="same_address" class="form-control-label">Usar la misma dirección del aquejado </label>
+                                                <label for="{{ form.same_address.id_for_label }}" class="form-control-label">{{form.same_address.label}} </label>
                                                 <label class="switch switch-3d switch-primary mr-3">
+                                                    {{ form.same_address }}
                                                     <input type="checkbox" class="switch-input" name="same_address" id="same_address">
                                                     <span class="switch-label"></span>
                                                     <span class="switch-handle"></span>
                                                 </label>
                                             </div>
+                                            <small class="form-text text-muted">{{ form.same_address.help_text }}</small>
                                         </div>
                                         <div class="row form-group col-lg-6">
                                             <div class="col col-md-3"><label for="{{form.dir_municipio.id_for_label}}" class=" form-control-label">{{form.dir_municipio.label_tag}}</label></div>
@@ -816,6 +819,12 @@
 {% block extra_scripts %}
     <script>
         var persons = "{{personas}}";
+        {% if person_list %}
+        var person_list = {{ person_list }};
+        {% else %}
+        var person_list = null;
+        {% endif %}
+        console.log(person_list, 'perslist');
         //console.log( 'persons', persons);
     </script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>

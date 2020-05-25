@@ -23,52 +23,62 @@ def index(request):
                 quejas = Queja.objects.all().annotate(radicada=Case(When(id__gt=0, then=True),
                                                                     default=False,
                                                                     output_field=BooleanField()),
-                                                      asignada_depto=Case(When(Q(quejadpto__id__gt=0, quejadpto__rechazada__isnull=True), then=True),
+                                                      asignada_depto=Case(When(
+                                                          Q(quejadpto__id__gt=0, quejadpto__rechazada__isnull=True),
+                                                          then=True),
                                                                           default=False,
                                                                           output_field=BooleanField()),
-                                                      asignada_tecnico=Case(When(Q(quejatecnico__id__gt=0, quejatecnico__rechazada__isnull=True), then=True),
+                                                      asignada_tecnico=Case(When(Q(quejatecnico__id__gt=0,
+                                                                                   quejatecnico__rechazada__isnull=True),
+                                                                                 then=True),
                                                                             default=False,
                                                                             output_field=BooleanField()),
-                                                      respondida=Case(When(Q(respuesta__id__gt=0, respuesta__rechazada__isnull=True), then=True),
+                                                      respondida=Case(When(
+                                                          Q(respuesta__id__gt=0, respuesta__rechazada__isnull=True),
+                                                          then=True),
                                                                       default=False,
                                                                       output_field=BooleanField()),
-                                                      aprobada_depto=Case(When(Q(respuesta__apruebajefe__id__gt=0, respuesta__apruebajefe__isnull=False), then=True),
+                                                      aprobada_depto=Case(When(Q(respuesta__apruebajefe__id__gt=0,
+                                                                                 respuesta__apruebajefe__isnull=False),
+                                                                               then=True),
                                                                           default=False,
                                                                           output_field=BooleanField()),
-                                                      aprobada_dir=Case(When(Q(respuesta__id__gt=0, respuesta__apruebadtr__gt=0, respuesta__apruebadtr__isnull=False), then=True),
+                                                      aprobada_dir=Case(When(
+                                                          Q(respuesta__id__gt=0, respuesta__apruebadtr__gt=0,
+                                                            respuesta__apruebadtr__isnull=False), then=True),
                                                                         default=False,
                                                                         output_field=BooleanField()),
-                                                      )\
-                                            .distinct()
+                                                      ) \
+                    .distinct()
             else:
                 quejas = Queja.objects.filter(dir_municipio=ct.municipio,
                                               radicado_por__perfil_usuario__centro_trabajo__municipio=ct.municipio) \
-                        .annotate(radicada=Case(When(id__gt=0, then=True),
+                    .annotate(radicada=Case(When(id__gt=0, then=True),
+                                            default=False,
+                                            output_field=BooleanField()),
+                              asignada_depto=Case(
+                                  When(Q(quejadpto__id__gt=0, quejadpto__rechazada__isnull=True), then=True),
+                                  default=False,
+                                  output_field=BooleanField()),
+                              asignada_tecnico=Case(
+                                  When(Q(quejatecnico__id__gt=0, quejatecnico__rechazada__isnull=True), then=True),
+                                  default=False,
+                                  output_field=BooleanField()),
+                              respondida=Case(
+                                  When(Q(respuesta__id__gt=0, respuesta__rechazada__isnull=True), then=True),
+                                  default=False,
+                                  output_field=BooleanField()),
+                              aprobada_depto=Case(
+                                  When(Q(respuesta__apruebajefe__id__gt=0, respuesta__apruebajefe__isnull=False),
+                                       then=True),
+                                  default=False,
+                                  output_field=BooleanField()),
+                              aprobada_dir=Case(When(Q(respuesta__id__gt=0, respuesta__apruebadtr__gt=0,
+                                                       respuesta__apruebadtr__isnull=False), then=True),
                                                 default=False,
                                                 output_field=BooleanField()),
-                                  asignada_depto=Case(
-                                      When(Q(quejadpto__id__gt=0, quejadpto__rechazada__isnull=True), then=True),
-                                      default=False,
-                                      output_field=BooleanField()),
-                                  asignada_tecnico=Case(
-                                      When(Q(quejatecnico__id__gt=0, quejatecnico__rechazada__isnull=True), then=True),
-                                      default=False,
-                                      output_field=BooleanField()),
-                                  respondida=Case(
-                                      When(Q(respuesta__id__gt=0, respuesta__rechazada__isnull=True), then=True),
-                                      default=False,
-                                      output_field=BooleanField()),
-                                  aprobada_depto=Case(
-                                      When(Q(respuesta__apruebajefe__id__gt=0, respuesta__apruebajefe__isnull=False),
-                                           then=True),
-                                      default=False,
-                                      output_field=BooleanField()),
-                                  aprobada_dir=Case(When(Q(respuesta__id__gt=0, respuesta__apruebadtr__gt=0,
-                                                           respuesta__apruebadtr__isnull=False), then=True),
-                                                    default=False,
-                                                    output_field=BooleanField()),
-                                  ) \
-                        .distinct()
+                              ) \
+                    .distinct()
         except:
             print("no tiene centro de trabajo asociado")
     except:
@@ -88,10 +98,12 @@ def agregar_queja(request):
     oform = QOrganizationForm(prefix='organiza', empty_permitted=True, use_required_attribute=False)
     peform = QPrensaEscritaForm(prefix='pe', empty_permitted=True, use_required_attribute=False)
     gform = QGobiernoForm(prefix='gob', empty_permitted=True, use_required_attribute=False)
+    person_list = None
     if request.method == "POST":
         form = QuejaForm(request.POST, prefix='queja')
         print('POST Method', request.POST)
-        pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', empty_permitted=True, use_required_attribute=False)
+        pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', empty_permitted=True,
+                                     use_required_attribute=False)
         procedence_form = QAnonimoForm()
         if request.POST.get('pe-nombre'):
             pe = PrensaEscrita.objects.filter(nombre=request.POST.get('pe-nombre'))
@@ -104,7 +116,8 @@ def agregar_queja(request):
         elif request.POST.get('person_procedence-ci') and request.POST.get('person_procedence-nombre'):
             pn = PersonaNatural.objects.filter(ci=request.POST.get('person_procedence-ci'))
             if pn:
-                procedence_form = aqform = AQPersonaNaturalForm(request.POST, prefix='person_procedence', use_required_attribute=False,
+                procedence_form = aqform = AQPersonaNaturalForm(request.POST, prefix='person_procedence',
+                                                                use_required_attribute=False,
                                                                 instance=pn.first(), empty_permitted=True)
             else:
                 procedence_form = aqform = AQPersonaNaturalForm(request.POST, prefix='person_procedence',
@@ -125,7 +138,8 @@ def agregar_queja(request):
             else:
                 procedence_form = eform = QEmailForm(request.POST, prefix='email', use_required_attribute=False,
                                                      empty_permitted=True)
-        elif request.POST.get('empresa-nombre') and request.POST.get('empresa-codigo_nit') and request.POST.get('empresa-codigo_reuup'):
+        elif request.POST.get('empresa-nombre') and request.POST.get('empresa-codigo_nit') and request.POST.get(
+                'empresa-codigo_reuup'):
             pj = PersonaJuridica.objects.filter(codigo_nit=request.POST.get('empresa-codigo_nit'),
                                                 codigo_reuup=request.POST.get('empresa-codigo_reuup'),
                                                 nombre=request.POST.get('empresa-nombre'))
@@ -147,34 +161,38 @@ def agregar_queja(request):
         elif request.POST.get('organiza-nombre'):
             org = Organizacion.objects.filter(nombre=request.POST.get('organiza-nombre')[0])
             if org:
-                procedence_form = oform = QOrganizationForm(request.POST, prefix='organiza', use_required_attribute=False,
+                procedence_form = oform = QOrganizationForm(request.POST, prefix='organiza',
+                                                            use_required_attribute=False,
                                                             instance=org.first(), empty_permitted=True)
             else:
-                procedence_form = oform = QOrganizationForm(request.POST, prefix='organiza', use_required_attribute=False,
+                procedence_form = oform = QOrganizationForm(request.POST, prefix='organiza',
+                                                            use_required_attribute=False,
                                                             empty_permitted=True)
 
         if request.POST.get('personas_list'):
             persona_list = request.POST.get('personas_list')
-            persona = PersonaNatural.objects.filter(id=persona_list[0]).first()
+            persona = PersonaNatural.objects.filter(id=persona_list).first()
+            # print(model_to_dict(persona))
             if persona:
-                pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', empty_permitted=True,
-                                             use_required_attribute=False, instance=persona)
+                pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', instance=persona)
         else:
             persona = PersonaNatural.objects.filter(ci=request.POST.get('person_queja-ci'),
                                                     nombre__iexact=request.POST.get('person_queja-nombre'),
-                                                    apellidos__iexact=request.POST.get('person_queja-apellidos'))
+                                                    apellidos__iexact=request.POST.get(
+                                                        'person_queja-apellidos')).first()
             if persona:
-                pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', empty_permitted=True,
-                                             use_required_attribute=False, instance=persona)
+                pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', instance=persona)
 
         if form.is_valid() and procedence_form.is_valid() and pnform.is_valid():
             procedence = procedence_form.save()
             if procedence:
                 ct = ContentType.objects.get_for_model(procedence)
-                proc = Procedencia.objects.create(objecto_contenido=procedence, tipo_contenido=ct, id_objecto=procedence.id)
+                proc = Procedencia.objects.create(objecto_contenido=procedence, tipo_contenido=ct,
+                                                  id_objecto=procedence.id)
                 proc.save_and_log(request=request, af=0)
             else:
-                proc, pcreated = Procedencia.objects.get_or_create(nombre="Anónimo", tipo=TipoProcedencia.objects.filter(id=1).first())
+                proc, pcreated = Procedencia.objects.get_or_create(nombre="Anónimo",
+                                                                   tipo=TipoProcedencia.objects.filter(id=1).first())
 
             quejoso, qcreated = pnform.Meta.model.objects.get_or_create(nombre=pnform.instance.nombre,
                                                                         ci=pnform.instance.ci,
@@ -203,8 +221,43 @@ def agregar_queja(request):
             damnificado.save_and_log(request=request, af=0)
             return redirect(reverse_lazy('quejas_list'))
         else:
-            if form.is_valid() and pnform.is_valid() and pjform.is_valid() and tform.is_valid() and eform.is_valid() and orgform.is_valid() and oform.is_valid() and gform.is_valid() and aqform.is_valid():
-                pass
+            if request.POST.get('pe-nombre'):
+                peform = procedence_form
+                peform.initial = model_to_dict(procedence_form.instance)
+            elif request.POST.get('person_procedence-ci') and request.POST.get('person_procedence-nombre'):
+                aqform = procedence_form
+                aqform.initial = model_to_dict(procedence_form.instance)
+            elif request.POST.get('telefono-numero'):
+                tform = procedence_form
+                tform.initial = model_to_dict(procedence_form.instance)
+            elif request.POST.get('email-email'):
+                eform = procedence_form
+                eform.initial = model_to_dict(procedence_form.instance)
+            elif request.POST.get('empresa-nombre') and request.POST.get('empresa-codigo_nit') and request.POST.get(
+                    'empresa-codigo_reuup'):
+                pjform = procedence_form
+                pjform.initial = model_to_dict(procedence_form.instance)
+            elif request.POST.get('gob-nombre'):
+                gform = procedence_form
+                gform.initial = model_to_dict(procedence_form.instance)
+            elif request.POST.get('organiza-nombre'):
+                oform = procedence_form
+                oform.initial = model_to_dict(procedence_form.instance)
+
+            if request.POST.get('personas_list'):
+                person_list = request.POST.get('personas_list')
+                print(person_list)
+            return render(request, 'dpv_quejas/form.html', {'form': form,
+                                                            'pnform': pnform,
+                                                            'pjform': pjform,
+                                                            'tform': tform,
+                                                            'eform': eform,
+                                                            'orgform': orgform,
+                                                            'oform': oform,
+                                                            'peform': peform,
+                                                            'gform': gform,
+                                                            'person_list': person_list,
+                                                            'aqform': aqform})
     return render(request, 'dpv_quejas/form.html', {'form': form,
                                                     'pnform': pnform,
                                                     'pjform': pjform,
@@ -214,6 +267,7 @@ def agregar_queja(request):
                                                     'oform': oform,
                                                     'peform': peform,
                                                     'gform': gform,
+                                                    'person_list': person_list,
                                                     'aqform': aqform})
 
 
@@ -227,7 +281,7 @@ def eliminar_queja(request, id_queja):
 
 @permission_required('dpv_quejas.add_asignaquejadpto', raise_exception=True)
 def asignar_queja_depto(request, id_queja):
-    depto=AsignaQuejaDpto()
+    depto = AsignaQuejaDpto()
     depto.quejadpto = Queja.objects.filter(id=id_queja).first()
     form = AsignaQuejaDptoForm(instance=depto)
     if request.method == 'POST':
@@ -276,7 +330,8 @@ def responder_queja(request, id_queja):
             messages.success(request=request, message="Respuesta de la queja guardada satisfacoriamente")
             return redirect(reverse_lazy("quejas_list"))
         else:
-            messages.success(request=request, message="Existen errores en el fomrulario de respuesta por lo que no se pudo guardar.")
+            messages.success(request=request,
+                             message="Existen errores en el fomrulario de respuesta por lo que no se pudo guardar.")
     return render(request, 'dpv_quejas/response_form.html', {"form": form, "queja": queja})
 
 
