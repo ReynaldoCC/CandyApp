@@ -6,7 +6,7 @@ from apps.dpv_base.mixins import LoggerMixin
 
 
 class Tecnico (LoggerMixin):
-    profile = models.ForeignKey(Perfil, on_delete=False, related_name='tecnico')
+    profile = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='tecnico')
 
     def __str__(self):
         return '{}'.format(self.profile.datos_personales.nombre + ' ' + self.profile.datos_personales.apellidos)

@@ -17,7 +17,7 @@ class Local(LoggerMixin):
     piso = models.ForeignKey(Piso, help_text="Piso de la direccion del local", on_delete=models.CASCADE)
     direccion_entre1 = models.ForeignKey(Calle, related_name="entrecalle1", verbose_name="Primera Entrecalle", max_length=50, help_text="Primera entre calle de la dirección", on_delete=models.CASCADE)
     direccion_entre2 = models.ForeignKey(Calle, related_name="entrecalle2", verbose_name="Segunda Entrecalle", max_length=50, help_text="Segunda entre calle de la dirección", on_delete=models.CASCADE)
-    municipio = models.ForeignKey(Municipio, related_name="locales_mun", help_text="Municipio donde se encuentra ubicado el local el local", on_delete="Null")
+    municipio = models.ForeignKey(Municipio, related_name="locales_mun", help_text="Municipio donde se encuentra ubicado el local el local", on_delete=models.CASCADE)
     no_viviendas = models.PositiveSmallIntegerField(verbose_name="Total de viviendas", help_text="Total de viviendas en el local", validators=[MaxValueValidator(50)])
     aprobado = models.BooleanField(default=False, help_text="Marque si está aprobado el local")
     pendiente = models.PositiveSmallIntegerField(verbose_name="Pendientes de aprobación", help_text="Viviendas pendientes de aprobación", validators=[MaxValueValidator(50)])
