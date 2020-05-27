@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('direccion_calle', models.ForeignKey(help_text='Calle de la direccion', on_delete=django.db.models.deletion.CASCADE, related_name='calle_principal', to='dpv_nomencladores.Calle', verbose_name='Calle')),
                 ('direccion_entre1', models.ForeignKey(help_text='Primera entre calle de la dirección', max_length=50, on_delete=django.db.models.deletion.CASCADE, related_name='entrecalle1', to='dpv_nomencladores.Calle', verbose_name='Primera Entrecalle')),
                 ('direccion_entre2', models.ForeignKey(help_text='Segunda entre calle de la dirección', max_length=50, on_delete=django.db.models.deletion.CASCADE, related_name='entrecalle2', to='dpv_nomencladores.Calle', verbose_name='Segunda Entrecalle')),
-                ('municipio', models.ForeignKey(help_text='Municipio donde se encuentra ubicado el local el local', on_delete='Null', related_name='locales_mun', to='dpv_nomencladores.Municipio')),
+                ('municipio', models.ForeignKey(help_text='Municipio donde se encuentra ubicado el local el local', on_delete=django.db.models.deletion.CASCADE, related_name='locales_mun', to='dpv_nomencladores.Municipio')),
                 ('organismo', models.ForeignKey(help_text='Organismo que ocupa el local', on_delete=django.db.models.deletion.CASCADE, related_name='locales_org', to='dpv_nomencladores.Organismo')),
                 ('piso', models.ForeignKey(help_text='Piso de la direccion del local', on_delete=django.db.models.deletion.CASCADE, to='dpv_nomencladores.Piso')),
             ],
