@@ -25,7 +25,7 @@ def index_persojur(request):
 
 @permission_required('dpv_persona.view_personanatural', raise_exception=True)
 def index_personat(request):
-    person = PersonaNatural.objects.all()
+    person = PersonaNatural.objects.all().exclude(perfil_datos__datos_usuario__is_superuser=True)
     return render(request, 'dpv_persona/list_personat.html', {'personas': person})
 
 
