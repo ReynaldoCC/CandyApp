@@ -14,20 +14,20 @@ class PersonaNaturalForm(forms.ModelForm):
                   'email_address',
                   'telefono',
                   'movil',
+                  'genero',
+                  'municipio',
+                  'cpopular',
                   'direccion_calle',
                   'direccion_numero',
                   'direccion_entrecalle1',
-                  'direccion_entrecalle2',
-                  'municipio',
-                  'cpopular',
-                  'genero', )
+                  'direccion_entrecalle2', )
         widgets = {
-            'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'direccion_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.", "class": "form-control select2"}),
-            'cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control select2"}),
-            'genero': forms.Select(attrs={"placeholder": "Seleccione un Género.", "class": "form-control select2"}),
+            'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
+            'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
+            'direccion_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
+            'municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.", "class": "form-control"}),
+            'cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control"}),
+            'genero': forms.Select(attrs={"placeholder": "Seleccione un Género.", "class": "form-control"}),
             'direccion_numero': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
             'ci': forms.TextInput(attrs={"placeholder": "CI", "class": "form-control"}),
             'nombre': forms.TextInput(attrs={"placeholder": "Nombre", "class": "form-control"}),
@@ -40,11 +40,13 @@ class PersonaNaturalForm(forms.ModelForm):
     def clean(self):
         if self.cleaned_data.get('movil') and self.cleaned_data.get('telefono'):
             if self.cleaned_data.get('movil') == self.cleaned_data.get('telefono'):
-                raise ValidationError({'movil':'Los Teléfonos no pueden ser iguales.'}, code='same_phone')
+                raise ValidationError({'movil': 'Los Teléfonos no pueden ser iguales.'}, code='same_phone')
         if self.cleaned_data.get('direccion_calle') == self.cleaned_data.get('direccion_entrecalle1'):
-            raise ValidationError({'direccion_entrecalle1': _('La primera entre calle no puede ser igual a la calle de la dirección.')})
+            raise ValidationError({'direccion_entrecalle1':
+                                   _('La primera entre calle no puede ser igual a la calle de la dirección.')})
         if self.cleaned_data.get('direccion_entrecalle2') == self.cleaned_data.get('direccion_calle'):
-            raise ValidationError({'direccion_entrecalle2': _('La segunda entre calle no puede ser igual a la calle de la dirección.')})
+            raise ValidationError({'direccion_entrecalle2':
+                                  _('La segunda entre calle no puede ser igual a la calle de la dirección.')})
         if self.cleaned_data.get('direccion_entrecalle1') == self.cleaned_data.get('direccion_entrecalle2'):
             raise ValidationError({'direccion_entrecalle2': _('Ambas entre calles no pueden ser iguales.')})
         return super(forms.ModelForm, self).clean()
@@ -57,20 +59,26 @@ class PersonaNaturalMForm(forms.ModelForm):
         fields = ('ci',
                   'telefono',
                   'movil',
+                  'municipio',
+                  'cpopular',
                   'direccion_calle',
                   'direccion_numero',
                   'direccion_entrecalle1',
                   'direccion_entrecalle2',
-                  'municipio',
                   'genero', )
         widgets = {
-            'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'direccion_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
-            'municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.", "class": "form-control select2"}),
-            'genero': forms.Select(attrs={"placeholder": "Seleccione un Género.", "class": "form-control select2"}),
+            'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.",
+                                                   "class": "form-control"}),
+            'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.",
+                                                         "class": "form-control"}),
+            'direccion_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.",
+                                                         "class": "form-control"}),
+            'municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.",
+                                             "class": "form-control"}),
+            'genero': forms.Select(attrs={"placeholder": "Seleccione un Género.", "class": "form-control"}),
             'direccion_numero': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
             'ci': forms.TextInput(attrs={"placeholder": "CI", "class": "form-control"}),
+            'cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control"}),
             'telefono': forms.TextInput(attrs={"placeholder": "Teléfono Fijo", "class": "form-control"}),
             'movil': forms.TextInput(attrs={"placeholder": "Teléfono Movil", "class": "form-control"}),
         }
@@ -78,14 +86,16 @@ class PersonaNaturalMForm(forms.ModelForm):
     def clean(self):
         if self.cleaned_data.get('movil') and self.cleaned_data.get('telefono'):
             if self.cleaned_data.get('movil') == self.cleaned_data.get('telefono'):
-                raise ValidationError({'movil':'Los Teléfonos no pueden ser iguales.'}, code='same_phone')
+                raise ValidationError({'movil': 'Los Teléfonos no pueden ser iguales.'}, code='same_phone')
         if self.cleaned_data.get('direccion_calle') == self.cleaned_data.get('direccion_entrecalle1'):
-            raise ValidationError({'direccion_entrecalle1': _('La primera entre calle no puede ser igual a la calle de la dirección.')})
+            raise ValidationError({'direccion_entrecalle1':
+                                  _('La primera entre calle no puede ser igual a la calle de la dirección.')})
         if self.cleaned_data.get('direccion_entrecalle2') == self.cleaned_data.get('direccion_calle'):
-            raise ValidationError({'direccion_entrecalle2': _('La segunda entre calle no puede ser igual a la calle de la dirección.')})
+            raise ValidationError({'direccion_entrecalle2':
+                                  _('La segunda entre calle no puede ser igual a la calle de la dirección.')})
         if self.cleaned_data.get('direccion_entrecalle1') == self.cleaned_data.get('direccion_entrecalle2'):
             raise ValidationError({'direccion_entrecalle2': _('Ambas entre calles no pueden ser iguales.')})
-        return  super(forms.ModelForm, self).clean()
+        return super(forms.ModelForm, self).clean()
 
 
 class PersonaJuridicaForm(forms.ModelForm):
