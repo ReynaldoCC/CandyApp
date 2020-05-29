@@ -23,7 +23,7 @@ class Perfil(LoggerMixin):
                                              help_text="Marque para recibir las notificaciones por correo electrónico")
     documentacion_email = models.BooleanField(default=True, verbose_name="Recibir Documentos por Email",
                                               help_text="Marque para recibir la documentación por correo electronico")
-    avatar = models.ImageField('avatars', upload_to=scramble_upload_avatar, blank=True, null=True)
+    avatar = models.ImageField('Mi Avatar', upload_to=scramble_upload_avatar, blank=True, null=True)
     centro_trabajo = models.ForeignKey(CentroTrabajo, verbose_name="Unidad", related_name="perfil_trabajo", on_delete=models.SET_DEFAULT, default='')
     depto_trabajo = models.ForeignKey(AreaTrabajo, verbose_name="Departamento", related_name="perfil_area", on_delete=models.SET_DEFAULT, default='')
 
