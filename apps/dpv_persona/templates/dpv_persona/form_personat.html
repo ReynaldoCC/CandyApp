@@ -2,7 +2,6 @@
 {% block page_title %} | Formulario {% endblock page_title %}
 {% load static %}
 {% block extra_style %}
-    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_persona/css/style1.css' %}">
@@ -82,7 +81,7 @@
     <script src="{% static 'dpv_persona/js/personat.js' %}"></script>
     <script>
     jQuery(document).ready(function() {
-        DPVPersona.initForm()
+        DPVPersona.initForm();
     });
     </script>
 {% endblock extra_scripts %}

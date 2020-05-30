@@ -3,7 +3,7 @@ from django.views.generic import RedirectView
 from django.urls import reverse_lazy
 from .views import index, login_page, logout_page, users_view, groups_view, logs_view, user_add, group_add, configure_email, \
                    user_edit, group_edit, user_deactivate, user_detail, user_setpass, group_delete, group_detail, RecoverPassBaseView, \
-                   RecoverPassDoneView, RecoverPassCompleteView, RecoverPassConfirmView
+                   RecoverPassDoneView, RecoverPassCompleteView, RecoverPassConfirmView, user_verify
 
 urlpatterns = [
     path('dashboard/', index, name='base_dashboard'),
@@ -16,6 +16,7 @@ urlpatterns = [
     path('logout/', logout_page, name='base_logout'),
     path('admin/users/', users_view, name='admin_user'),
     path('admin/users/form/', user_add, name='admin_user_add'),
+    path('admin/users/verify/', user_verify, name='admin_user_verify'),
     path('admin/groups/', groups_view, name='admin_group'),
     path('admin/groups/form/', group_add, name='admin_group_add'),
     path('admin/email/', configure_email, name='admin_emailconf'),
