@@ -20,7 +20,7 @@ from apps.dpv_persona.forms import PersonaNaturalMForm
 from apps.dpv_perfil.models import Perfil
 from apps.dpv_perfil.forms import PerfilMForm
 from apps.email_sender.models import EmailConfigurate
-from apps.dpv_base.mixins import perform_log
+from apps.dpv_base.mixins import perform_log, Log
 from .utils import set_settings_email_conf, comapare_db_settings_conf, get_settings_email_conf
 
 # Create your views here.
@@ -181,9 +181,16 @@ def users_view(request):
     return render(request, 'layouts/admin/users.html', {'usuarios': usuarios})
 
 
-@permission_required('auth.view_logentry', raise_exception=True)
+@permission_required('dpv_base.view_log', raise_exception=True)
 def logs_view(request):
-    pass
+    logs = Log.objects.none()
+    if request.user.is_authenticated:
+        if request.user.perfil_usuario.centro_trabajo.oc:
+            logs = Log.objects.all()
+        else:
+            ids = [user.id for user in User.objects.filter(perfil_usuario__centro_trabajo_id__exact=request.user.perfil_usuario.centro_trabajo.id)]
+            logs = Log.objects.filter(user_id__in=ids)
+    return render(request, 'layouts/admin/logs.html', {'logs': logs})
 
 
 @permission_required('email_sender.add_emailconfigurate', raise_exception=True)
