@@ -2,6 +2,11 @@
 {% block page_title %} {{ block.super }} -> Formulario {% endblock page_title %}
 {% load static %}
 {% block breadcrumb_title %} Formulario {% endblock breadcrumb_title %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_persona/css/style1.css' %}">
+{% endblock extra_style %}
 {% block breadcrumbs %}
     {{ block.super }}
     {% if '/admin/users/form/' == request.path %}
@@ -14,7 +19,7 @@
     <div class="animated fadeIn">
         <div class="row padding-short">
             <div class="">
-                <form novalidate method="POST">
+                <form id="user-form" novalidate method="POST">
                     {% csrf_token %}
                     {% if form.errors or formprs.errors or formprf.errors %}
                     <div class="alert alert-danger alert-dismissible" role="alert">
@@ -53,10 +58,10 @@
                             {% for field in formprs %}
                             <div class="form-group col-md-6" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
                                 {{field.errors}}
-                                <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                                <label class="control-label mb-1" for="{{ field.id_for_label }}">{{field.label}}</label>
                                 {% if 'calle' in field.name %}
                                 {% if perms.dpv_nomencladores.add_calle %}
-                                <button onclick="return abrir_modal('{% url 'agree_calle' %}', 'id_{{field.name}}')" class="pull-right btn btn-link">
+                                <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
                                     <i class="fa fa-plus text-success"></i>
                                 </button>
                                 {% endif %}
@@ -99,7 +104,25 @@
 {% endblock content_page %}
 {% block extra_scripts %}
 {{block.super}}
+    <script>
+    {% if usuario.id %}
+        var user_id = {{ usuario.id }};
+        var person_id = {{ usuario.perfil_usuario.datos_personales.id }};
+    {% else %}
+        var user_id = 0;
+        var person_id = 0;
+    {% endif %}
+    </script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/users.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/calles_agree.js' %}"></script>
+    <script>
+    jQuery(document).ready(function() {
+        DPVUsuario.initForm();
+    });
+    </script>
+
 {% endblock extra_scripts %}

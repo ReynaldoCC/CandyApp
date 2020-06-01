@@ -25,7 +25,7 @@ def index_persojur(request):
 
 @permission_required('dpv_persona.view_personanatural', raise_exception=True)
 def index_personat(request):
-    person = PersonaNatural.objects.all()
+    person = PersonaNatural.objects.all().exclude(perfil_datos__datos_usuario__is_superuser=True)
     return render(request, 'dpv_persona/list_personat.html', {'personas': person})
 
 
@@ -70,7 +70,7 @@ def edit_personat(request, id_personat):
             return redirect(reverse_lazy('persona_natural'))
     else:
         form = PersonaNaturalForm(instance=pers)
-    return render(request, 'dpv_persona/form_personat.html', {'form': form})
+    return render(request, 'dpv_persona/form_personat.html', {'form': form, 'personat': pers})
 
 
 @permission_required('dpv_persona.change_personajuridica', raise_exception=True)
@@ -253,12 +253,15 @@ def get_person_data(request, id_person):
 @login_required()
 def verify_personat(request):
     if request.method == 'GET':
+        movil = ci = False
         if request.GET.get('movil'):
             movil = request.GET.get('movil')
         if request.GET.get('person_queja-movil'):
             movil = request.GET.get('person_queja-movil')
         if request.GET.get('person_procedence-movil'):
             movil = request.GET.get('person_procedence-movil')
+        if request.GET.get('ci'):
+            ci = request.GET.get('ci')
 
         id = request.GET.get('id')
 
@@ -266,6 +269,11 @@ def verify_personat(request):
             id = 0
         if movil:
             if not PersonaNatural.objects.filter(movil=movil).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if ci:
+            if not PersonaNatural.objects.filter(ci=ci).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)

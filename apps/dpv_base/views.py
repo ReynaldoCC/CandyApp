@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from apps.email_sender.forms import ConfigureMailForm
 from django.contrib.auth.decorators import login_required, permission_required
@@ -228,7 +229,10 @@ def user_edit(request, id_usuario):
     form = UserNPForm(instance=usr)
     formprs = PersonaNaturalMForm(instance=prs)
     formprf = PerfilMForm(instance=prf)
-    return render(request, 'layouts/admin/users_form.html', {'form': form, 'formprs': formprs, 'formprf': formprf})
+    return render(request, 'layouts/admin/users_form.html', {'form': form,
+                                                             'formprs': formprs,
+                                                             'formprf': formprf,
+                                                             'usuario': usr})
 
 
 @permission_required('auth.change_group', raise_exception=True)
@@ -276,6 +280,25 @@ def user_setpass(request, id_usr):
 def user_detail(request, id_usuario):
     usuario = User.objects.filter(id=id_usuario).first()
     return render(request, 'layouts/admin/user_detail.html', {'usuario': usuario})
+
+
+@permission_required('auth.view_user', raise_exception=True)
+def user_verify(request):
+    if request.method == 'GET':
+        username = False
+        if request.GET.get('username'):
+            username = request.GET.get('username')
+        id = request.GET.get('id')
+
+        if not id:
+            id = 0
+        if username:
+            if not User.objects.filter(username=username).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", safe=False, status=200)
+    return JsonResponse({"error": "method not Allowed"}, status=405)
 
 
 @permission_required('auth.view_group', raise_exception=True)

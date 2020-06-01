@@ -23,6 +23,7 @@
                         {{ field }}
                     </div>
                     {% endfor %}
+                <input type="hidden" id="selected" value="{{ value }}">
                 </div>
                 <div class="modal-footer">
                     <button id="close_md" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
@@ -33,127 +34,8 @@
     </div>
 </div>
 <script>
-    $('#form_calle').validate();
-    $(document).ready(function(){
-        $("#filter_municipios").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-                $("#id_municipios span").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-        $("#check_all_municipios").on("click", function(){
-            if ($("#check_all_municipios").prop('checked'))
-                $("input[name='municipios']").attr('checked', true);
-            else
-                $("input[name='municipios']").attr('checked', false);
-        });
-        $('#form_calle').on('submit', function(event){
-            event.preventDefault();
-            //console.log("form submitted!")  // sanity check
-            create_post();
-        });
-
-        // This function gets cookie with a given name
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie != '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        var csrftoken = getCookie('csrftoken');
-
-        /*
-        The functions below will create a header with csrftoken
-        */
-
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-        function sameOrigin(url) {
-            // test that a given url is a same-origin URL
-            // url could be relative or scheme relative or absolute
-            var host = document.location.host; // host + port
-            var protocol = document.location.protocol;
-            var sr_origin = '//' + host;
-            var origin = protocol + sr_origin;
-            // Allow absolute or scheme relative URLs to same origin
-            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-                (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-                // or any other URL that isn't scheme relative or absolute i.e relative.
-                !(/^(\/\/|http:|https:).*/.test(url));
-        }
-
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-                    // Send the token to same-origin, relative URLs only.
-                    // Send the token only if the method warrants CSRF protection
-                    // Using the CSRFToken value acquired earlier
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
+    jQuery(document).ready(function() {
+        AgreeCalle.init();
     });
 
-    function create_post() {
-        var select = $('input[id*=id_municipios_]')
-        var municipios_check = new Array();
-        select.each(function(){ 
-        	if($(this).prop('checked')){
-        		//console.log($(this).val());
-        		municipios_check.push($(this).val());
-        	};
-        });
-        // console.log('existe', $('#form_calle #id_nombre').val());
-        $.ajax({
-            url : "/nomenclador/new_calle/", // the endpoint
-            type : "POST", // http method
-            data : { nombre : $('#form_calle #id_nombre').val(), municipios : municipios_check }, // data sent with the post request
-
-            // handle a successful response
-            success : function(json) {
-                $('#id_nombre').val(''); // remove the value from the input
-                console.log("success"); // another sanity check
-                var sels = $('select[id*=calle]');
-                if (sels.length <= 1) {
-                	console.log('si');
-                    var selse = $('select[id*=entre]'); 
-                    selse.each(function(){
-                    	var opt = new Option(json.nombre, json.id, true, true);
-                    	$(opt).html(json.nombre);
-                    	$(this).append(opt);
-                    })               	
-                }
-                var opt = new Option(json.nombre, json.id, true, true);
-                $(opt).html(json.nombre);
-                for ( i = 0; i < sels.length; i++){
-                    var opt = new Option(json.nombre, json.id, true, true);
-                    $(opt).html(json.nombre);
-                    sels[i].append(opt);
-                 }
-                $('#close_md').click();
-            },
-
-            // handle a non-successful response
-            error : function(xhr,errmsg,err) {
-                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-                //console.log(errmsg);
-                console.log(xhr);
-                toastr.error(xhr.responseJSON.errmsg.nombre[0], '<h3>Error</h3>');
-                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-            }
-        });
-        //console.log($('#form_calle').val())
-    };
 </script>
