@@ -234,8 +234,9 @@ def add_calle_on_user(request):
     data = {}
     if request.method == 'POST':
         form = CalleForm(request.POST or None)
-        # print(form)
+        # print(form.data)
         if form.is_valid():
+            # print(form.cleaned_data)
             calle = form.save()
             # print(calle)
             data = {'nombre': calle.nombre,
@@ -285,10 +286,10 @@ def filter_by_municipio(request, id_municipio):
 
 
 @permission_required('dpv_nomencladores.add_calle')
-def agree_calle(request):
+def agree_calle(request, select_id):
     calleform = CalleForm()
     calle = Calle()
-    return render(request, 'dpv_nomencladores/form_calle_async.html', {'form': calleform, 'calle': calle})
+    return render(request, 'dpv_nomencladores/form_calle_async.html', {'form': calleform, 'calle': calle, 'value': select_id})
 
 
 @permission_required('dpv_nomencladores.change_calle')

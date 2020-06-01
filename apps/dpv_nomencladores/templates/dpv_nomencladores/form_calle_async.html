@@ -23,6 +23,7 @@
                         {{ field }}
                     </div>
                     {% endfor %}
+                <input type="hidden" id="selected" value="{{ value }}">
                 </div>
                 <div class="modal-footer">
                     <button id="close_md" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
@@ -50,6 +51,8 @@
         $('#form_calle').on('submit', function(event){
             event.preventDefault();
             //console.log("form submitted!")  // sanity check
+            if (!$('#form_calle').valid())
+                return;
             create_post();
         });
 
@@ -106,54 +109,35 @@
     });
 
     function create_post() {
-        var select = $('input[id*=id_municipios_]')
-        var municipios_check = new Array();
-        select.each(function(){ 
-        	if($(this).prop('checked')){
-        		//console.log($(this).val());
-        		municipios_check.push($(this).val());
-        	};
-        });
-        // console.log('existe', $('#form_calle #id_nombre').val());
+
+        let form_data = $("#form_calle").serialize();
         $.ajax({
             url : "/nomenclador/new_calle/", // the endpoint
             type : "POST", // http method
-            data : { nombre : $('#form_calle #id_nombre').val(), municipios : municipios_check }, // data sent with the post request
-
-            // handle a successful response
+            data : form_data,
             success : function(json) {
                 $('#id_nombre').val(''); // remove the value from the input
-                console.log("success"); // another sanity check
-                var sels = $('select[id*=calle]');
-                if (sels.length <= 1) {
-                	console.log('si');
-                    var selse = $('select[id*=entre]'); 
-                    selse.each(function(){
-                    	var opt = new Option(json.nombre, json.id, true, true);
-                    	$(opt).html(json.nombre);
-                    	$(this).append(opt);
-                    })               	
-                }
-                var opt = new Option(json.nombre, json.id, true, true);
-                $(opt).html(json.nombre);
-                for ( i = 0; i < sels.length; i++){
-                    var opt = new Option(json.nombre, json.id, true, true);
-                    $(opt).html(json.nombre);
-                    sels[i].append(opt);
-                 }
+                let id_select_element = $("#selected[type='hidden']").val();
+                {#console.log("success"); // another sanity check#}
+                {#var sels = $('select[id*=calle]').not($("#"+id_select_element));#}
+                let mun_select = $(':not(#form_calle) select[id$=municipio]');
+                //console.log(mun_select);
+                mun_select[0].selectize.setValue(mun_select[0].selectize.getValue());
+                $("#"+id_select_element)[0].selectize.on('load', function() {
+                    $("#"+id_select_element)[0].selectize.setValue(json.id);
+                });
+                //setTimeout( function () {$("#"+id_select_element)[0].selectize.setValue(json.id);}, 1500);
                 $('#close_md').click();
             },
-
-            // handle a non-successful response
             error : function(xhr,errmsg,err) {
-                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! Hemos encontrado un error: "+errmsg+
                     " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-                //console.log(errmsg);
-                console.log(xhr);
+                  console.log(xhr);
                 toastr.error(xhr.responseJSON.errmsg.nombre[0], '<h3>Error</h3>');
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
         });
-        //console.log($('#form_calle').val())
-    };
+
+    }
+
 </script>

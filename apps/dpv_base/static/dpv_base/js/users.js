@@ -32,10 +32,11 @@ function create_calle()
 
 function abrir_modal(url, id=null)
 {
-    $('#add_calle').load(url, function(id)
+    $('#add_calle').load(url, function()
     {
         $(this).modal('show');
     });
+
     return false;
 }
 

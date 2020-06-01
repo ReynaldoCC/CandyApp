@@ -58,10 +58,10 @@
                             {% for field in formprs %}
                             <div class="form-group col-md-6" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
                                 {{field.errors}}
-                                <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                                <label class="control-label mb-1" for="{{ field.id_for_label }}">{{field.label}}</label>
                                 {% if 'calle' in field.name %}
                                 {% if perms.dpv_nomencladores.add_calle %}
-                                <button onclick="return abrir_modal('{% url 'agree_calle' %}', 'id_{{field.name}}')" class="pull-right btn btn-link">
+                                <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
                                     <i class="fa fa-plus text-success"></i>
                                 </button>
                                 {% endif %}
