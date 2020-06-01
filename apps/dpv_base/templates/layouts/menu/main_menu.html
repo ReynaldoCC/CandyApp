@@ -28,9 +28,9 @@
             <a href="{% url 'admin_emailconf' %}"><i class="fa fa-envelope"></i>Configuración de Correo</a>
         </li>
         {% endif %}
-        {% if False %}
+        {% if perms.dpv_base.view_log or perms.dpv_base.add_log or perms.dpv_base.change_log or perms.dpv_base.delete_log %}
         <li class="{% if '/logs/' in request.path %} active {% endif %}">
-            <a href="{% url 'admin_logs' %}"><i class="fa fa-users"></i>Registros</a>
+            <a href="{% url 'admin_logs' %}"><i class="fa fa-bars"></i>Registros</a>
         </li>
         {% endif %}
     </ul>
