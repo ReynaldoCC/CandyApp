@@ -1,4 +1,4 @@
-{% extends 'layouts/bashboard.html' %}
+{% extends 'layouts/dashboard.html' %}
 {% block page_title %} | Registros {% endblock page_title %}
 {% load static %}
 {% block extra_style %}
@@ -30,39 +30,27 @@
                         <tr>
                             <th>Nombre de usuario</th>
                             <th>Fecha-Hora</th>
-                            <th>Acción</th>
-                            <th>Objeto</th>
-                            <th>Campos</th>
-                            <th>Acciones</th>
+                            <th>Detalles</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for log in logs %}
                         <tr>
-                            <td>{{log.user.username}}</td>
-                            <td>{{log.date}}</td>
-                            <td>{{log.action.name}}</td>
-                            <td>{{log.item}}</td>
-                            <td>{{log.detail}}</td>
-                            <td>
-                                <ul>
-                                    {% if perms.auth.view_logentry %}
-                                    <li>
-                                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
-                                    </li>
-                                    {% endif %}
-                                    {% if perms.auth.change_logentry %}
-                                    <li>
-                                        <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></button>
-                                    </li>
-                                    {% endif %}
-                                    {% if perms.auth.delete_logentry %}
-                                    <li>
-                                        <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </td>
+                            <td nowrap="nowrap">({{ log.user_id }}) {{ log.user_name }}</td>
+                            <td nowrap="nowrap">{{ log.action_date|date:"j/F/Y" }}  {{ log.action_date|time:"H:i" }}</td>
+                            {% if log.action_flat == 0 %}
+                            <td>Creado un elmeneto de tipo {{ log.type_obj_id }}-{{ log.type_obj_name }} con el identifacdor ({{ log.obj_id }} -> "{{ log.obj_name }}") desde la dirección IP {{ log.address }}</td>
+                            {% elif log.action_flat == 1 %}
+                            <td>Modificado un elmeneto de tipo {{ log.type_obj_id }}-{{ log.type_obj_name }} con el identifacdor ({{ log.obj_id }} -> "{{ log.obj_name }}") desde la dirección IP {{ log.address }}</td>
+                            {% elif log.action_flat == 2 %}
+                            <td>ELiminado un elmeneto de tipo {{ log.type_obj_id }}-{{ log.type_obj_name }} con el identifacdor ({{ log.obj_id }} -> "{{ log.obj_name }}") desde la dirección IP {{ log.address }}</td>
+                            {% elif log.action_flat == 3 %}
+                            <td>Ha entrado al sistema desde la direción IP {{ log.address }}</td>
+                            {% elif log.action_flat == 4 %}
+                            <td>Ha salido del sistema usando la direción IP {{ log.address }}</td>
+                            {% else %}
+                            <td>Ha salido algo mal no se ha podido entender esta línea del log</td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
