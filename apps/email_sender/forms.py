@@ -28,8 +28,8 @@ class ConfigureMailForm(forms.ModelForm):
             'servidor': forms.TextInput(attrs={"placeholder": "Servidor ej: localhost", "class": "form-control"}),
             'usuario': forms.TextInput(attrs={"placeholder": "Usuario", "class": "form-control"}),
             'password': forms.PasswordInput(attrs={"placeholder": "Contraseña", "class": "form-control"}),
-            'use_tls': forms.CheckboxInput(attrs={"placeholder": "Contraseña", "class": "form-check-input", "type": "radio", "value": "option2", "onchange":"desmarcar_otros('id_use_tls')"}),
-            'use_ssl': forms.CheckboxInput(attrs={"placeholder": "Contraseña", "class": "form-check-input", "type": "radio", "value": "option3", "onchange":"desmarcar_otros('id_use_ssl')"}),
+            'use_tls': forms.CheckboxInput(attrs={"placeholder": "Contraseña", "class": "form-check-input", "type": "radio", "value": "option2"}),
+            'use_ssl': forms.CheckboxInput(attrs={"placeholder": "Contraseña", "class": "form-check-input", "type": "radio", "value": "option3"}),
         }
 
     def clean_use_tls(self):

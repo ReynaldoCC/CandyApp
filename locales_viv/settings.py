@@ -165,9 +165,9 @@ CELERY_RESULT_PERSISTENT = False
 # Email configuration to do
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-EMAIL_HOST = "mail.dpvhab.gob.cu"
-EMAIL_HOST_PASSWORD = "1234qwer."
-EMAIL_HOST_USER = "pedro"
-EMAIL_PORT = "25"
-EMAIL_USE_TLS = True
+EMAIL_HOST = "mail.smtp"
+EMAIL_HOST_PASSWORD = "qwer1234."
+EMAIL_HOST_USER = "developer"
+EMAIL_PORT = "6500"
+EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
