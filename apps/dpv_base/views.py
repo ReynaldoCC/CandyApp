@@ -292,15 +292,22 @@ def user_detail(request, id_usuario):
 @permission_required('auth.view_user', raise_exception=True)
 def user_verify(request):
     if request.method == 'GET':
-        username = False
+        username, email = False, False
         if request.GET.get('username'):
             username = request.GET.get('username')
+        if request.GET.get('email'):
+            email = request.GET.get('email')
         id = request.GET.get('id')
 
         if not id:
             id = 0
         if username:
             if not User.objects.filter(username=username).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if email:
+            if not User.objects.filter(email=email).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
