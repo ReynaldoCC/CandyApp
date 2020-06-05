@@ -1,6 +1,6 @@
 {% extends 'layouts/dashboard.html' %}
 {% block page_title %} | Grupos {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_persona/css/style1.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
@@ -31,7 +31,7 @@
             <div class="card-body">
                 {% if grupos %}
                 <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <table id="grps-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre del grupo</th>
@@ -83,10 +83,29 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_base/js/base.js' %}"></script>
+    <script src="{% static 'dpv_base/js/groups.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
-        } );
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Grupos que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Grupos' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Grupos' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total grupos' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Grupos' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin grupos coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVGrupo.init(translations_datatables);
+        });
     </script>
 {% endblock extra_scripts %}
 {% block init_jquery %} {% endblock init_jquery %}
