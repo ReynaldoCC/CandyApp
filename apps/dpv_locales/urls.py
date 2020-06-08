@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import index, stats, local_add, local_edit, local_detail, local_remove, local_revision, local_systeminfo
+from .views import index, stats, local_add, local_edit, local_detail, local_remove, local_revision, local_systeminfo, \
+    local_verify
 
 urlpatterns = [
     path('', index, name='locales_list'),
@@ -12,5 +13,6 @@ urlpatterns = [
     path('system/<int:id_local>', local_systeminfo, name='locales_data'),
     path('view/<int:id_local>', local_detail, name='locales_view'),
     path('delete/<int:id_local>', local_remove, name='locales_delete'),
+    path('verify', local_verify, name='locales_verify'),
 
 ]
