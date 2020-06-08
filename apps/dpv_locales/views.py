@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.db.models import Sum, Count, Case, When
 from django.contrib.auth.decorators import permission_required
 from .models import Local
@@ -127,6 +127,28 @@ def local_revision(request, id_local=None):
         return redirect(reverse_lazy('locales_list'))
 
 
-def local_systeminfo(reques, id_local):
+def local_systeminfo(request, id_local):
     local = Local.objects.filter(id=id_local).first()
-    return render(reques, 'dpv_locales/system_data.html', {'local': local})
+    return render(request, 'dpv_locales/system_data.html', {'local': local})
+
+
+def local_verify(request):
+    if request.method == 'GET':
+        id, direccion_calle, direccion_numero, municipio = False, False, False, False
+        if request.GET.get('direccion_calle'):
+            direccion_calle = request.GET.get('direccion_calle')
+        if request.GET.get('direccion_numero'):
+            direccion_numero = request.GET.get('direccion_numero')
+        if request.GET.get('municipio'):
+            municipio = request.GET.get('municipio')
+        id = request.GET.get('id')
+
+        if direccion_calle and direccion_numero and municipio:
+            if not Local.objects.filter(direccion_calle=direccion_calle,
+                                        direccion_numero=direccion_numero,
+                                        municipio=municipio).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("true", safe=False, status=200)
+    return JsonResponse({"error": "method not Allowed"}, status=405)
