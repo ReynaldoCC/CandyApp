@@ -253,7 +253,7 @@ def group_edit(request, id_group):
             return redirect(reverse_lazy('admin_group'))
     else:
         form = GroupForm(instance=grp)
-    return render(request, 'layouts/admin/groups_form.html', {'form': form})
+    return render(request, 'layouts/admin/groups_form.html', {'form': form, 'grp': grp})
 
 
 @permission_required('auth.delete_user', raise_exception=True)
@@ -292,15 +292,41 @@ def user_detail(request, id_usuario):
 @permission_required('auth.view_user', raise_exception=True)
 def user_verify(request):
     if request.method == 'GET':
-        username = False
+        username, email = False, False
         if request.GET.get('username'):
             username = request.GET.get('username')
+        if request.GET.get('email'):
+            email = request.GET.get('email')
         id = request.GET.get('id')
 
         if not id:
             id = 0
         if username:
             if not User.objects.filter(username=username).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if email:
+            if not User.objects.filter(email=email).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", safe=False, status=200)
+    return JsonResponse({"error": "method not Allowed"}, status=405)
+
+
+@permission_required('auth.view_group', raise_exception=True)
+def group_verify(request):
+    if request.method == 'GET':
+        name = False
+        if request.GET.get('name'):
+            name = request.GET.get('name')
+        id = request.GET.get('id')
+
+        if not id:
+            id = 0
+        if name:
+            if not Group.objects.filter(name=name).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)

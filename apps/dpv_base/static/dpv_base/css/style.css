@@ -828,4 +828,10 @@ label.error {
 div.table-container {
     
 }
+.navbar-toggler.overrided {
+  font-size: 1.8rem !important;
+}
+.navbar-toggler.overrided i {
+  color: white !important;
+}
 /*# sourceMappingURL=style.css.map */

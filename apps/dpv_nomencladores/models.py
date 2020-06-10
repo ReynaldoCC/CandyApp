@@ -46,7 +46,7 @@ class ConsejoPopular(LoggerMixin):
                               verbose_name="Consejo Popular", blank=False, null=False,
                               validators=[not_special_char, MaxLengthValidator(90)])
     numero = models.CharField(max_length=2, verbose_name="Número", validators=[only_numbers])
-    municipio = models.ForeignKey(Municipio, related_name="municipios", on_delete=models.CASCADE)
+    municipio = models.ForeignKey(Municipio, related_name="consejos", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Consejo Popular"

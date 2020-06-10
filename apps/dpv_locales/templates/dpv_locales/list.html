@@ -1,6 +1,6 @@
 {% extends 'layouts/dashboard.html' %}
 {% block page_title %} | Locales {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
 {% endblock extra_style %}
@@ -32,14 +32,14 @@
             <div class="card-body">
                 {% if locales %}
                 <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <table id="local-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Dirección</th>
                                 <th>Viviendas</th>
                                 <th>Organismo</th>
                                 <th>Fecha en sistema</th>
-                                <th>Acciones</th>
+                                <th nowrap="">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,7 +49,7 @@
                                 <td>{{local.no_viviendas}}</td>
                                 <td>{{local.organismo}}</td>
                                 <td>{{local.fecha}}</td>
-                                <td>
+                                <td nowrap="">
                                     {% if perms.dpv_locales.view_local %}
                                         <a onclick="return abrir_modal('{% url 'locales_view' local.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
                                     {% endif %}
@@ -98,7 +98,25 @@
     <script src="{% static 'dpv_locales/js/locales.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Locales que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Locales' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Locales' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total locales' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Locales' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin locales coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVLocal.init(translations_datatables)
         } );
     </script>
 {% endblock extra_scripts %}

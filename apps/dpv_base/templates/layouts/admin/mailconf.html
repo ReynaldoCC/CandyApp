@@ -2,6 +2,7 @@
 {% block page_title %} | Configuración de Correo {% endblock page_title %}
 {% load static %}
 {% block extra_style %}
+    <link type="text/css" href="{% static 'dpv_base/css/emailconf.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Configuración de Correo {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -34,18 +35,18 @@
 
                     <nav>
                         <div class="nav nav-tabs nav-pills mb-3 mt-2 no-border" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link btn btn-primary active" id="custom-nav-home-tab" data-toggle="tab" href="#custom-nav-home" role="tab" aria-controls="custom-nav-home" aria-selected="true"><i class="fa fa-eye"></i> Visualizar</a>
-                            <a class="nav-item nav-link btn btn-primary right-hand-xs right-hand-lg right-hand-sm right-hand-md" id="custom-nav-profile-tab" data-toggle="tab" href="#custom-nav-profile" role="tab" aria-controls="custom-nav-profile" aria-selected="false"> <i class="fa fa-pencil"></i> Editar</a>
+                            <a class="nav-item nav-link btn btn-primary active" id="custom-nav-home-tab" style="position: absolute; margin-bottom: 2rem;" data-toggle="tab" href="#custom-nav-home" role="tab" aria-controls="custom-nav-home" aria-selected="true"><i class="fa fa-eye"></i> Visualizar</a>
+                            <a class="nav-item nav-link btn btn-primary " id="custom-nav-profile-tab" style="position: absolute; margin-bottom: 2rem;" data-toggle="tab" href="#custom-nav-profile" role="tab" aria-controls="custom-nav-profile" aria-selected="false"> <i class="fa fa-pencil"></i> Editar</a>
                         </div>
                     </nav>
-                    <div class="tab-content pl-3 pt-2" id="nav-tabContent" style="{margin-top: 5px;}">
+                    <div class="tab-content pl-3 pt-5" id="nav-tabContent" style="{margin-top: 5px;}">
                         <div class="tab-pane fade show active" id="custom-nav-home" role="tabpanel" aria-labelledby="custom-nav-home-tab">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered ">
                                     <thead class="thead-dark">
                                         <tr>
                                             <th scope="col">Atributo</th>
-                                            <th scope="col text-center">Valor</th>
+                                            <th scope="col" class="text-center">Valor</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -88,7 +89,7 @@
                         </div>
                         <div class="tab-pane fade" id="custom-nav-profile" role="tabpanel" aria-labelledby="custom-nav-profile-tab">
                             <div>
-                                <form method="POST" novalidate>{% csrf_token %}
+                                <form id="emailconf-form" method="POST" novalidate>{% csrf_token %}
                                     <div class="card-body card-block">
                                         <div class="form-group col-md-6">
                                             {% if form.servidor.errors %}
@@ -142,7 +143,7 @@
                                             <div class="col col-md-3 col-ms-12"><label class=" form-control-label">Seguridad</label></div>
                                             <div class="col col-md-3 col-ms-12">
                                                 <label class=" form-control-label">
-                                                    <input id="none-radio" name="inline-radios" value="option1" class="form-check-input" type="radio" onchange="desmarcar_otros('none-radio')" {% if form.use_ssl == False and form.use_tls == False %} checked {% endif %}>
+                                                    <input id="none-radio" name="inline-radios" value="option1" class="form-check-input" type="radio" {% if form.use_ssl == False and form.use_tls == False %} checked {% endif %}>
                                                     Ninguna
                                                 </label>
                                             </div>
@@ -173,6 +174,15 @@
     </div>
 {% endblock content_page %}
 {% block extra_scripts %}
-    <script src="{% static 'dpv_base/js/base.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/emailconf.js' %}"></script>
+    <script>
+    $(document).ready(function() {
+        DPVEmailConf.init();
+    });
+    </script>
+
 {% endblock extra_scripts %}
 {% block init_jquery %} {% endblock init_jquery %}
