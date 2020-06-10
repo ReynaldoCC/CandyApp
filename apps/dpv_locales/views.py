@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.http import Http404, JsonResponse
-from django.db.models import Sum, Count, Case, When
+from django.db.models import Sum, Count, Case, When, F
 from django.contrib.auth.decorators import permission_required
 from .models import Local
 from .forms import LocalForm
@@ -49,34 +49,76 @@ def local_add(request):
 
 
 # @permission_required('dpv_locales.view_local', raise_exception=True)
-def stats(request, id_municipio=None):
+def stats(request, id_municipio=None, id_cpopular=None):
     result = []
 
     if not id_municipio and request.user.perfil_usuario.centro_trabajo.oc:
-        if Local.objects.all().count() > 0:
+        if Local.objects.all().order_by('numero').count() > 0:
             for m in Municipio.objects.all():
-                q = Local.objects.filter(municipio=m).aggregate(cant_viv=Sum('no_viviendas'), cant_pend_viv=Sum('pendiente'), cant_loc=Count('id'), statales=Count(Case(When(estatal=True, then=1))), propios=Count(Case(When(estatal=False, then=1))))
-                qm = {"nombre": m.nombre, "id": m.id, "tipo": 'municpio'}
+                q = Local.objects.filter(municipio=m).aggregate(cant_viv=Sum('no_viviendas'),
+                                                                cant_pend_viv=Sum('pendiente'),
+                                                                cant_loc=Count('id'),
+                                                                statales=Count(Case(When(estatal=True, then=1))),
+                                                                propios=Count(Case(When(estatal=False, then=1))),
+                                                                cant_viv_asoc=Count('vivienda_local__id'),
+                                                                personas=Sum('vivienda_local__cantidad_persona'),
+                                                                mujeres=Sum('vivienda_local__cantidad_mujeres'),
+                                                                menores=Sum('vivienda_local__cantidad_menores'),
+                                                                aclifim=Sum('vivienda_local__cantidad_aclifim'),
+                                                                ancianos=Sum('vivienda_local__cantidad_anciano'))
+                qm = {"nombre": m.nombre, "id": m.id, "tipo": 'municipio'}
                 qr = dict(qm, **q)
                 result.append(qr)
     elif not id_municipio and not request.user.perfil_usuario.centro_trabajo.oc:
         if Local.objects.filter(municipio=request.user.perfil_usuario.centro_trabajo.municipio).count() > 0:
-            for cp in request.user.perfil_usuario.centro_trabajo.municipio.consejos.all():
-                q = Local.objects.filter(consejo_popular=cp).aggregate(cant_viv=Sum('no_viviendas'), cant_pend_viv=Sum('pendiente'), cant_loc=Count('id'), statales=Count(Case(When(estatal=True, then=1))), propios=Count(Case(When(estatal=False, then=1))))
-                qm = {"nombre": cp.nombre, "id": cp.id, "tipo": 'consejo'}
+            for cp in request.user.perfil_usuario.centro_trabajo.municipio.consejos.all().order_by('numero'):
+                q = Local.objects.filter(consejo_popular=cp).aggregate(cant_viv=Sum('no_viviendas'),
+                                                                       cant_pend_viv=Sum('pendiente'),
+                                                                       cant_loc=Count('id'),
+                                                                       statales=Count(Case(When(estatal=True, then=1))),
+                                                                       propios=Count(Case(When(estatal=False, then=1))),
+                                                                       cant_viv_asoc=Count('vivienda_local__id'),
+                                                                       personas=Sum('vivienda_local__cantidad_persona'),
+                                                                       mujeres=Sum('vivienda_local__cantidad_mujeres'),
+                                                                       menores=Sum('vivienda_local__cantidad_menores'),
+                                                                       aclifim=Sum('vivienda_local__cantidad_aclifim'),
+                                                                       ancianos=Sum('vivienda_local__cantidad_anciano'))
+                qm = {"nombre": cp.nombre, "id": cp.id, "tipo": 'consejo', "municipio": request.user.perfil_usuario.centro_trabajo.municipio.id}
                 qr = dict(q, **qm)
                 result.append(qr)
+    elif id_cpopular:
+        result = Local.objects.filter(consejo_popular_id=id_cpopular).annotate(cant_viv=F('no_viviendas'),
+                                                                               cant_pend_viv=F('pendiente'),
+                                                                               statales=F('estatal'),
+                                                                               cant_viv_asoc=Count('vivienda_local__id'),
+                                                                               cant_hab=Sum('vivienda_local__cantidad_persona'),
+                                                                               mujeres=Sum('vivienda_local__cantidad_mujeres'),
+                                                                               menores=Sum('vivienda_local__cantidad_menores'),
+                                                                               aclifim=Sum('vivienda_local__cantidad_aclifim'),
+                                                                               ancianos=Sum('vivienda_local__cantidad_anciano'))
     else:
         if Local.objects.filter(municipio=id_municipio).count() > 0:
-            for cp in Municipio.objects.filter(id=id_municipio).first().consejos.all():
-                q = Local.objects.filter(consejo_popular=cp).aggregate(cant_viv=Sum('no_viviendas'), cant_pend_viv=Sum('pendiente'), cant_loc=Count('id'), statales=Count(Case(When(estatal=True, then=1))), propios=Count(Case(When(estatal=False, then=1))))
-                qm = {"nombre": cp.nombre, "id": cp.id, "tipo": 'consejo'}
+            for cp in Municipio.objects.filter(id=id_municipio).first().consejos.all().order_by('numero'):
+                q = Local.objects.filter(consejo_popular=cp).aggregate(cant_viv=Sum('no_viviendas'),
+                                                                       cant_pend_viv=Sum('pendiente'),
+                                                                       cant_loc=Count('id'),
+                                                                       statales=Count(Case(When(estatal=True, then=1))),
+                                                                       propios=Count(Case(When(estatal=False, then=1))),
+                                                                       cant_viv_asoc=Count('vivienda_local__id'),
+                                                                       personas=Sum('vivienda_local__cantidad_persona'),
+                                                                       mujeres=Sum('vivienda_local__cantidad_mujeres'),
+                                                                       menores=Sum('vivienda_local__cantidad_menores'),
+                                                                       aclifim=Sum('vivienda_local__cantidad_aclifim'),
+                                                                       ancianos=Sum('vivienda_local__cantidad_anciano'))
+                qm = {"nombre": cp.nombre, "id": cp.id, "tipo": 'consejo', "municipio": id_municipio}
                 qr = dict(q, **qm)
                 result.append(qr)
-
+    # return JsonResponse(data=result, safe=False)
+    # print(result)
     return render(request, 'dpv_locales/estdistico.html', {'result': result})
 
 
+@permission_required('dpv_locales.change_local', raise_exception=True)
 def local_edit(request, id_local):
     lol = Local.objects.filter(id=id_local).first()
     form = LocalForm(instance=lol)
@@ -89,25 +131,27 @@ def local_edit(request, id_local):
     return render(request, 'dpv_locales/form.html', {'form': form, 'local': lol})
 
 
+@permission_required('dpv_locales.view_local', raise_exception=True)
 def local_detail(request, id_local):
-    lol = Local.objects.filter(id=id_local).first()
-    if lol:
-        return render(request, 'dpv_locales/detail.html', {'local': lol})
-    else:
-        raise Http404()
+    lol = get_object_or_404(Local, id=id_local)
+    return render(request, 'dpv_locales/detail.html', {'local': lol})
 
 
+@permission_required('dpv_locales.view_local', raise_exception=True)
+def local_detail_full(request, id_local):
+    lol = get_object_or_404(Local, id=id_local)
+    return render(request, 'dpv_locales/detail_page.html', {'local': lol})
+
+
+@permission_required('dpv_locales.delete_local', raise_exception=True)
 def local_remove(request, id_local):
-    lol = Local.objects.filter(id=id_local).first()
-    if lol:
-        if request.method == 'POST':
-            if lol.vivienda_local.count() < 1:
-                lol.perform_log(request=request, af=2)
-                lol.delete()
-                return redirect(reverse_lazy('locales_list'))
-        return render(request, 'dpv_locales/delete.html', {'local': lol})
-    else:
-        raise Http404()
+    lol = get_object_or_404(Local, id=id_local)
+    if request.method == 'POST':
+        if lol.vivienda_local.count() < 1:
+            lol.perform_log(request=request, af=2)
+            lol.delete()
+            return redirect(reverse_lazy('locales_list'))
+    return render(request, 'dpv_locales/delete.html', {'local': lol})
 
 
 def local_revision(request, id_local=None):
@@ -128,7 +172,7 @@ def local_revision(request, id_local=None):
 
 
 def local_systeminfo(request, id_local):
-    local = Local.objects.filter(id=id_local).first()
+    local = get_object_or_404(Local, id=id_local)
     return render(request, 'dpv_locales/system_data.html', {'local': local})
 
 
