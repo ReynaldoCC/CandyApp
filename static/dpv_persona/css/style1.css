@@ -1,3 +1,7 @@
 .sitio {
     color: blue;
 }
+.selectize-control.form-control {
+    padding: 0 !important;
+    border: 0px solid white;
+}
