@@ -78,6 +78,34 @@ const DPVLocal = function () {
             },
         });
     };
+    const _initLocalStatistics = function (translations) {
+        $('#stats-table').DataTable({
+            responsive: true,
+            order: [ 0, 'desc' ],
+            sScrollX: "100%",
+            lengthMenu: [[20, 50, -1], [20, 50, "Todos"]],
+            language: {
+                "decimal": "",
+                "emptyTable": translations.emptyTable,
+                "info": translations.info_init + " _START_ a _END_ de _TOTAL_ " + translations.info_end,
+                "infoEmpty": translations.infoEmpty,
+                "infoFiltered": "(" + translations.infoFiltered_init + " _MAX_ " + translations.infoFiltered_end + ")",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": translations.lengthMenu_init + " _MENU_ " + translations.lengthMenu_end,
+                "loadingRecords": translations.loadingRecords,
+                "processing": translations.processing,
+                "search":  translations.search,
+                "zeroRecords": translations.zeroRecords,
+                "paginate": {
+                        "first": translations.first,
+                        "last": translations.last,
+                        "next": translations.next,
+                        "previous": translations.previous,
+                }
+            },
+        });
+    };
     const _initLocalForm = function () {
 
         let $pj_municipio = $("#id_municipio").selectize({
@@ -475,6 +503,9 @@ const DPVLocal = function () {
         initForm: function () {
             local_form = $("#local-form");
             _initLocalForm();
+        },
+        initStats: function (translations) {
+            _initLocalStatistics(translations);
         },
     };
 }();
