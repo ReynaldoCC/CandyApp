@@ -78,7 +78,7 @@ const DPVLocal = function () {
             },
         });
     };
-    const _initLocalStatistics = function (translations) {
+    const _initLocalStatistics = function (translations, graph_data) {
         $('#stats-table').DataTable({
             responsive: true,
             order: [ 0, 'desc' ],
@@ -105,6 +105,126 @@ const DPVLocal = function () {
                 }
             },
         });
+        // console.log(graph_data);
+        if (graph_data && graph_data.count > 0) {
+            $(window).on('load', function () {
+                var canvas = $('#Graph_result');
+                new Chart(canvas, {
+                    type: 'bar',
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: true,
+                            position: 'top',
+                            text: 'Gráfico de Locales'
+                        },
+                        scales: {
+                            yAxes: [{
+                                id: 'left',
+                                type: 'linear',
+                                position: 'left',
+                                ticks: {
+                                    min: 0,
+                                }
+                            }, {
+                                id: 'right',
+                                type: 'linear',
+                                position: 'right',
+                                ticks: {
+                                    min: 0,
+                                }
+                            }]
+                        }
+                    },
+                    data: {
+                        labels: graph_data.columns,
+                        datasets: [{
+                            label: 'Locales',
+                            yAxisID: 'right',
+                            data: graph_data.locales,
+                            backgroundColor: "#007bff80",
+                            borderColor: "#007bff",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Estatales',
+                            yAxisID: 'right',
+                            data: graph_data.estatales,
+                            backgroundColor: "#28a74580",
+                            borderColor: "#28a745",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Esfuerzo Propio',
+                            yAxisID: 'right',
+                            data: graph_data.propios,
+                            backgroundColor: "#ffc10780",
+                            borderColor: "#ffc107",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Viviendas',
+                            yAxisID: 'right',
+                            data: graph_data.vivtotal,
+                            backgroundColor: "#dc354580",
+                            borderColor: "#dc3545",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Viviendas Pendientes de Aprobación',
+                            yAxisID: 'right',
+                            data: graph_data.vivpend,
+                            backgroundColor: "#753ede80",
+                            borderColor: "#753ede",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Viviendas con Datos',
+                            yAxisID: 'right',
+                            data: graph_data.vivasoc,
+                            backgroundColor: "#de933e80",
+                            borderColor: "#de933e",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Total Personas',
+                            yAxisID: 'left',
+                            data: graph_data.personas,
+                            type: 'line',
+                            backgroundColor: "#007bff00",
+                            borderColor: "#007bff",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Total Mujeres',
+                            yAxisID: 'left',
+                            data: graph_data.mujeres,
+                            type: 'line',
+                            backgroundColor: "#28a74500",
+                            borderColor: "#28a745",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Total Menores de Edad',
+                            yAxisID: 'left',
+                            data: graph_data.menores,
+                            type: 'line',
+                            backgroundColor: "#ffc10700",
+                            borderColor: "#ffc107",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Total de Discapacitados',
+                            yAxisID: 'left',
+                            data: graph_data.aclifim,
+                            type: 'line',
+                            backgroundColor: "#dc354500",
+                            borderColor: "#dc3545",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Total Personas de 3ra Edad',
+                            yAxisID: 'left',
+                            data: graph_data.ancianos,
+                            type: 'line',
+                            backgroundColor: "#753ede00",
+                            borderColor: "#753ede",
+                            borderWidth: 3,
+                        }]
+                    },
+                });
+            });
+        }
     };
     const _initLocalForm = function () {
 
@@ -504,8 +624,8 @@ const DPVLocal = function () {
             local_form = $("#local-form");
             _initLocalForm();
         },
-        initStats: function (translations) {
-            _initLocalStatistics(translations);
+        initStats: function (translations, graph_data) {
+            _initLocalStatistics(translations, graph_data);
         },
     };
 }();
