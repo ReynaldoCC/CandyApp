@@ -1,8 +1,9 @@
 {% extends 'dpv_locales/list.html' %}
 {% block page_title %} | Estadístico Locales {% endblock page_title %}
-{% load static base_tags i18n %}
+{% load static base_tags i18n locale_tags %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/lib/Chartjs/dist/Chart.min.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Estadístico de Locales {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -10,14 +11,30 @@
     {% if '/local/estadistico/' == request.path %}
     <li class="active">Estadístico</li>
     {% else %}
-    <li>
-        <a href="{% url 'locales_stats' %}">
-            Estadístico
-        </a>
-    </li>
-    <li class="active">
-        Municipal
-    </li>
+        {% if result|is_list %}
+        <li>
+            <a href="{% url 'locales_stats' %}">
+                Estadístico
+            </a>
+        </li>
+        <li class="active">
+            Municipal
+        </li>
+        {% else %}
+        <li>
+            <a href="{% url 'locales_stats' %}">
+                Estadístico
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'locales_stats' %}">
+            Municipal
+            </a>
+        </li>
+        <li class="active">
+            Consejo Popular
+        </li>
+        {% endif %}
     {% endif %}
 {% endblock breadcrumbs %}
 {% block content_page %}
@@ -28,11 +45,12 @@
             </div>
             <div class="card-body">
                 {% if result %}
+                    {% if result|is_list %}
                 <div class="table-responsive">
-                    <table id="stats-table" class="table table-sm table-hover table-striped table-bordered">
+                    <table id="stats-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>Nombre</th>
+                                <th nowrap="">Nombre</th>
                                 <th nowrap="">Cantidad Locales</th>
                                 <th nowrap="">Estatales</th>
                                 <th nowrap="">Esfuerzo Propio</th>
@@ -44,15 +62,18 @@
                         {% for res in result %}
                             <tr>
                                 <td nowrap="">
-                                {% if res.tipo == 'municpio' %}
+                                {% if res.tipo == 'municipio' %}
                                     <a class="text-primary" href="{% url 'locales_stats_mun' res.id %}">{{res.nombre}}</a>
                                 {% else %}
-                                    {{res.nombre}}
+                                    <a class="text-primary" href="{% url 'locales_stats_cpop' res.municipio res.id %}">{{res.nombre}}</a>
                                 {% endif %}
                                 </td>
-                                <td>{{res.cant_loc|valuetoint}}</td>
-                                <td>{{res.statales|valuetoint}}</td>
-                                <td>{{res.cant_loc|tosub:res.statales}}</td>
+                                <td>{{res.cant_loc|valuetoint}}
+                                </td>
+                                <td>{{res.statales|valuetoint}}
+                                </td>
+                                <td>{{res.cant_loc|tosub:res.statales|valuetoint}}
+                                </td>
                                 <td>{{res.cant_viv|valuetoint}}</td>
                                 <td>{{res.cant_pend_viv|valuetoint}}</td>
                             </tr>
@@ -60,6 +81,38 @@
                         </tbody>
                     </table>
                 </div>
+                    {% else %}
+                <div class="table-responsive">
+                    <table id="stats-table" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th nowrap="">Nombre</th>
+                                <th nowrap="">Cantidad Convivientes</th>
+                                <th>Estatal</th>
+                                <th nowrap="">Viviendas asociadas</th>
+                                <th nowrap="">Cantidad Viviendas</th>
+                                <th nowrap="">Viviendas Pend. Aprobacion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for res in result %}
+                            <tr>
+                                <td nowrap="">
+                                    <a class="text-primary" href="{% url 'locales_view_page' res.id %}">
+                                    {{ res.direccion_calle.nombre }} #{{ res.direccion_numero }} entre {{ res.direccion_entre1 }} y {{ res.direccion_entre2 }}
+                                    </a>
+                                </td>
+                                <td>{{res.cant_hab|valuetoint}}</td>
+                                <td><i class="fa {% if res.estatal %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></td>
+                                <td>{{res.cant_viv_asoc|valuetoint}}</td>
+                                <td>{{res.cant_viv|valuetoint}}</td>
+                                <td>{{res.cant_pend_viv|valuetoint}}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                    {% endif %}
                 {% else %}
                 <div class="alert alert-info">
                     <h2 class="text-center">No hay Estadisticas que mostrar</h2>
@@ -67,6 +120,18 @@
                 {% endif %}
             </div>
         </div>
+        {% if result|is_list %}
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Gráfica Estadístico</strong>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <canvas id="Graph_result"></canvas>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 {% endblock content_page %}
 {% block extra_scripts %}
@@ -102,7 +167,40 @@
                 "next": "{% trans 'Siguiente' %}",
                 "previous": "{% trans 'Anterior' %}"
             };
-            DPVLocal.initStats(translations_datatables);
+            var stats_graph = {
+                "columns": [],
+                "estatales": [],
+                "propios": [],
+                "locales": [],
+                "vivtotal": [],
+                "vivasoc": [],
+                "vivpend": [],
+                "personas": [],
+                "mujeres": [],
+                "menores": [],
+                "aclifim": [],
+                "ancianos": [],
+                "count": 0,
+            };
+            {% if result|is_list %}
+                {% for e in result %}
+                    stats_graph.columns[stats_graph.count] = "{{ e.nombre }}";
+                    stats_graph.estatales[stats_graph.count] = {{ e.statales|valuetoint }};
+                    stats_graph.propios[stats_graph.count] = {{ e.propios|valuetoint }};
+                    stats_graph.vivtotal[stats_graph.count] = {{ e.cant_viv|valuetoint }};
+                    stats_graph.vivpend[stats_graph.count] = {{ e.cant_pend_viv|valuetoint }};
+                    stats_graph.vivasoc[stats_graph.count] = {{ e.cant_viv_asoc|valuetoint }};
+                    stats_graph.locales[stats_graph.count] = {{ e.cant_loc|valuetoint }};
+                    stats_graph.personas[stats_graph.count] = {{ e.personas|valuetoint }};
+                    stats_graph.mujeres[stats_graph.count] = {{ e.mujeres|valuetoint }};
+                    stats_graph.menores[stats_graph.count] = {{ e.menores|valuetoint }};
+                    stats_graph.aclifim[stats_graph.count] = {{ e.aclifim|valuetoint }};
+                    stats_graph.ancianos[stats_graph.count] = {{ e.ancianos|valuetoint }};
+                    stats_graph.count++;
+                {% endfor %}
+            {% endif %}
+            {#console.log(stats_graph);#}
+            DPVLocal.initStats(translations_datatables, stats_graph);
         } );
     </script>
 {% endblock extra_scripts %}
