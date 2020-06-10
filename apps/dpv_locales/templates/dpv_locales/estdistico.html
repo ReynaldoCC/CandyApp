@@ -1,6 +1,6 @@
 {% extends 'dpv_locales/list.html' %}
 {% block page_title %} | Estadístico Locales {% endblock page_title %}
-{% load static base_tags %}
+{% load static base_tags i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
 {% endblock extra_style %}
@@ -29,21 +29,21 @@
             <div class="card-body">
                 {% if result %}
                 <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <table id="stats-table" class="table table-sm table-hover table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Cantidad Locales</th>
-                                <th>Estatales</th>
-                                <th>Esfuerzo Propio</th>
-                                <th>Cantidad Viviendas</th>
-                                <th>Viviendas Pend. Aprobacion</th>
+                                <th nowrap="">Cantidad Locales</th>
+                                <th nowrap="">Estatales</th>
+                                <th nowrap="">Esfuerzo Propio</th>
+                                <th nowrap="">Cantidad Viviendas</th>
+                                <th nowrap="">Viviendas Pend. Aprobacion</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for res in result %}
                             <tr>
-                                <td>
+                                <td nowrap="">
                                 {% if res.tipo == 'municpio' %}
                                     <a class="text-primary" href="{% url 'locales_stats_mun' res.id %}">{{res.nombre}}</a>
                                 {% else %}
@@ -69,3 +69,40 @@
         </div>
     </div>
 {% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
+    <script src="{% static 'dpv_locales/js/locales.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay registros que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Registros' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Registros' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total registros' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Registros' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin registros coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVLocal.initStats(translations_datatables);
+        } );
+    </script>
+{% endblock extra_scripts %}
