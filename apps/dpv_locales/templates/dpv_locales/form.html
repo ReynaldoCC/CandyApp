@@ -4,6 +4,9 @@
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/lib/jquery-ui/css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_persona/css/style1.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Crear {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -16,7 +19,7 @@
 {% endblock breadcrumbs %}
 {% block content_page %}
     <div class="col-md-12">
-        <form novalidate method="POST">
+        <form id="local-form" novalidate method="POST">
             {% csrf_token %}
             {% if form.errors %}
             <div class="alert alert-danger alert-dismissible" role="alert">
@@ -29,21 +32,25 @@
                     <strong class="card-title">Local</strong>
                 </div>
                 <div class="card-body">
-                    {% for field in form %}
-                    <div class="form-group {% if field.name == 'observaciones' %} col-md-12 {% else %} col-md-6 {% endif %} {% if field.name == 'municipio' and not request.user.perfil_usuario.centro_trabajo.oc %} disabled {% endif %}" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
-                        {{field.errors}}
-                        <label class="control-label mb-1" for="{{field.id_for_label}}">{{field.label}}</label>
-                        {% if 'calle' in field.name or 'entre' in field.name %}
-                        {% if perms.dpv_nomencladores.add_calle %}
-                            <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
-                                <i class="fa fa-plus text-success"></i>
-                            </button>
-                        {% endif %}
-                        {% endif %}
-                        {{field}}
-                        {{field.required }}
+                    <div class="row">
+                        {% for field in form %}
+                        <div class="{% if field.name == 'observaciones' %} col-md-12 {% elif field.name == 'aprobado' or field.name == 'estatal' %} col-md-3 {% else %} col-md-6 {% endif %}">
+                            <div class="form-group {% if field.name == 'municipio' and not request.user.perfil_usuario.centro_trabajo.oc %} disabled {% endif %}" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                                {{field.errors}}
+                                <label class="control-label mb-1" for="{{field.id_for_label}}">{{field.label}}</label>
+                                {% if 'calle' in field.name or 'entre' in field.name %}
+                                {% if perms.dpv_nomencladores.add_calle %}
+                                    <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
+                                        <i class="fa fa-plus text-success"></i>
+                                    </button>
+                                {% endif %}
+                                {% endif %}
+                                {{field}}
+                                {{field.required }}
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
                 <div class="card-footer">
                     <a type="button" class="btn btn-default" href="{% url 'locales_list' %}">
@@ -121,6 +128,13 @@
     </div>
 {% endblock content_page %}
 {% block extra_scripts %}
+    <script>
+        {% if local.id %}
+            var local_id = {{ local.id }};
+        {% else %}
+            var local_id = 0;
+        {% endif %}
+    </script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
@@ -133,8 +147,16 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/jquery-validation/js/additional-methods.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
     <script src="{% static 'dpv_locales/js/locales.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/calles_agree.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            DPVLocal.initForm();
+        } );
+    </script>
 {% endblock extra_scripts %}

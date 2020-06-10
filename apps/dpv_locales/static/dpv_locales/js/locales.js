@@ -225,7 +225,7 @@ const DPVLocal = function () {
                 $(element).removeClass('is-invalid');
             },
 
-			ignore: ":hidden",
+			ignore: ":hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input",
 
             errorPlacement: function(error, element) {
                 if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
@@ -248,9 +248,9 @@ const DPVLocal = function () {
 		}, 'El valor debe de este campo ser menor o igual que ');
         $.validator.addMethod('myNotEqualTo', function( value, element, param ) {
 
-			console.log('distinctTo', param);
+			// console.log('distinctTo', param);
 			var target = $( param );
-			console.log('distinctTo', target);
+			// console.log('distinctTo', target);
 			if ( this.settings.onfocusout && target.not( ".validate-notEqualTo-blur" ).length ) {
 				target.addClass( "validate-notEqualTo-blur" ).on( "blur.validate-notEqualTo", function() {
 					$( element ).valid();
@@ -320,6 +320,7 @@ const DPVLocal = function () {
 				},
 				direccion_calle: {
 				    required: true,
+                    myNotEqualTo: "#id_direccion_entre1",
                     remote: {
                         url: '/local/verify',
                         type: 'GET',
@@ -329,7 +330,6 @@ const DPVLocal = function () {
                             direccion_numero: $("#id_direccion_numero").val(),
                         },
                     },
-                    myNotEqualTo: "#id_direccion_entre1",
 				},
 				direccion_entre2: {
 				    required: true,
