@@ -14,7 +14,7 @@ function cerrar_modal()
 }
 
 
-const DPVLocal = function () {
+var DPVLocal = function () {
     let local_form;
     let tmp;
     let validator_form;

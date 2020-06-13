@@ -15,7 +15,7 @@ $(document).ready(function(){
 });
 
 
-const DPVGrupo = function () {
+var DPVGrupo = function () {
     let group_form;
     let tmp;
     let validator_form;

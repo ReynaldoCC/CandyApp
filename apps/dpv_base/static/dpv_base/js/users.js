@@ -19,7 +19,7 @@ function cerrar_modal()
     return false;
 }
 
-const DPVUsuario = function () {
+var DPVUsuario = function () {
     let user_form;
     let tmp;
     let validator_form;

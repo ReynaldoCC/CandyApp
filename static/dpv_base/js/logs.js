@@ -15,7 +15,7 @@ $(document).ready(function(){
 });
 
 
-const DPVLog = function () {
+var DPVLog = function () {
 
     const _makeAlert = function(type, text, success, negate, title=null, accept=null, cancel=null, plus=null) {
         let dataplus = plus || tmp;
