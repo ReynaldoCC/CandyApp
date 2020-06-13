@@ -835,3 +835,9 @@ div.table-container {
   color: white !important;
 }
 /*# sourceMappingURL=style.css.map */
+.card-body.pb-0 .float-right.float-middle a.icon-container {
+  width: 100% !important;
+}
+.card-body.pb-0 .float-right.float-middle {
+  width: 30% !important;
+}

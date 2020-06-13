@@ -42,7 +42,7 @@
                             {% for group in grupos %}
                             <tr>
                                 <td>{{group.name}}</td>
-                                <td>
+                                <td nowrap="">
                                     {% if perms.auth.view_group %}
                                         <a onclick="return abrir_modal('{% url 'admin_group_view' group.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
                                     {% endif %}

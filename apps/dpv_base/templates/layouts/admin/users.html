@@ -32,8 +32,8 @@
                 <table id="users-table" class="table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>Nombre de usuario</th>
-                            <th>Nombre Completo</th>
+                            <th nowrap="">Nombre de usuario</th>
+                            <th nowrap="">Nombre Completo</th>
                             <th>Email</th>
                             <th>Activo</th>
                             <th>Acciones</th>
@@ -43,7 +43,7 @@
                     {% for user in usuarios %}
                         <tr>
                             <td>{{user.username}}</td>
-                            <td>{{user.first_name}} {{user.last_name}}</td>
+                            <td nowrap="">{{user.first_name}} {{user.last_name}}</td>
                             <td>{{user.email}}</td>
                             <td>{% if user.is_active %}
                                 <i class="fa fa-check-square green"></i>
@@ -51,7 +51,7 @@
                                 <i class="fa fa-square red"></i>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td nowrap="">
                                 {% if perms.auth.view_user %}
                                     <a onclick="return abrir_modal('{% url 'admin_user_view' user.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
                                 {% endif %}

@@ -227,7 +227,7 @@ def found_persojur_by_data(request):
 
 @login_required()
 def get_person_fields(request):
-    personas = list(PersonaNatural.objects.all().annotate(
+    personas = list(PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True).annotate(
         text=functions.Concat(F('nombre'), Value(' '), F('apellidos'), Value(' ('), F('ci'), Value(')'))).values('id', 'nombre', 'apellidos', 'email_address', 'ci', 'text',))
     data = dict()
     data['personas'] = personas

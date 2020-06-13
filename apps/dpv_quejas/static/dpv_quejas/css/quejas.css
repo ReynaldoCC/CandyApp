@@ -23,10 +23,7 @@ a.back-link {
     margin-top: 5%;
     padding-top: 10%;
 }
-.DTFC_LeftBodyWrapper, .DTFC_RightBodyWrapper {
-    top: -15px !important;
-    overflow-y: hidden;
-}
+
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #e3e8e6;
 }
@@ -47,4 +44,13 @@ ul.errorlist {
 .my-hidden {
     display: none !important;
     visibility: hidden !important;
+}
+
+.col-md-12.overrided-width {
+    width: calc(100vw - 280px) !important;
+}
+@media screen and (max-width: 992px) {
+    .col-md-12.overrided-width {
+        width: 100% !important;
+    }
 }
