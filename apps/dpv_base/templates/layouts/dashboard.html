@@ -9,7 +9,7 @@
             </button>
         </div>
         {% for app in menuable_apps %}
-        <div class="col-sm-6 col-md-4 col-lg-4">
+        <div class="col-sm-6 col-lg-4">
             <div class="card text-white {% if app.count_data < 10 %} bg-flat-color-{{app.count_data}} {% else %} bg-flat-color-{{ app.count_data|restof:10 }}  {% endif %} el-rounded dashwidget">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
