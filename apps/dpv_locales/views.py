@@ -3,8 +3,11 @@ from django.urls import reverse_lazy
 from django.http import Http404, JsonResponse
 from django.db.models import Sum, Count, Case, When, F
 from django.contrib.auth.decorators import permission_required
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 from .models import Local
 from .forms import LocalForm
+from .tasks import list_local_revision
 from apps.dpv_nomencladores.models import Municipio
 from locales_viv import settings
 
@@ -159,12 +162,15 @@ def local_revision(request, id_local=None):
         if settings.UPDATING_LOCALS == 0:
             settings.UPDATING_LOCALS = 1
             if request.user.perfil_usuario.centro_trabajo.oc:
+                # list_local_revision.delay(list(Local.objects.all()))
                 for local in Local.objects.all():
                     local.get_ok_data()
             else:
+                # list_local_revision.delay(Local.objects.filter(municipio=request.user.perfil_usuario.centro_trabajo.municipio))
                 for local in Local.objects.filter(municipio=request.user.perfil_usuario.centro_trabajo.municipio):
                     local.get_ok_data()
             settings.UPDATING_LOCALS = 0
+            messages.info(request, _("Ya se comenzó a revisar el estado de los locales. Recivirá una notificación en el momento que se termine la tarea"))
             return redirect(reverse_lazy('locales_list'))
     else:
         Local.objects.filter(id=id_local).first().get_ok_data()
