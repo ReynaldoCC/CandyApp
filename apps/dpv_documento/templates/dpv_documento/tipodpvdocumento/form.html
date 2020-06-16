@@ -1,0 +1,38 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if typedoc %}
+        <form role="form" action="{% url 'typedocs_edit' typedoc.id %}" method="post" id="form_typedocs">
+        {% else %}
+        <form role="form" action="{% url 'typedocs_add' %}" method="post" id="form_typedocs">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Tipo de Documento</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-control-sm">
+                    <label>Nombre</label>
+                    {{ form.non_field_errors }}
+                    {{ form.nombre }}
+                </div>
+                <div class="form-control-sm">
+                    <label>Días en proceso</label>
+                    {{ form.non_field_errors }}
+                    {{ form.dias_proceso }}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#form_typedocs').validate({rules: {nombre:{required: true,}}, });
+</script>

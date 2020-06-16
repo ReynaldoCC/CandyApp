@@ -12,7 +12,7 @@ class DpvDocumentoConfig(AppConfig):
     child_of = ''  # Si el modulo es hijo de otro en el menu se coloca aqui el nombre(atributo name) del modulo padre
     model_data = ['DPVDocumento']
     name_data = 'Documentos Registrados'  # Nombre o texto a mostrar del sisginificado de dichos registros
-    route_data = 'docs_index'  # ruta principal del modulo
+    route_data = 'list_typedocs'  # ruta principal del modulo
 
     def ready(self):
         pass

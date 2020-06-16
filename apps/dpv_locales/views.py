@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from .models import Local
 from .forms import LocalForm
-from .tasks import list_local_revision
+# from .tasks import list_local_revision
 from apps.dpv_nomencladores.models import Municipio
 from locales_viv import settings
 

@@ -1,0 +1,56 @@
+.nav-item.overrided {
+    padding-right: .5% !important;
+    padding-left: .5% !important;
+}
+.nav-item.overrided .nav-link {
+    padding: .5% !important;
+}
+.selectize-control.form-control {
+    padding: 0 !important;
+    border: 0px solid white;
+}
+.selectize-input.invalid {
+    border-color: #dc3545;
+}
+div.awesomplete {
+    width: 100% !important;
+}
+a.back-link {
+    color: #4d16cb !important;
+}
+.modal {
+    opacity: 1 !important;
+    margin-top: 5%;
+    padding-top: 10%;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #e3e8e6;
+}
+.table-striped tbody tr {
+    background-color: #fff;
+}
+.DTFC_LeftHeadWrapper table, .DTFC_RightHeadWrapper table {
+    background-color: #fff;
+}
+ul.errorlist {
+    color: #dc3545 !important;
+    font-size: .8rem !important;
+}
+.form-group .text-danger {
+    color: #dc3545 !important;
+    font-size: .8rem !important;
+}
+.my-hidden {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+.col-md-12.overrided-width {
+    width: calc(100vw - 280px) !important;
+}
+@media screen and (max-width: 992px) {
+    .col-md-12.overrided-width {
+        width: 100% !important;
+    }
+}
