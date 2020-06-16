@@ -5,7 +5,7 @@ function create_calle()
 
 function abrir_modal(url, id=null)
 {
-    $('#add_calle').load(url, function()
+    $('#popup').load(url, function()
     {
         $(this).modal('show');
     });
@@ -15,7 +15,7 @@ function abrir_modal(url, id=null)
 
 function cerrar_modal()
 {
-    $('#add_calle').modal('hide');
+    $('#popup').modal('hide');
     return false;
 }
 
