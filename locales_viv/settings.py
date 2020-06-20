@@ -94,8 +94,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'candyappdb',
         'HOST': 'localhost',
-        'USER': 'candyapp',
-        'PASSWORD': 'candyappdb',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
         'PORT': '5432',
     }
 }

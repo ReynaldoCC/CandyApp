@@ -333,6 +333,7 @@ const DPVPersona = function () {
             _initPersoNatPane();
         },
         initForm: function () {
+            alert();
             persona_form = $("#personat-form");
             _initPersoNatForm();
         },
