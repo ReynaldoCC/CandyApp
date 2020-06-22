@@ -11,11 +11,21 @@
 {% block breadcrumb_title %} Gestión de Documentos {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% if '/docs/' == request.path %}
+    {% if '/docs/add/' == request.path %}
+    <li>
+        <a href="{% url 'list_docs' %}">
+            Documentos
+        </a>
+    </li>
     <li class="active">Crear Documento</li>
     {% else %}
     <li>
         <a href="{% url 'list_docs' %}">
+            Documentos
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'docs_add' %}">
             Crear Documento
         </a>
     </li>
@@ -23,59 +33,58 @@
 {% endblock breadcrumbs %}
 {% block content_page %}
     <div class="col-md-12" style="width: calc(100vw - 280px);">
-        <div class="card">
-            <div class="card-header">
-                <strong class="card-title">Crear Documento</strong>
+        <form id="document-form" novalidate method="POST" action="{% url 'docs_add' %}">{% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {% if form.errors|length == 1 %}"Por favor, corrija el error señalado a continuación."{% else %}"Por favor, corrija los errores señalados a continuación."{% endif %}
             </div>
-            <div class="card-body">
-                <div class="row col-12 table-container">
-                    <form id="document-form" novalidate method="POST" action="{% url 'docs_add' %}">{% csrf_token %}
-                        {% if form.errors %}
-                        <div class="alert alert-danger alert-dismissible" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            {% if form.errors|length == 1 %}"Por favor, corrija el error señalado a continuación."{% else %}"Por favor, corrija los errores señalados a continuación."{% endif %}
-                        </div>
-                        {% endif %}
-                        <div class="card">
-                            <div class="card-header">
-                                <strong class="card-title">Documento</strong>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    {% for field in form %}
-                                    <div class="col-md-6">
-                                        <div class="form-group {% if field.name == 'municipio' and not request.user.perfil_usuario.centro_trabajo.oc %} disabled {% endif %}" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
-                                            {{field.errors}}
-                                            <label class="control-label mb-1" for="{{field.id_for_label}}">{{field.label}}</label>
-                                            {% if 'calle' in field.name or 'entre' in field.name %}
-                                                {% if perms.dpv_nomencladores.add_calle %}
-                                                    <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
-                                                        <i class="fa fa-plus text-success"></i>
-                                                    </button>
-                                                {% endif %}
-                                            {% endif %}
-                                            {{field}}
-                                            {{field.required }}
-                                        </div>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <a type="button" class="btn btn-default" href="{% url 'list_docs' %}">
-                                    <i class="fa fa-reply"></i>
-                                    Volver
-                                </a>
-                                <button type="submit" class="pull-right btn btn-primary">
-                                    <i class="fa fa-check"></i>
-                                    Guardar
-                                </button>
+            {% endif %}
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Crear Documento</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for field in form %}
+                        <div class="col-md-6">
+                            <div class="form-group {% if field.name == 'municipio' and not request.user.perfil_usuario.centro_trabajo.oc %} disabled {% endif %}" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
+                                {{field.errors}}
+                                <label class="control-label mb-1" for="{{field.id_for_label}}">{{field.label}}</label>
+                                {% if 'calle' in field.name or 'entre' in field.name %}
+                                    {% if perms.dpv_nomencladores.add_calle %}
+                                        <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
+                                            <i class="fa fa-plus text-success"></i>
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                                {% if 'procedencia' in field.name %}
+                                    {% if perms.dpv_nomencladores.add_procedencia %}
+                                        <button onclick="return abrir_modal('{% url 'create_procedencia' %}')" class="pull-right btn btn-link">
+                                            <i class="fa fa-plus text-success"></i>
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                                {{field}}
+                                {{field.required }}
+                                <small>{{field.help_text }}</small>
                             </div>
                         </div>
-                    </form>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a type="button" class="btn btn-default" href="{% url 'list_docs' %}">
+                        <i class="fa fa-reply"></i>
+                        Volver
+                    </a>
+                    <button type="submit" class="pull-right btn btn-primary">
+                        <i class="fa fa-check"></i>
+                        Guardar
+                    </button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
     <div class="modal fade modal-show" id="popup" role="dialog">
 
@@ -95,6 +104,7 @@
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
     <script src="{% static 'dpv_documento/js/dpvdocumento/dpvdocumento.js' %}"></script>
+    <script src="{% static 'dpv_documento/js/dpvdocumento/agree_calle.js' %}"></script>
     <script src="{% static 'dpv_documento/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_documento/js/validation.functions.js' %}"></script>
     <script src="{% static 'dpv_documento/js/dataTables.fixedColumns.js' %}"></script>

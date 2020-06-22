@@ -23,7 +23,11 @@
                     {{ form.non_field_errors }}
                     {{ form.dias_proceso }}
                 </div>
-
+                <div class="form-control-sm">
+                    <label>Con Respuesta?</label>
+                    {{ form.non_field_errors }}
+                    {{ form.con_respuesta }}
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -34,5 +38,16 @@
 </div>
 
 <script>
-    $('#form_typedocs').validate({rules: {nombre:{required: true,}}, });
+    $('#form_typedocs').validate({
+        rules: {
+            'nombre': {
+                required: true,
+                maxlength: 20,
+            },
+            'dias_proceso': {
+                required: true,
+                number: true,
+            },
+        },
+    });
 </script>

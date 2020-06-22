@@ -1,9 +1,17 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.contenttypes.models import ContentType
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from apps.dpv_nomencladores.models import TipoProcedencia, Procedencia, PrensaEscrita, Telefono, Email, Gobierno, \
+    Organizacion
+from apps.dpv_persona.models import PersonaNatural, PersonaJuridica
+from apps.dpv_quejas.forms import QPrensaEscritaForm, AQPersonaNaturalForm, QTelefonoForm, QEmailForm, \
+    QPersonaJuridicaForm, QGobiernoForm, QOrganizationForm, QAnonimoForm
 from .models import TipoDPVDocumento, DPVDocumento
-from .forms import TipoDPVDocumentoForm, DPVDocumentoForm
+from django.forms.models import model_to_dict
+from .forms import TipoDPVDocumentoForm, DPVDocumentoForm, DocsProcedenciaForm
 
 
 # Create your views here.
@@ -49,6 +57,17 @@ def delete_typedocs(request, typedoc_id):
     return render(request, 'dpv_documento/tipodpvdocumento/delete.html', {'typedoc': typedoc})
 
 
+@login_required()
+def typedoc_filter_con_respuesta(request, typedoc_id):
+
+    try:
+        typedoc = TipoDPVDocumento.objects.get(pk=typedoc_id)
+    except:
+        return JsonResponse({"error": "Invalid id value"})
+    else:
+        return JsonResponse({'display':typedoc.con_respuesta}, safe=False, status=200)
+
+
 def list_docs(request):
     docs = DPVDocumento.objects.all()
     return render(request, "dpv_documento/dpvdocumento/list.html", {"docs": docs})
@@ -63,7 +82,6 @@ def create_doc(request):
         if form.is_valid():
             model = form.save(commit=False)
             model.registrado_por = request.user
-            model.fecha_termino
             model.save()
             messages.success(request, "Documento agregado satisfactoriamente.")
             return redirect(reverse_lazy('list_docs'))
@@ -77,5 +95,117 @@ def create_doc(request):
         'dpv_documento/dpvdocumento/create.html',
         {
             'form': form
+        }
+    )
+
+
+@permission_required('dpv_nomencladores.add_procedencia')
+def create_procedencia(request):
+    form = DocsProcedenciaForm(prefix='procedencia')
+    peform = QPrensaEscritaForm(prefix='pe', empty_permitted=True, use_required_attribute=False)
+    aqform = AQPersonaNaturalForm(prefix='person_procedence', empty_permitted=True, use_required_attribute=False)
+    tform = QTelefonoForm(prefix='telefono', empty_permitted=True, use_required_attribute=False)
+    eform = QEmailForm(prefix='email', empty_permitted=True, use_required_attribute=False)
+    pjform = QPersonaJuridicaForm(prefix='empresa', empty_permitted=True, use_required_attribute=False)
+    gform = QGobiernoForm(prefix='gob', empty_permitted=True, use_required_attribute=False)
+    oform = QOrganizationForm(prefix='organiza', empty_permitted=True, use_required_attribute=False)
+
+
+    if request.method == 'POST':
+        data = {}
+        status = 200
+
+        procedence_form = QAnonimoForm()
+
+        if request.POST.get('pe-nombre'):
+            pe = PrensaEscrita.objects.filter(nombre=request.POST.get('pe-nombre'))
+            if pe:
+                procedence_form = peform = QPrensaEscritaForm(request.POST, prefix='pe', use_required_attribute=False,
+                                                              instance=pe.first(), empty_permitted=True)
+            else:
+                procedence_form = peform = QPrensaEscritaForm(request.POST, prefix='pe',
+                                                              use_required_attribute=False, empty_permitted=True)
+        elif request.POST.get('person_procedence-ci') and request.POST.get('person_procedence-nombre'):
+            pn = PersonaNatural.objects.filter(ci=request.POST.get('person_procedence-ci'))
+            if pn:
+                procedence_form = aqform = AQPersonaNaturalForm(request.POST, prefix='person_procedence',
+                                                                use_required_attribute=False,
+                                                                instance=pn.first(), empty_permitted=True)
+            else:
+                procedence_form = aqform = AQPersonaNaturalForm(request.POST, prefix='person_procedence',
+                                                                use_required_attribute=False, empty_permitted=True)
+        elif request.POST.get('telefono-numero'):
+            tel = Telefono.objects.filter(numero=request.POST.get('telefono-numero'))
+            if tel:
+                procedence_form = tform = QTelefonoForm(request.POST, prefix='telefono', use_required_attribute=False,
+                                                        instance=tel.first(), empty_permitted=True)
+            else:
+                procedence_form = tform = QTelefonoForm(request.POST, prefix='telefono', use_required_attribute=False,
+                                                        empty_permitted=True)
+        elif request.POST.get('email-email'):
+            ema = Email.objects.filter(email=request.POST.get('email-email'))
+            if ema:
+                procedence_form = QEmailForm(request.POST, prefix='email', use_required_attribute=False,
+                                                     instance=ema.first(), empty_permitted=True)
+            else:
+                procedence_form = QEmailForm(request.POST, prefix='email', use_required_attribute=False,
+                                                     empty_permitted=True)
+        elif request.POST.get('empresa-nombre') and request.POST.get('empresa-codigo_nit') and request.POST.get('empresa-codigo_reuup'):
+            pj = PersonaJuridica.objects.filter(codigo_nit=request.POST.get('empresa-codigo_nit'),
+                                                codigo_reuup=request.POST.get('empresa-codigo_reuup'),
+                                                nombre=request.POST.get('empresa-nombre'))
+            if pj:
+                procedence_form = pjform = QPersonaJuridicaForm(request.POST, prefix='empresa',
+                                                                instance=pj.first(), empty_permitted=True,
+                                                                use_required_attribute=False)
+            else:
+                procedence_form = pjform = QPersonaJuridicaForm(request.POST, prefix='empresa', empty_permitted=True,
+                                                                use_required_attribute=False)
+        elif request.POST.get('gob-nombre'):
+            gob = Gobierno.objects.filter(nombre=request.POST.get('gob-nombre')[0])
+            if gob:
+                procedence_form = gform = QGobiernoForm(request.POST, prefix='gob', use_required_attribute=False,
+                                                        instance=gob.first(), empty_permitted=True)
+            else:
+                procedence_form = gform = QGobiernoForm(request.POST, prefix='gob', use_required_attribute=False,
+                                                        empty_permitted=True)
+        elif request.POST.get('organiza-nombre'):
+            org = Organizacion.objects.filter(nombre=request.POST.get('organiza-nombre')[0])
+            if org:
+                procedence_form = oform = QOrganizationForm(request.POST, prefix='organiza',
+                                                            use_required_attribute=False,
+                                                            instance=org.first(), empty_permitted=True)
+            else:
+                procedence_form = oform = QOrganizationForm(request.POST, prefix='organiza',
+                                                            use_required_attribute=False,
+                                                            empty_permitted=True)
+
+        if procedence_form.is_valid():
+            content_type_form = procedence_form.save()
+            if content_type_form:
+                content_type = ContentType.objects.get_for_model(content_type_form)
+                proc = Procedencia.objects.create(objecto_contenido=content_type_form, tipo_contenido=content_type, id_objecto=content_type_form.id)
+                proc.save_and_log(request=request, af=0)
+            else:
+                proc, pcreated = Procedencia.objects.get_or_create(nombre="Anónimo", tipo=TipoProcedencia.objects.filter(id=1).first())
+            data = model_to_dict(proc)
+            return JsonResponse(data=data, status=status)
+        else:
+            data['errors'] = form.errors
+            status = 400
+        return JsonResponse(data=data, status=status)
+
+    return render(
+        request,
+        'dpv_documento/dpvdocumento/formodal_procedencia.html',
+        {
+            'form': form,
+            'pjform': pjform,
+            'tform': tform,
+            'eform': eform,
+            'oform': oform,
+            'peform': peform,
+            'gform': gform,
+            'aqform': aqform
         }
     )
