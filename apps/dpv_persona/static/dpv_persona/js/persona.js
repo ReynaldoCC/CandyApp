@@ -12,3 +12,4 @@ function cerrar_modal()
         $('#popup').modal('hide');
         return false;
 }
+

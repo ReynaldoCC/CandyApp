@@ -113,13 +113,13 @@ var DPVViviendas = function () {
             allowEmptyOption: false,
         });
 
-        let $pj_cpopular = $("#id_propietario").selectize({
+        let $pj_propietario = $("#id_propietario").selectize({
             create: false,
             placeholder: "Selecione un propietario",
             allowEmptyOption: false,
         });
 
-        let $pj_direccion_calle = $("#id_concepto").selectize({
+        let pj_concepto = $("#id_concepto").selectize({
             create: false,
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
@@ -132,14 +132,10 @@ var DPVViviendas = function () {
         });
 
         const _fill_selectizes_with_values = function () {
-            if ($("#id_municipio").val())
-                $pj_municipio[0].selectize.setValue($("#id_municipio").val());
-            if ($("#id_cpopular").val())
-                $pj_cpopular[0].selectize.setValue($("#id_cpopular").val());
-            if ($("#id_direccion_calle").val())
-                $pj_direccion_calle[0].selectize.setValue($("#id_direccion_calle").val());
-            if ($("#id_direccion_entrecalle1").val())
-                $pj_direccion_entrecalle1[0].selectize.setValue($("#id_direccion_entrecalle1").val());
+            ($("#id_destino").val())?($pj_destino[0].selectize.setValue($("#id_destino").val())):'';
+            ($("#id_propietario").val())?($pj_propietario[0].selectize.setValue($("#id_propietario").val())):'';
+            ($("#id_concepto").val())?(pj_concepto[0].selectize.setValue($("#id_concepto").val())):'';
+            ($("#id_local_dado").val())?($pj_direccion_entrecalle2[0].selectize.setValue($("#id_local_dado").val())):'';
         };
 
         $.validator.setDefaults({
@@ -160,48 +156,70 @@ var DPVViviendas = function () {
                     error.insertBefore(element);
             },
         });
-        $.validator.addMethod('strongPass', function(value, element) {
-            return this.optional(element) || /\d/.test(value) && /[a-z]/i.test(value) && /[*.,&^%$#@!<>?\/\\]/i.test(value);
-        }, 'La contraseña debe contener al menos un dígito, un caracter alfabético y un caracter especial');
-        $.validator.addMethod('ciCorrect', function(value, element) {
-            var valid_month = true;
-            var valid_date = true;
-            if (value.length >= 6){
-                var ci_month = value.substring(2,4);
-                var ci_day = value.substring(4,6);
-                var ci_year = value.substring(0,2);
-                var month = parseInt(ci_month);
-                var year = parseInt(ci_year);
-                var valid_month = month <= 12;
-                var day_date = new Date(parseInt(ci_year), parseInt(ci_month)-1, parseInt(ci_day))
-                var valid_date = day_date.getMonth() === month-1 && day_date.getYear() === year
-            }
-            return this.optional(element) || valid_month && valid_date;
-        }, 'Los 6 primeros dígitos del No. de identificación deben formar una fecha válida');
+
         validator_form = vivienda_form.validate({
 			rules: {
-				ci: {
+				numero: {
 				    required: true,
 				    digits: true,
-                    maxlength: 11,
-                    minlength: 11,
-                    ciCorrect: true,
-                    remote: {
-                        url: '/persona/natural/verify',
-                        type: 'GET',
-                        data: {
-                            id: 12,
-                        },
-                    },
+				},
+                destino: {
+				    required: true,
+				    digits: true,
+				},
+                cantidad_persona: {
+				    required: true,
+				    digits: true,
+                    maxlength: 5,
+				},
+                propietario: {
+				    required: true,
+				    digits: true,
+				},
+                local_dado: {
+				    required: true,
+				    digits: true,
+				},
+                fecha_propietario: {
+				    required: true,
+				},
+                aprobada: {
+				    required: true,
+				},
+                add_concepto: {
+				    required: true,
+                    maxlength: 200,
+                    minlength: 1,
 				},
 			},
 			messages: {
-				ci: {
-				    required: "El CI no puede quedar en blanco.",
-				    digits: "El CI solo puede contener dígitos.",
-                    maxlength: "El CI no puede contener más de 11 dígitos.",
-                    minlength: "El CI no puede contener menos de 11 dígitos.",
-                    remote: "El CI es único y ya existe otra persona registrada con ese CI.",
+				numero: {
+				    required: "Este campo es obligatorio.",
+				    digits: "Este campo solo puede contener dígitos.",
+				},
+                destino: {
+				    required: "Este campo es obligatorio.",
+				    digits: "Este campo solo puede contener dígitos.",
+				},
+                cantidad_persona: {
+				    required: "Este campo es obligatorio.",
+				    digits: "Este campo solo puede contener dígitos.",
+				},
+                propietario: {
+				    required: "Este campo es obligatorio.",
+				    digits: "Este campo solo puede contener dígitos.",
+				},
+                local_dado: {
+				    required: "Este campo es obligatorio.",
+				    digits: "Este campo solo puede contener dígitos.",
+				},
+                aprobada: {
+				    required: "Este campo es obligatorio.",
+				    digits: "Este campo solo puede contener dígitos.",
+				},
+                add_concepto: {
+				    required: "Este campo es obligatorio.",
+				    digits: "Este campo solo puede contener dígitos.",
 				},
 			},
 		});
