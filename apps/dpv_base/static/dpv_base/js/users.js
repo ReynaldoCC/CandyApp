@@ -264,6 +264,7 @@ var DPVUsuario = function () {
 			ignore: ":hidden",
 
             errorPlacement: function(error, element) {
+                console.log(element)
                 if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
                     error.insertBefore(element.parent());
                 else

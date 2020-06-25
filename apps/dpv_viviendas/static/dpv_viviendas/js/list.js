@@ -150,10 +150,12 @@ var DPVViviendas = function () {
 			ignore: ":hidden",
 
             errorPlacement: function(error, element) {
-                if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
-                    error.insertBefore(element.parent());
-                else
-                    error.insertBefore(element);
+                if(element[0].attributes['type']){
+                    if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
+                        error.insertAfter(element.parent());
+                    else
+                        error.insertAfter(element);
+                }
             },
         });
 
@@ -194,36 +196,40 @@ var DPVViviendas = function () {
 			},
 			messages: {
 				numero: {
-				    required: "Este campo es obligatorio.",
+				    required: "Este campo es requerido.",
 				    digits: "Este campo solo puede contener dígitos.",
 				},
                 destino: {
-				    required: "Este campo es obligatorio.",
+				    required: "Este campo es requerido.",
 				    digits: "Este campo solo puede contener dígitos.",
 				},
                 cantidad_persona: {
-				    required: "Este campo es obligatorio.",
+				    required: "Este campo es requerido.",
 				    digits: "Este campo solo puede contener dígitos.",
+                    maxlength: "Solo se pueden insertar n&uacutemeros asta 99999",
 				},
                 propietario: {
-				    required: "Este campo es obligatorio.",
+				    required: "Este campo es requerido.",
 				    digits: "Este campo solo puede contener dígitos.",
 				},
                 local_dado: {
-				    required: "Este campo es obligatorio.",
+				    required: "Este campo es requerido.",
 				    digits: "Este campo solo puede contener dígitos.",
 				},
+                fecha_propietario:{
+                    required: "Este campo es requerido.",
+                },
                 aprobada: {
 				    required: "Este campo es obligatorio.",
 				    digits: "Este campo solo puede contener dígitos.",
 				},
                 add_concepto: {
-				    required: "Este campo es obligatorio.",
+				    required: "Este campo es requerido.",
 				    digits: "Este campo solo puede contener dígitos.",
+                    maxlength: "El m&aacuteximo de caracteres es 200.",
 				},
 			},
 		});
-
         _fill_selectizes_with_values();
     };
 
