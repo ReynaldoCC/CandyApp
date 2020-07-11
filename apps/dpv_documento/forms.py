@@ -22,18 +22,18 @@ class DPVDocumentoForm(forms.ModelForm):
                   "archivo_digital", ]
         widgets = {
             "no_refer": forms.TextInput(attrs={"class": "form-control"}),
-            "procedencia": forms.Select(attrs={"class": "form-control"}),
-            "promovente": forms.Select(attrs={"class": "form-control"}),
-            "clasificacion": forms.Select(attrs={"class": "form-control"}),
+            "procedencia": forms.Select(attrs={"class": "form-control form-select"}),
+            "promovente": forms.Select(attrs={"class": "form-control form-select"}),
+            "clasificacion": forms.Select(attrs={"class": "form-control form-select"}),
             "asunto": forms.TextInput(attrs={"class": "form-control"}),
-            "destino": forms.Select(attrs={"class": "form-control"}),
-            "dir_calle": forms.Select(attrs={"class": "form-control"}),
+            "destino": forms.Select(attrs={"class": "form-control form-select"}),
+            "dir_calle": forms.Select(attrs={"class": "form-control form-select"}),
             "dir_numero": forms.TextInput(attrs={"class": "form-control"}),
-            "dir_entrecalle1": forms.Select(attrs={"class": "form-control"}),
-            "dir_entrecalle2": forms.Select(attrs={"class": "form-control"}),
-            "dir_cpopular": forms.Select(attrs={"class": "form-control"}),
-            "respuesta_a": forms.Select(attrs={"class": "form-control"}),
-            "municipio": forms.Select(attrs={"class": "form-control"}),
+            "dir_entrecalle1": forms.Select(attrs={"class": "form-control form-select"}),
+            "dir_entrecalle2": forms.Select(attrs={"class": "form-control form-select"}),
+            "dir_cpopular": forms.Select(attrs={"class": "form-control form-select"}),
+            "respuesta_a": forms.Select(attrs={"class": "form-control form-select"}),
+            "municipio": forms.Select(attrs={"class": "form-control form-select"}),
             "archivo_digital": forms.FileInput(attrs={"class": "form-control"}),
         }
 
@@ -42,4 +42,4 @@ class TipoDPVDocumentoForm(forms.ModelForm):
 
     class Meta:
         model = TipoDPVDocumento
-        fields = ["nombre", ]
+        fields = ["nombre", "dias_proceso"]

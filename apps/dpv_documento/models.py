@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from apps.dpv_nomencladores.models import AreaTrabajo, Municipio, Procedencia, Calle, ConsejoPopular, RespuestaAQueja
 from .utils import configurar_numero_registro
 import uuid
+import datetime
 
 
 # Create your models here.
@@ -18,12 +19,16 @@ def scramble_upload_doc(instance, filename, subdiretory='docs'):
 
 class TipoDPVDocumento(LoggerMixin):
     nombre = models.CharField(verbose_name=_("Nombre"), max_length=20, blank=True, default="")
+    dias_proceso = models.PositiveSmallIntegerField(verbose_name=_("Días para procesar"), default=0)
 
     class Meta:
         verbose_name = _("Tipo de Documento")
         verbose_name_plural = _("Tipos de Documentos")
         ordering = ("nombre", )
         unique_together = (("nombre", "deleted_at"), )
+
+    def __str__(self):
+        return self.nombre
 
 
 class DPVDocumento(LoggerMixin):
@@ -75,5 +80,7 @@ class DPVDocumento(LoggerMixin):
 def preset_document(sender, **kwargs):
     if kwargs.get("instance"):
         instance = kwargs.get("instance")
+        if not instance.fecha_termino and instance.clasificacion is not None:
+            instance.fecha_termino = datetime.datetime.today() + datetime.timedelta(days=instance.clasificacion.dias_proceso)
         if not instance.no_registro:
-            configurar_numero_registro(instance)
+            configurar_numero_registro(instancia=instance, sender=DPVDocumento)
