@@ -1,3 +1,4 @@
+from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from apps.email_sender.forms import ConfigureMailForm
@@ -348,6 +349,13 @@ def group_delete(request, id_grp):
         grupo.delete()
         return redirect(reverse_lazy('admin_group'))
     return render(request, 'layouts/admin/groups_delete.html', {'grupo': grupo})
+
+
+@login_required()
+def my_last_ten_actions(request):
+    results = list(model_to_dict(log) for log in Log.objects.filter(user_id=request.user.id).order_by('-action_date')[:10])
+    return JsonResponse(data=results, safe=False, status=200)
+
 
 
 class RecoverPassBaseView(auth_views.PasswordResetView):
