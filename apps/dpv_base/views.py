@@ -287,7 +287,8 @@ def user_setpass(request, id_usr):
 @permission_required('auth.view_user', raise_exception=True)
 def user_detail(request, id_usuario):
     usuario = User.objects.filter(id=id_usuario).first()
-    return render(request, 'layouts/admin/user_detail.html', {'usuario': usuario})
+    user_actions = Log.objects.filter(user_id=usuario.id)
+    return render(request, 'layouts/admin/user_detail.html', {'usuario': usuario, 'actions': user_actions})
 
 
 @permission_required('auth.view_user', raise_exception=True)
