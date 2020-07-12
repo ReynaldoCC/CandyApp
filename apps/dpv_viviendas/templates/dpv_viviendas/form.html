@@ -3,6 +3,10 @@
 {% load static %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/js/lib/jquery-ui/css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_persona/css/style1.css' %}">
+
 {% endblock extra_style %}
 {% block breadcrumb_title %} Crear {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -17,7 +21,7 @@
 {% endblock breadcrumbs %}
 {% block content_page %}
     <div class="col-md-12">
-        <form novalidate method="POST">
+        <form id = 'vivienda-form' novalidate method="POST">
             {% csrf_token %}
             {% if form.errors %}
             <div class="alert alert-danger alert-dismissible" role="alert">
@@ -56,5 +60,15 @@
 {% block extra_scripts %}
     {{block.super}}
     <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
     <script src="{% static 'dpv_viviendas/js/viviendas.js' %}"></script>
+    <script src="{% static 'dpv_viviendas/js/list.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            DPVViviendas.initForm();
+        });
+    </script>
 {% endblock extra_scripts %}

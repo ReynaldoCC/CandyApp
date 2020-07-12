@@ -20,6 +20,7 @@ def scramble_upload_doc(instance, filename, subdiretory='docs'):
 class TipoDPVDocumento(LoggerMixin):
     nombre = models.CharField(verbose_name=_("Nombre"), max_length=20, blank=True, default="")
     dias_proceso = models.PositiveSmallIntegerField(verbose_name=_("Días para procesar"), default=0)
+    con_respuesta = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _("Tipo de Documento")
@@ -35,10 +36,10 @@ class DPVDocumento(LoggerMixin):
     no_registro = models.CharField(max_length=10, verbose_name=_("No. Registro"), blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name=_("Fecha de Registro"))
     no_refer = models.CharField(max_length=20, verbose_name=_("No. Referencia"), default="")
-    procedencia = models.ForeignKey(Procedencia, blank=True, verbose_name=_("Procedencia"),
+    procedencia = models.ForeignKey(Procedencia, null=True, blank=True, verbose_name=_("Procedencia"),
                                     help_text=_("De donde proviene el documento"), on_delete=models.CASCADE)
     promovente = models.ForeignKey(PersonaNatural, blank=True, on_delete=models.CASCADE, verbose_name=_("Promovente"))
-    clasificacion = models.ForeignKey(TipoDPVDocumento, blank=True,
+    clasificacion = models.ForeignKey(TipoDPVDocumento, null=True, blank=True,
                                       on_delete=models.CASCADE, verbose_name=_("Clasificacion"))
     asunto = models.CharField(max_length=400, verbose_name=_("Asunto"), blank=True, default="")
     destino = models.ForeignKey(AreaTrabajo, blank=True,
@@ -58,15 +59,16 @@ class DPVDocumento(LoggerMixin):
     dir_cpopular = models.ForeignKey(ConsejoPopular, verbose_name=_("Direccion Consejo Popular"),
                                      null=True, blank=True, default="",
                                      on_delete=models.CASCADE, related_name="doc_dir_cpopular")
-    respuesta_a = models.ForeignKey(RespuestaAQueja, verbose_name=_("Direccion Consejo Popular"),
+    respuesta_a = models.ForeignKey(RespuestaAQueja, verbose_name=_("Respuesta a"),
                                     null=True, blank=True, default="",
-                                    on_delete=models.CASCADE, related_name="doc_dir_cpopular")
-    municipio = models.ForeignKey(Municipio, blank=True,
+                                    on_delete=models.CASCADE, related_name="respuesta")
+    municipio = models.ForeignKey(Municipio, null=True, blank=True,
                                   on_delete=models.CASCADE, verbose_name=_("Municipio"))
     dias = models.PositiveSmallIntegerField(verbose_name=_("Dias"), default=0, blank=True)
     registrado_por = models.ForeignKey(User, blank=True,
                                        on_delete=models.CASCADE, verbose_name=_("Registrado por"))
-    archivo_digital = models.FileField(upload_to=scramble_upload_doc, verbose_name=_("Copia en Digital"), blank=True)
+    archivo_digital = models.FileField(upload_to=scramble_upload_doc, verbose_name=_("Copia en Digital"),
+                                       blank=True, help_text=_("Solo puede subir archivos PDF o imagen del documento"))
 
     class Meta:
         verbose_name = _("Documento")

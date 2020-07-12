@@ -199,9 +199,9 @@ const DPVPersona = function () {
 
             errorPlacement: function(error, element) {
                 if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
-                    error.insertBefore(element.parent());
+                    error.insertAfter(element.parent());
                 else
-                    error.insertBefore(element);
+                    error.insertAfter(element);
             },
 
         });

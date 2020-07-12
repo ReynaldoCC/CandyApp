@@ -10,8 +10,18 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% if '/docs/tipos/' == request.path %}
+    <li>
+        <a href="{% url 'list_docs' %}">
+            Documentos
+        </a>
+    </li>
     <li class="active">Tipos de Documentos</li>
     {% else %}
+    <li>
+        <a href="{% url 'list_docs' %}">
+            Documentos
+        </a>
+    </li>
     <li>
         <a href="{% url 'list_typedocs' %}">
             Tipos de Documentos
@@ -32,21 +42,23 @@
             <div class="card-body">
                 {% if typedocs %}
                 <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <table id="doc-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Nombre</th>
                                 <th>Días para procesar</th>
+                                <th>Con Respuesta</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for typedoc in typedocs %}
                             <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{typedoc.nombre}}</td>
-                                <td>{{typedoc.dias_proceso}}</td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ typedoc.nombre }}</td>
+                                <td>{{ typedoc.dias_proceso }}</td>
+                                <td>{% if typedoc.con_respuesta %}SI{% else %}NO{% endif %}</td>
                                 <td>
                                     {% if perms.dpv_documento.change_tipodpvdocumento %}
                                     <a onclick="return abrir_modal('{% url 'typedocs_edit' typedoc.id %}')" class=" btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-pencil"></i></a>
@@ -90,7 +102,31 @@
     <script src="{% static 'dpv_documento/js/validation.functions.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#bootstrap-data-table').DataTable();
+            var table = $('#doc-table').DataTable({
+                responsive: true,
+                order: [ 0, 'desc' ],
+  		        sScrollX: "100%",
+                language: {
+                    "decimal": "",
+                    "emptyTable": "{% trans 'No hay Tipos de Documentos que mostrar' %}",
+                    "info": "{% trans 'Mostrando' %} _START_ a _END_ de _TOTAL_ {% trans 'Tipo de Documentos' %}",
+                    "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Tipos de Documentos' %}",
+                    "infoFiltered": "({% trans 'Filtrado de' %} _MAX_ {% trans 'total tipo de documentos' %})",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "{% trans 'Mostrar' %} _MENU_ {% trans 'Tipos de Documentos' %}",
+                    "loadingRecords": "{% trans 'Cargando...' %}",
+                    "processing": "{% trans 'Procesando...' %}",
+                    "search": "{% trans 'Buscar:' %}",
+                    "zeroRecords": "{% trans 'Sin tipos de documentos coincidentes encontrados' %}",
+                    "paginate": {
+                            "first": "{% trans 'Primero' %}",
+                            "last": "{% trans 'Ultimo' %}",
+                            "next": "{% trans 'Siguiente' %}",
+                            "previous": "{% trans 'Anterior' %}"
+                    }
+                },
+            });
         });
     </script>
 {% endblock extra_scripts %}
