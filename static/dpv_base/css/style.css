@@ -873,3 +873,17 @@ div.table-container {
 .content-scroll {
   overflow-y: scroll;
 }
+.log-info {
+  width: 100% !important;
+  display: inline-block;
+  border-bottom-right-radius: 15px;
+  border-bottom: 1px solid black;
+}
+.date-info {
+  padding-left: .5rem;
+  padding-right: .5rem;
+}
+.date-info:after {
+  content: ">>";
+  padding-left: .5rem;
+}

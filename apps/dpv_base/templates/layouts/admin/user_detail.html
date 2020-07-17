@@ -106,9 +106,9 @@
                             <ul>
                             {% for log in actions %}
                                 <li>
-                                    <div>
-                                        <div class="date-info">{{ log.action_date|date:"j/F/Y" }}  {{ log.action_date|time:"H:i" }}</div>
-                                        <div class="action-info">
+                                    <div class="log-info row col-12">
+                                        <div class="date-info col-md-4">{{ log.action_date|date:"j/F/Y" }}  {{ log.action_date|time:"H:i" }}</div>
+                                        <div class="action-info col-md-8">
                                             {% if log.action_flat == 0 %}
                                                 Creado un elmeneto de tipo {{ log.type_obj_id }}-{{ log.type_obj_name }} con el identifacdor ({{ log.obj_id }} -> "{{ log.obj_name }}") desde la dirección IP {{ log.address }}
                                             {% elif log.action_flat == 1 %}
