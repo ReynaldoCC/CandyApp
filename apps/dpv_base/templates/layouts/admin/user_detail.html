@@ -6,89 +6,131 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
             <div class="modal-body">
-                <div class="media">
-                    <div class="bg-secundary pull-right el-rounded media-left media-middle">
-                        {% if usuario.perfil_usuario.avatar %}
-                        <img class="img-circle media-object" src="/media/{{usuario.perfil_usuario.avatar}}" height="100px">
-                        {% else %}
-                        <img class="img-circle media-object" src="{% static 'dpv_base/images/noavatar.png' %}" height="100px">
-                        {% endif %}
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Detalles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="action-tab" data-toggle="tab" href="#actions" role="tab" aria-controls="actions" aria-selected="false">Acciones</a>
+                    </li>
+                </ul>
+                <div class="tab-content pl-3 p-1" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="media">
+                            <div class="bg-secundary pull-right el-rounded media-left media-middle">
+                                {% if usuario.perfil_usuario.avatar %}
+                                <img class="img-circle media-object" src="/media/{{usuario.perfil_usuario.avatar}}" height="100px">
+                                {% else %}
+                                <img class="img-circle media-object" src="{% static 'dpv_base/images/noavatar.png' %}" height="100px">
+                                {% endif %}
+                            </div>
+                            <div class="media-body offset-md-1">
+                                <div><span class="text-muted">Nombre de Usuario:</span>  {{usuario.username}}</div>
+                                <div><span class="text-muted">Nombre: </span>    {{usuario.first_name}} {{usuario.last_name}}</div>
+                                <div><span class="text-muted">Email Laboral: </span>     {{usuario.email}}</div>
+                                <div><span class="text-muted">Última entrada:</span>     {{usuario.last_login}}</div>
+                            </div>
+                         </div>
+                        <div>
+                            <table class="table table-striped table-bordered table-hover table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Activo</th>
+                                        <th>Administrador</th>
+                                        <th>Notificación Email</th>
+                                        <th>Documentación Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center">
+                                        <td>
+                                            {% if usuario.is_active %}
+                                            <i class="fa fa-check-square text-success"></i>
+                                            {% else %}
+                                            <i class="fa fa-square text-danger"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if usuario.is_staff %}
+                                            <i class="fa fa-check-square text-success"></i>
+                                            {% else %}
+                                            <i class="fa fa-square text-danger"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if usuario.perfil_usuario.notificacion_email %}
+                                            <i class="fa fa-check-square text-success"></i>
+                                            {% else %}
+                                            <i class="fa fa-square text-danger"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if usuario.perfil_usuario.documentacion_email %}
+                                            <i class="fa fa-check-square text-success"></i>
+                                            {% else %}
+                                            <i class="fa fa-square text-danger"></i>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12"><span class="text-muted">Unidad:</span>  {{usuario.perfil_usuario.centro_trabajo}}</div>
+                        <div class="col-md-12"><span class="text-muted">Departamento:</span> {{usuario.perfil_usuario.depto_trabajo}}</div>
+                        <div class="col-md-12"><span class="text-muted">Dirección Particular:</span></div>
+                        <div class="col-md-12">Calle {{usuario.perfil_usuario.datos_personales.direccion_calle}} # {{usuario.perfil_usuario.datos_personales.direccion_numero}} entre {{usuario.perfil_usuario.datos_personales.direccion_entrecalle1}} y {{usuario.perfil_usuario.datos_personales.direccion_entrecalle2}}, Municipio {{usuario.perfil_usuario.datos_personales.municipio}}</div>
+                        <div class="col-md-6"><span class="text-muted">No. de Identidad:</span> {{usuario.perfil_usuario.datos_personales.ci}}</div>
+                        <div class="col-md-6"><span class="text-muted">Sexo:</span> {{usuario.perfil_usuario.datos_personales.genero}}</div>
+                        <div class="col-md-12"><span class="text-muted">Email Personal:</span> {{usuario.perfil_usuario.datos_personales.email_address}}</div>
+                        <div class="col-md-6"><span class="text-muted">Movil:</span> {{usuario.perfil_usuario.datos_personales.movil}}</div>
+                        <div class="col-md-6"><span class="text-muted">Teléfono:</span>{{usuario.perfil_usuario.datos_personales.telefono}}</div>
+                        <div class="col-md-12"><span class="text-muted">Grupos:</span></div>
+                        <div>
+                            {% for grp in usuario.groups.all %}
+                            <span>{{grp}}</span>
+                            {% empty %}
+                            <span>Ninguno</span>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-12"><span class="text-muted">Permisos dados al usuario:</span></div>
+                        <div>
+                            {% for permi in usuario.user_permissions.all %}
+                            <span>{{permi}}</span>
+                            {% empty %}
+                            <span>Ninguno</span>
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div class="media-body offset-md-1">
-                        <div><span class="text-muted">Nombre de Usuario:</span>  {{usuario.username}}</div>
-                        <div><span class="text-muted">Nombre: </span>    {{usuario.first_name}} {{usuario.last_name}}</div>
-                        <div><span class="text-muted">Email Laboral: </span>     {{usuario.email}}</div>
-                        <div><span class="text-muted">Última entrada:</span>     {{usuario.last_login}}</div>
+                    <div class="tab-pane fade" id="actions" role="tabpanel" aria-labelledby="actions-tab">
+                        <div class="content-scroll">
+                            <ul>
+                            {% for log in actions %}
+                                <li>
+                                    <div>
+                                        <div class="date-info">{{ log.action_date|date:"j/F/Y" }}  {{ log.action_date|time:"H:i" }}</div>
+                                        <div class="action-info">
+                                            {% if log.action_flat == 0 %}
+                                                Creado un elmeneto de tipo {{ log.type_obj_id }}-{{ log.type_obj_name }} con el identifacdor ({{ log.obj_id }} -> "{{ log.obj_name }}") desde la dirección IP {{ log.address }}
+                                            {% elif log.action_flat == 1 %}
+                                                Modificado un elmeneto de tipo {{ log.type_obj_id }}-{{ log.type_obj_name }} con el identifacdor ({{ log.obj_id }} -> "{{ log.obj_name }}") desde la dirección IP {{ log.address }}
+                                            {% elif log.action_flat == 2 %}
+                                                ELiminado un elmeneto de tipo {{ log.type_obj_id }}-{{ log.type_obj_name }} con el identifacdor ({{ log.obj_id }} -> "{{ log.obj_name }}") desde la dirección IP {{ log.address }}
+                                            {% elif log.action_flat == 3 %}
+                                                Ha entrado al sistema desde la direción IP {{ log.address }}
+                                            {% elif log.action_flat == 4 %}
+                                                Ha salido del sistema usando la direción IP {{ log.address }}
+                                            {% else %}
+                                                Ha salido algo mal no se ha podido entender esta línea del log
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </li>
+                            {% empty %}
+                                <li><h5 class="text-info text-center">El usuario no ha realizado ninguna acción en el sistema</h5></li>
+                            {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                 </div>
-                <div>
-                    <table class="table table-striped table-bordered table-hover table-condensed">
-                        <thead>
-                            <tr>
-                                <th>Activo</th>
-                                <th>Administrador</th>
-                                <th>Notificación Email</th>
-                                <th>Documentación Email</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="text-center">
-                                <td>
-                                    {% if usuario.is_active %}
-                                    <i class="fa fa-check-square text-success"></i>
-                                    {% else %}
-                                    <i class="fa fa-square text-danger"></i>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if usuario.is_staff %}
-                                    <i class="fa fa-check-square text-success"></i>
-                                    {% else %}
-                                    <i class="fa fa-square text-danger"></i>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if usuario.perfil_usuario.notificacion_email %}
-                                    <i class="fa fa-check-square text-success"></i>
-                                    {% else %}
-                                    <i class="fa fa-square text-danger"></i>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if usuario.perfil_usuario.documentacion_email %}
-                                    <i class="fa fa-check-square text-success"></i>
-                                    {% else %}
-                                    <i class="fa fa-square text-danger"></i>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-12"><span class="text-muted">Unidad:</span>  {{usuario.perfil_usuario.centro_trabajo}}</div>
-                <div class="col-md-12"><span class="text-muted">Departamento:</span> {{usuario.perfil_usuario.depto_trabajo}}</div>
-                <div class="col-md-12"><span class="text-muted">Dirección Particular:</span></div>
-                <div class="col-md-12">Calle {{usuario.perfil_usuario.datos_personales.direccion_calle}} # {{usuario.perfil_usuario.datos_personales.direccion_numero}} entre {{usuario.perfil_usuario.datos_personales.direccion_entrecalle1}} y {{usuario.perfil_usuario.datos_personales.direccion_entrecalle2}}, Municipio {{usuario.perfil_usuario.datos_personales.municipio}}</div>
-                <div class="col-md-6"><span class="text-muted">No. de Identidad:</span> {{usuario.perfil_usuario.datos_personales.ci}}</div>
-                <div class="col-md-6"><span class="text-muted">Sexo:</span> {{usuario.perfil_usuario.datos_personales.genero}}</div>
-                <div class="col-md-12"><span class="text-muted">Email Personal:</span> {{usuario.perfil_usuario.datos_personales.email_address}}</div>
-                <div class="col-md-6"><span class="text-muted">Movil:</span> {{usuario.perfil_usuario.datos_personales.movil}}</div>
-                <div class="col-md-6"><span class="text-muted">Teléfono:</span>{{usuario.perfil_usuario.datos_personales.telefono}}</div>
-                <div class="col-md-12"><span class="text-muted">Grupos:</span></div>
-                <div>
-                    {% for grp in usuario.groups.all %}
-                    <span>{{grp}}</span>
-                    {% empty %}
-                    <span>Ninguno</span>
-                    {% endfor %}
-                </div>
-                <div class="col-md-12"><span class="text-muted">Permisos:</span></div>
-                <div>
-                    {% for permi in usuario.user_permissions.all %}
-                    <span>{{permi}}</span>
-                    {% empty %}
-                    <span>Ninguno</span>
-                    {% endfor %}
                 </div>
             </div>
             <div class="modal-footer">

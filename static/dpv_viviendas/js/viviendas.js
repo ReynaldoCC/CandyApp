@@ -22,3 +22,4 @@ $(function(){
    $('.date').datepicker();
 });
 
+
