@@ -849,4 +849,16 @@ div.table-container {
 }
 .title-app span {
   color: white;
+  text-shadow: .04rem .05rem black;
+}
+.brand-text {
+  font-weight: bolder;
+  padding: .5rem;
+  color: #487dc9;
+  text-shadow: .04rem .05rem black;
+}
+@media screen and (min-width: 991px) {
+  .brand-text {
+    font-size: 1.6rem !important;
+  }
 }
