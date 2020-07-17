@@ -841,3 +841,12 @@ div.table-container {
 .card-body.pb-0 .float-right.float-middle {
   width: 30% !important;
 }
+.title-app {
+  font-size: 1.6rem;
+  font-weight: lighter !important;
+  color: #d0e8f4;
+  margin-left: .9rem;
+}
+.title-app span {
+  color: white;
+}
