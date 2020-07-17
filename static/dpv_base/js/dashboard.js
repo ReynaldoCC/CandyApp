@@ -122,4 +122,9 @@ function random (min, max) {
     } );
 */
 
+    $(".dashwidget.overrided").on("click", function () {
+        let a = $(this).find("a.icon-container");
+        window.location.href = a[0].href;
+    })
+
 } )( jQuery );
