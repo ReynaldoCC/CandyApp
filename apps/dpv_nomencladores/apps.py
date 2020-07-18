@@ -11,8 +11,9 @@ class DpvNomencladoresConfig(AppConfig):
     parent = True      # Si el modulo es un submodulo de otro en el menu (y solo en el menu)
     child_of = ''     # Si el modulo es hijo de otro en el menu se coloca aqui el nombre(atributo name) del modulo padre
     model_data = ['ConsejoPopular']
-    name_data = 'Consejos Populares Registrados' # Nombre o texto a mostrar del sisginificado de dichos registros
-    route_data = 'nomenclador_index' # ruta principal del modulo
+    name_data = 'Consejos Populares Registrados'  # Nombre o texto a mostrar del sisginificado de dichos registros
+    route_data = 'nomenclador_index'  # ruta principal del modulo
+    main_permission = 'dpv_nomencladores.view_consejopopular'
 
     def ready(self):
         from .utils import charge_initial

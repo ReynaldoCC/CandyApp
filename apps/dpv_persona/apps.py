@@ -13,5 +13,6 @@ class DpvPersonaConfig(AppConfig):
     child_of = 'apps.dpv_nomencladores'     # Si el modulo es hijo de otro en el menu se coloca aqui el nombre(atributo name) del modulo padre
     # count_data = PersonaNatural.objects.all().count() # Cantidad de registros del elemento funcamental del modulo o app
     model_data = ['PersonaNatural']
-    name_data = 'Personas Registradas' # Nombre o texto a mostrar del sisginificado de dichos registros
-    route_data = 'persona_natural' # ruta principal del modulo
+    name_data = 'Personas Registradas'  # Nombre o texto a mostrar del sisginificado de dichos registros
+    route_data = 'persona_natural'  # ruta principal del modulo
+    main_permission = 'dpv_persona.view_personanatural'

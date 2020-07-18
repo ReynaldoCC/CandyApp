@@ -1,3 +1,5 @@
+'use strict';
+
 function abrir_modal(url)
 {
         $('#popup').load(url, function()

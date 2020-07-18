@@ -12,5 +12,6 @@ class DpvQuejaConfig(AppConfig):
     child_of = False     # Si el modulo es hijo de otro en el menu se coloca aqui el nombre(atributo name) del modulo padre
     # count_data = Queja.objects.all().count() # Cantidad de registros del elemento funcamental del modulo o app
     model_data = ['Queja']
-    name_data = 'Quejas Registradas' # Nombre o texto a mostrar del sisginificado de dichos registros
-    route_data = 'quejas_list' # ruta principal del modulo
+    name_data = 'Quejas Registradas'  # Nombre o texto a mostrar del sisginificado de dichos registros
+    route_data = 'quejas_list'  # ruta principal del modulo
+    main_permission = 'dpv_quejas.view_queja'

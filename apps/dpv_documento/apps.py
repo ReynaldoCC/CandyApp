@@ -13,6 +13,7 @@ class DpvDocumentoConfig(AppConfig):
     model_data = ['DPVDocumento']
     name_data = 'Documentos Registrados'  # Nombre o texto a mostrar del sisginificado de dichos registros
     route_data = 'list_docs'  # ruta principal del modulo
+    main_permission = 'dpv_documento.view_dpvdocumento'
 
     def ready(self):
         pass

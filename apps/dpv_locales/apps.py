@@ -13,5 +13,6 @@ class DpvLocalesConfig(AppConfig):
     child_of = ''     # Si el modulo es hijo de otro en el menu se coloca aqui el nombre(atributo name) del modulo padre
     # count_data = Local.objects.all().count() # Cantidad de registros del elemento funcamental del modulo o app
     model_data = ['Local']
-    name_data = 'Locales Registrados' # Nombre o texto a mostrar del sisginificado de dichos registros
-    route_data = 'locales_list' # ruta principal del modulo
+    name_data = 'Locales Registrados'  # Nombre o texto a mostrar del sisginificado de dichos registros
+    route_data = 'locales_list'  # ruta principal del modulo
+    main_permission = 'dpv_locales.view_local'
