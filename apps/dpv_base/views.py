@@ -58,10 +58,10 @@ def login_page(request):
             else:
                 form.add_error('password_login', _('Error de usuario o contraseña no valido'))
             print(form.errors)
-            return render(request, 'layouts/login.html', { 'form': form })
+            return render(request, 'layouts/login.html', {'form': form})
         else:
             form = LoginForm()
-            return render(request, 'layouts/login.html', { 'form': form })
+            return render(request, 'layouts/login.html', {'form': form})
 
 
 def recover_pass_page(request):

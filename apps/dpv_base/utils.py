@@ -86,5 +86,3 @@ def main_email_candy_conf(db_config=None):
     same_config = comapare_db_settings_conf(db_config, settings_conf)
     if not same_config:
         set_ok = set_settings_email_conf(db_config)
-
-

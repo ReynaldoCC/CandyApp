@@ -104,3 +104,19 @@ def tosub(value, arg):
     except:
         pass
     return value
+
+
+@register.filter
+def translate_perm_name(value):
+    if 'es' in settings.LANGUAGE_CODE.lower():
+        new_value = ''
+        if 'can add' in value.lower():
+            new_value = value.replace('Can add', 'Puede agregar')
+        if 'can view' in value.lower():
+            new_value = value.replace('Can view', 'Puede visualizar')
+        if 'can change' in value.lower():
+            new_value = value.replace('Can change', 'Puede actualizar')
+        if 'can delete' in value.lower():
+            new_value = value.replace('Can delete', 'Puede eliminar')
+        return new_value
+    return value
