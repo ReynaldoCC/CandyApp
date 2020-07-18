@@ -9,6 +9,7 @@
             </button>
         </div>
         {% for app in menuable_apps %}
+            {% if app.main_permission and app.main_permission in user.get_all_permissions %}
         <div class="col-sm-6 col-lg-4">
             <div class="card text-white {% if app.count_data < 10 %} bg-flat-color-{{app.count_data}} {% else %} bg-flat-color-{{ app.count_data|restof:10 }}  {% endif %} el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
@@ -24,6 +25,10 @@
                 </div>
             </div>
         </div>
+            {% endif %}
         {% endfor %}
     </div>
+
+    </div>
+
 {% endblock content_page %}
