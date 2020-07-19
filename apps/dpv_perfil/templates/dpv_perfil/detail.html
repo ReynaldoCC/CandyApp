@@ -108,10 +108,16 @@
                                     <span class="pull-left"> Dirección:</span> <span class="pull-right">Calle {{ request.user.perfil_usuario.datos_personales.direccion_calle }} #{{ request.user.perfil_usuario.datos_personales.direccion_numero }}, entre {{ request.user.perfil_usuario.datos_personales.direccion_entrecalle1 }} y {{ request.user.perfil_usuario.datos_personales.direccion_entrecalle2 }}, municipio {{ request.user.perfil_usuario.datos_personales.municipio }}</span>
                                 </li>
                                 <li class="list-group-item">
-                                    <span class="pull-left"> Teléfono:</span> <span class="pull-right">{{ personform.telefono }}</span>
+                                    <span class="pull-left"> Teléfono:</span> <span class="pull-right">
+                                        {{ personform.telefono }}
+                                    </span>
                                 </li>
                                 <li class="list-group-item">
-                                    <span class="pull-left"> Móvil:</span> <span class="pull-right">{{ request.user.perfil_usuario.datos_personales.movil }}</span>
+                                    <span class="pull-left"> Móvil:</span> <span class="pull-right">
+                                    {% if request.user.perfil_usuario.datos_personales.movil %}
+                                    {{ request.user.perfil_usuario.datos_personales.movil }}
+                                    {% endif %}
+                                    </span>
                                 </li>
                                 <li class="list-group-item">
                                     <span class="pull-left"> CI:</span> <span class="pull-right">{{ request.user.perfil_usuario.datos_personales.ci }}</span>
