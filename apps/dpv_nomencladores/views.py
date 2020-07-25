@@ -585,6 +585,24 @@ def delete_destino(request, id_destino):
     return render(request, 'dpv_nomencladores/delete_destino.html', {'destino': destino})
 
 
+@permission_required('dpv_nomencladores.view_destino')
+def verify_destino(request):
+    if request.method == 'GET':
+        nombre = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Destino.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ------------------------------------------- Concepto -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_concepto', raise_exception=True)
 def index_concepto(request):
