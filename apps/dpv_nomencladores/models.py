@@ -4,7 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import pre_save, post_init
 from django.dispatch import receiver
-from .validators import only_numbers, only_letters, not_special_char
+from .validators import only_numbers, only_letters, not_special_char, not_letters
 from django.core.validators import MaxLengthValidator, MinLengthValidator, EmailValidator
 from apps.dpv_base.mixins import LoggerMixin
 
@@ -218,7 +218,7 @@ class CodificadorAsunto(LoggerMixin):
 class TipoQueja(LoggerMixin):
     nombre = models.CharField(max_length=50, verbose_name="Tipo de Queja",
                               validators=[MaxLengthValidator(50), not_special_char])
-    numero = models.CharField(max_length=3, verbose_name="Código", validators=[only_letters])
+    numero = models.CharField(max_length=3, verbose_name="Código", validators=[not_letters])
 
     class Meta:
         verbose_name = "Tipo de Queja"
