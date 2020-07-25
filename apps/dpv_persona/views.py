@@ -84,7 +84,7 @@ def edit_persojur(request, id_persojur):
             return redirect(reverse_lazy('persona_juridica'))
     else:
         form = PersonaJuridicaForm(instance=ents)
-    return render(request, 'dpv_persona/form_persojur.html', {'form': form})
+    return render(request, 'dpv_persona/form_persojur.html', {'form': form, 'entidad': ents})
 
 
 @permission_required('dpv_persona.view_personajuridica', raise_exception=True)
@@ -274,6 +274,63 @@ def verify_personat(request):
                 return JsonResponse("", safe=False, status=200)
         if ci:
             if not PersonaNatural.objects.filter(ci=ci).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", safe=False, status=200)
+    return JsonResponse({"error": "method not Allowed"}, status=405)
+
+
+@login_required()
+def verify_persojur(request):
+    if request.method == 'GET':
+        movil = nombre = email_address = codigo_nit = codigo_reuup = telefono = False
+        if request.GET.get('movil'):
+            movil = request.GET.get('movil')
+        if request.GET.get('telefono'):
+            telefono = request.GET.get('telefono')
+        if request.GET.get('codigo_nit'):
+            codigo_nit = request.GET.get('codigo_nit')
+        if request.GET.get('codigo_reuup'):
+            codigo_reuup = request.GET.get('codigo_reuup')
+        if request.GET.get('email_address'):
+            movil = request.GET.get('email_address')
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('email_address'):
+            email_address = request.GET.get('email_address')
+
+        id = request.GET.get('id')
+
+        if not id:
+            id = 0
+        if movil:
+            if not PersonaJuridica.objects.filter(movil=movil).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if nombre:
+            if not PersonaJuridica.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if email_address:
+            if not PersonaJuridica.objects.filter(email_address=email_address).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if codigo_nit:
+            if not PersonaJuridica.objects.filter(codigo_nit=codigo_nit).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if codigo_reuup:
+            if not PersonaJuridica.objects.filter(codigo_reuup=codigo_reuup).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if telefono:
+            if not PersonaJuridica.objects.filter(telefono=telefono).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
