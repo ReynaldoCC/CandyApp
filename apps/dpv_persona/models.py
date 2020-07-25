@@ -56,7 +56,7 @@ class PersonaNatural(Persona):
 
 class PersonaJuridica(Persona):
     nombre = models.CharField(max_length=100, validators=[MaxLengthValidator(100)])
-    sigla = models.CharField(max_length=10, verbose_name="Siglas", blank=True, help_text="Siglas identificativas de la entidad.")
+    sigla = models.CharField(max_length=15, verbose_name="Siglas", blank=True, help_text="Siglas identificativas de la entidad.")
     nombre_contacto = models.CharField(max_length=200, verbose_name="Nombre de contacto", blank=True, help_text="Nombre que se usara para el contacto con la entidad.")
     codigo_nit = models.CharField(max_length=11, verbose_name="Código NiT", help_text="Código NiT de la entidad")
     codigo_reuup = models.CharField(max_length=11, verbose_name="Código Reeup", help_text="Código Reeup de la Entidad")
