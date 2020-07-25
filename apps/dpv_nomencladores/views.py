@@ -255,6 +255,31 @@ def delete_consejopopular(request, id_consejopopular):
     return render(request, 'dpv_nomencladores/delete_consejopopular.html', {'consejopopular': consejopopular})
 
 
+@permission_required('dpv_nomencladores.view_consejopopular')
+def verify_consejopopular(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('numero'):
+            numero = request.GET.get('numero')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not ConsejoPopular.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if numero:
+            if not ConsejoPopular.objects.filter(numero=numero).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ------------------------------------------- Calle -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_calle', raise_exception=True)
 def index_calle(request):
