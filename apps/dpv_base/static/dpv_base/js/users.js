@@ -60,6 +60,7 @@ var DPVUsuario = function () {
         $('#users-table').DataTable({
             responsive: true,
             order: [ 0, 'desc' ],
+            lengthMenu: [20, 35, 50, "All"],
             sScrollX: "100%",
             language: {
                 "decimal": "",
@@ -81,30 +82,6 @@ var DPVUsuario = function () {
                         "previous": translations.previous,
                 }
             },
-        });
-        $("#filter_groups").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-                $("#id_groups span").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-        $("#filter_user_permissions").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-                $("#id_user_permissions span").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-        $("#check_all_groups").on("click", function(){
-            if ($("#check_all_groups").prop('checked'))
-                $("input[name='groups']").attr('checked', true);
-            else
-                $("input[name='groups']").attr('checked', false);
-        });
-        $("#check_all_user_permissions").on("click", function(){
-           if ($("#check_all_user_permissions").prop('checked')) {
-                $("input[name='user_permissions']").attr('checked', true);
-            }else
-                $("input[name='user_permissions']").attr('checked', false);
         });
     };
     const _initUserForm = function () {
@@ -232,6 +209,26 @@ var DPVUsuario = function () {
             create: false,
             placeholder: "Selecione un Dpto.",
             allowEmptyOption: false,
+        });
+
+        $("#filter_groups").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+                $("#id_groups span").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#filter_user_permissions").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+                $("#id_user_permissions span").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#check_all_groups").on("click", function(){
+            if ($("#check_all_groups").prop('checked'))
+            $("span:not([style='display: none;']) input[name='groups']").prop('checked', this.checked);
+        });
+        $("#check_all_user_permissions").on("click", function(){
+           $("span:not([style='display: none;']) input[name='user_permissions']").prop('checked', this.checked);
         });
 
         const _fill_selectizes_with_values = function () {

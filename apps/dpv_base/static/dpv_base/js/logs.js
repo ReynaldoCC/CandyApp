@@ -54,6 +54,7 @@ var DPVLog = function () {
             responsive: true,
             order: [ 0, 'asc' ],
             sScrollX: "100%",
+            lengthMenu: [20, 35, 50, "All"],
             language: {
                 "decimal": "",
                 "emptyTable": translations.emptyTable,

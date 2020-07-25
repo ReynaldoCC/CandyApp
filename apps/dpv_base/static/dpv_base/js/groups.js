@@ -6,12 +6,8 @@ $(document).ready(function(){
         });
     });
     $("#check_all_permissions").on("click", function(){
-        if ($("#check_all_permissions").prop('checked'))
-            $("input[name='permissions']").attr('checked', true);
-        else
-            $("input[name='permissions']").attr('checked', false);
+        $("span:not([style='display: none;']) input[name='permissions']").prop('checked', this.checked);
     });
-
 });
 
 
@@ -57,6 +53,7 @@ var DPVGrupo = function () {
             responsive: true,
             order: [ 0, 'asc' ],
             sScrollX: "100%",
+            lengthMenu: [20, 35, 50, "All"],
             language: {
                 "decimal": "",
                 "emptyTable": translations.emptyTable,
