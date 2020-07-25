@@ -391,6 +391,24 @@ def delete_calle(request, id_calle):
     return render(request, 'dpv_nomencladores/delete_calle.html', {'calle': calle})
 
 
+@permission_required('dpv_nomencladores.view_calle')
+def verify_calle(request):
+    if request.method == 'GET':
+        nombre = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Calle.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ------------------------------------------- Piso -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_piso', raise_exception=True)
 def index_piso(request):
@@ -433,6 +451,24 @@ def delete_piso(request, id_piso):
         piso.delete()
         return redirect('nomenclador_piso')
     return render(request, 'dpv_nomencladores/delete_piso.html', {'piso': piso})
+
+
+@permission_required('dpv_nomencladores.view_piso')
+def verify_piso(request):
+    if request.method == 'GET':
+        nombre = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Piso.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
 
 
 # --------------------------------------- Organismo -----------------------------------------------------------------
