@@ -1094,6 +1094,31 @@ def delete_tipoprocedencia(request, id_tipoprocedencia):
     return render(request, 'dpv_nomencladores/delete_tipoprocedencia.html', {'tipoprocedencia': tipoprocedencia})
 
 
+@permission_required('dpv_nomencladores.view_tipoprocedencia')
+def verify_tipoprocedencia(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('numero'):
+            numero = request.GET.get('numero')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not TipoProcedencia.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if numero:
+            if not TipoProcedencia.objects.filter(numero=numero).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ------------------------------------------- Estado -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_estado', raise_exception=True)
 def index_estado(request):
