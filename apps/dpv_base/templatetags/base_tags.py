@@ -109,7 +109,7 @@ def tosub(value, arg):
 @register.filter
 def translate_perm_name(value):
     if 'es' in settings.LANGUAGE_CODE.lower():
-        new_value = ''
+        new_value = value
         if 'can add' in value.lower():
             new_value = value.replace('Can add', 'Puede agregar')
         if 'can view' in value.lower():
