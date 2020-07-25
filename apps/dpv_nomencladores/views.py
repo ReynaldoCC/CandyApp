@@ -647,6 +647,24 @@ def delete_concepto(request, id_concepto):
     return render(request, 'dpv_nomencladores/delete_concepto.html', {'concepto': concepto})
 
 
+@permission_required('dpv_nomencladores.view_concepto')
+def verify_concepto(request):
+    if request.method == 'GET':
+        nombre = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Concepto.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ------------------------------------------- Genero -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_genero', raise_exception=True)
 def index_genero(request):
