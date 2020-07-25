@@ -911,6 +911,31 @@ def delete_codificadorasunto(request, id_codificadorasunto):
     return render(request, 'dpv_nomencladores/delete_codificadorasunto.html', {'codificadorasunto': codificadorasunto})
 
 
+@permission_required('dpv_nomencladores.view_codificadorasunto')
+def verify_codificadorasunto(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('numero'):
+            numero = request.GET.get('numero')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not CodificadorAsunto.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if numero:
+            if not CodificadorAsunto.objects.filter(numero=numero).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ---------------------------------------- TipoQueja -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_tipoqueja', raise_exception=True)
 def index_tipoqueja(request):
