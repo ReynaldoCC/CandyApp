@@ -61,7 +61,7 @@ class ConsejoPopular(LoggerMixin):
 class Organismo(LoggerMixin):
     nombre = models.CharField(max_length=90, help_text="Nombre del organismo.", verbose_name=" Organismo",
                               validators=[not_special_char, MaxLengthValidator(90)])
-    siglas = models.CharField(max_length=7, help_text="Siglas representativas del organismo",
+    siglas = models.CharField(max_length=15, help_text="Siglas representativas del organismo",
                               validators=[not_special_char])
 
     class Meta:
@@ -122,7 +122,7 @@ class CentroTrabajo(LoggerMixin):
     nombre = models.CharField(max_length=100, verbose_name="Centro de trabajo",
                               validators=[MaxLengthValidator(100), not_special_char],
                               help_text="Nombre de la unidad.")
-    siglas = models.CharField(max_length=7, verbose_name="Siglas",
+    siglas = models.CharField(max_length=15, verbose_name="Siglas",
                               validators=[MaxLengthValidator(7), not_special_char],
                               help_text="Siglas de la entidad.")
     numero = models.CharField(max_length=3, verbose_name="Número", blank=True,
@@ -233,7 +233,7 @@ class TipoQueja(LoggerMixin):
 class PrensaEscrita(LoggerMixin):
     nombre = models.CharField(max_length=90, verbose_name="Prensa Escrita",
                               validators=[MaxLengthValidator(90), not_special_char])
-    siglas = models.CharField(max_length=10, verbose_name="Siglas",
+    siglas = models.CharField(max_length=15, verbose_name="Siglas",
                               validators=[MaxLengthValidator(10), not_special_char])
 
     class Meta:
