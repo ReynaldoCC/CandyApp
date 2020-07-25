@@ -709,6 +709,24 @@ def delete_genero(request, id_genero):
     return render(request, 'dpv_nomencladores/delete_genero.html', {'genero': genero})
 
 
+@permission_required('dpv_nomencladores.view_genero')
+def verify_genero(request):
+    if request.method == 'GET':
+        nombre = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Genero.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ------------------------------------- AreaTrabajo -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_areatrabajo', raise_exception=True)
 def index_areatrabajo(request):
@@ -751,6 +769,31 @@ def delete_areatrabajo(request, id_areatrabajo):
         areatrabajo.delete()
         return redirect('nomenclador_areatrab')
     return render(request, 'dpv_nomencladores/delete_areatrabajo.html', {'areatrabajo': areatrabajo})
+
+
+@permission_required('dpv_nomencladores.view_areatrabajo')
+def verify_areatrabajo(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('numero'):
+            numero = request.GET.get('numero')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not AreaTrabajo.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if numero:
+            if not AreaTrabajo.objects.filter(numero=numero).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
 
 
 # ------------------------------------- CentroTrabajo -----------------------------------------------------------------
@@ -796,6 +839,31 @@ def delete_centrotrabajo(request, id_centrotrabajo):
         centrotrabajo.delete()
         return redirect('nomenclador_centrab')
     return render(request, 'dpv_nomencladores/delete_centrotrabajo.html', {'centrotrabajo': centrotrabajo})
+
+
+@permission_required('dpv_nomencladores.view_centrotrabajo')
+def verify_centrotrabajo(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('numero'):
+            numero = request.GET.get('numero')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not CentroTrabajo.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if numero:
+            if not CentroTrabajo.objects.filter(numero=numero).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
 
 
 # ------------------------------------------- CodificadorAsunto ----------------------------------------------------
