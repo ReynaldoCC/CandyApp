@@ -77,6 +77,31 @@ def delete_provincia(request, id_provincia):
     return render(request, 'dpv_nomencladores/delete_provincia.html', {'provincia': provincia})
 
 
+@permission_required('dpv_nomencladores.view_provincia')
+def verify_provincia(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('numero'):
+            numero = request.GET.get('numero')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Provincia.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if numero:
+            if not Provincia.objects.filter(numero=numero).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ----------------------------------------- Municipio ----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_municipio', raise_exception=True)
 def index_municipio(request):
