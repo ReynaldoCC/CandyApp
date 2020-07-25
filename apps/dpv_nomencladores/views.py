@@ -1163,6 +1163,24 @@ def delete_estado(request, id_estado):
     return render(request, 'dpv_nomencladores/delete_estado.html', {'estado': estado})
 
 
+@permission_required('dpv_nomencladores.view_estado')
+def verify_estado(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Estado.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # --------------------------------------- ClasificacionRespuesta ------------------------------------------------
 @permission_required('dpv_nomencladores.view_clasificacionrespuesta', raise_exception=True)
 def index_clasificacionrespuesta(request):
@@ -1210,6 +1228,31 @@ def delete_clasificacionrespuesta(request, id_clasificacionrespuesta):
     return render(request,
                   'dpv_nomencladores/delete_clasificacionrespuesta.html',
                   {'clasificacionrespuesta': clasificacionrespuesta})
+
+
+@permission_required('dpv_nomencladores.view_clasificacionrespuesta')
+def verify_clasificacionrespuesta(request):
+    if request.method == 'GET':
+        nombre = codigo = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('codigo'):
+            codigo = request.GET.get('codigo')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not ClasificacionRespuesta.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if codigo:
+            if not ClasificacionRespuesta.objects.filter(codigo=codigo).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
 
 
 # --------------------------------------- PrensaEscrita ------------------------------------------------
