@@ -895,3 +895,32 @@ div.table-container {
     margin-top: -15px;
     margin-left: -8px;
 }
+.modal-dialog {
+  margin-top: 7rem;
+}
+.modal-dialog.modal-lg {
+    margin-top: 15rem;
+}
+.modal-dialog.modal-md {
+    margin-top: 10rem;
+}
+.user-menu.dropdown-menu.show {
+    border: 1px solid gray;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-top-left-radius: 8px;
+    padding: .8rem;
+    box-shadow: 1px 1px 1px gray;
+}
+.user-menu.dropdown-menu.show .nav-link i {
+    margin-right: .7rem;
+}
+.user-menu.dropdown-menu.show .nav-link:hover {
+    background-color: #b8bdbd4f;
+    padding-left: .5rem;
+    border-radius: 4px;
+    font-size: .95rem;  
+}
+.modal.fade.modal-show {
+  background-color: rgba(104, 102, 102, 0.48);
+}
