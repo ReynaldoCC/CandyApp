@@ -980,6 +980,31 @@ def delete_tipoqueja(request, id_tipoqueja):
     return render(request, 'dpv_nomencladores/delete_tipoqueja.html', {'tipoqueja': tipoqueja})
 
 
+@permission_required('dpv_nomencladores.view_tipoqueja')
+def verify_tipoqueja(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('numero'):
+            numero = request.GET.get('numero')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not TipoQueja.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if numero:
+            if not TipoQueja.objects.filter(numero=numero).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # -------------------------------------- Procedencia -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_procedencia', raise_exception=True)
 def index_procedencia(request):
