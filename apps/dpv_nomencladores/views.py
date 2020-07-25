@@ -121,6 +121,31 @@ def delete_municipio(request, id_municipio):
     return render(request, 'dpv_nomencladores/delete_municipio.html', {'municipio': municipio})
 
 
+@permission_required('dpv_nomencladores.view_municipio')
+def verify_municipio(request):
+    if request.method == 'GET':
+        nombre = numero = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('numero'):
+            numero = request.GET.get('numero')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Municipio.objects.filter(nombre=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if numero:
+            if not Municipio.objects.filter(numero=numero).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ------------------------------------ ConsejoPopular -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_consejopopular', raise_exception=True)
 def index_consejopopular(request):
