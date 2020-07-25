@@ -108,14 +108,14 @@ class PersonaJuridicaForm(forms.ModelForm):
                   'movil',
                   'nombre_contacto',
                   'email_address',
+                  'codigo_nit',
+                  'codigo_reuup',
+                  'municipio',
+                  'cpopular',
                   'direccion_calle',
                   'direccion_numero',
                   'direccion_entrecalle1',
-                  'direccion_entrecalle2',
-                  'municipio',
-                  'cpopular',
-                  'codigo_nit',
-                  'codigo_reuup', )
+                  'direccion_entrecalle2', )
         widgets = {
             'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
             'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
