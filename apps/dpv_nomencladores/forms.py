@@ -9,23 +9,37 @@ class ProvinciaForm(forms.ModelForm):
         model = Provincia
         fields = ['nombre', 'numero']
         widgets = {
-            'nombre': forms.TextInput(attrs={'placeholder':'Nombre', 'class': 'form-control malpha'}),
-            'nombre': forms.TextInput(attrs={'placeholder':'Nombre', 'class': 'form-control mname'}),
-            'numero': forms.TextInput(attrs={'placeholder':'Número', 'class': 'form-control mnumber'}),
+            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control malpha'}),
+            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control mname'}),
+            'numero': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control mnumber'}),
         }
 
 
 class MunicipioForm(forms.ModelForm):
+    calles = forms.ModelMultipleChoiceField(queryset=Calle.objects.all(),
+                                            label='Calles',
+                                            widget=DivCheckboxSelectMultiple(attrs={'placeholder': 'Nombre',
+                                                                                     'class': 'form-control multi-select-box'}))
 
     class Meta:
         model = Municipio
-        fields = ['numero', 'nombre', 'provincia']
+        fields = ['numero', 'nombre', 'provincia', 'calles']
         widgets = {
-            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control malpha'}),
-            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control mnum'}),
-            'numero': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control mnumber'}),
-            'provincia': forms.Select(attrs={'placeholder':'Seleccionar Provincia', 'class': 'form-control'})
+            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
+            'numero': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
+            'provincia': forms.Select(attrs={'placeholder': 'Seleccione Provincia', 'class': 'form-control'})
         }
+
+    def __init__(self, *args, **kwargs):
+        super(MunicipioForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.id:
+            self.fields['calles'].initial = list(self.instance.calle_set.all())
+
+    def save(self, *args, **kwargs):
+        obj = super(MunicipioForm, self).save(*args, **kwargs)
+        if self.cleaned_data.get('calles'):
+            obj.calle_set.set(self.cleaned_data.get('calles'))
+        return obj
 
 
 class ConsejoPopularForm(forms.ModelForm):
@@ -36,7 +50,7 @@ class ConsejoPopularForm(forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control malpha'}),
             'numero': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control mnumber'}),
-            'municipio': forms.Select(attrs={'placeholder':'Seleccionar Municipio', 'class': 'form-control'})
+            'municipio': forms.Select(attrs={'placeholder': 'Seleccione Municipio', 'class': 'form-control'})
         }
 
 
