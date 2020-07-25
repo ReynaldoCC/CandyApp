@@ -1,6 +1,6 @@
 {% extends 'dpv_persona/list.html' %}
 {% block page_title %} | Entidades {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
 {% endblock extra_style %}
@@ -29,12 +29,12 @@
             <div class="card-body">
                 {% if personajuridicas %}
                 <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <table id="entidad-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
                                 <th>Siglas</th>
-                                <th>Persona Contacto</th>
+                                <th nowrap="">Persona Contacto</th>
                                 <th>Teléfono</th>
                                 <th>Email</th>
                                 <th>Acciones</th>
@@ -45,10 +45,10 @@
                             <tr>
                                 <td>{{personajuridica.nombre}}</td>
                                 <td>{{personajuridica.sigla}}</td>
-                                <td>{{personajuridica.nombre_contacto}}</td>
+                                <td nowrap="">{{personajuridica.nombre_contacto}}</td>
                                 <td>{{personajuridica.telefono}}</td>
                                 <td>{{personajuridica.email_address}}</td>
-                                <td>
+                                <td nowrap="">
                                     {% if perms.dpv_persona.view_personajuridica %}
                                         <a onclick="return abrir_modal('{% url 'persona_juridica_view' personajuridica.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
                                     {% endif %}
@@ -88,10 +88,28 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
-    <script src="{% static 'dpv_persona/js/persona.js' %}"></script>
+    <script src="{% static 'dpv_persona/js/persojur.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Entidades que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Entidades' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Entidades' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total entidades' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Entidades' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin entidades coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVEntidad.init(translations_datatables);
         } );
     </script>
 {% endblock extra_scripts %}

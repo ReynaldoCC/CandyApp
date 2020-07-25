@@ -2,7 +2,9 @@
 {% block page_title %} | Formulario {% endblock page_title %}
 {% load static %}
 {% block extra_style %}
-    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_persona/css/style1.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %}  Formulario {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -17,7 +19,7 @@
 {% endblock breadcrumbs %}
 {% block content_page %}
         <div class="col-md-12">
-        <form novalidate method="POST">
+        <form novalidate method="POST" id="entidad-form">
             {% csrf_token %}
             {% if form.errors %}
             <div class="alert alert-danger alert-dismissible" role="alert">
@@ -33,10 +35,10 @@
                     {% for field in form %}
                     <div class="form-group {% if field.name == 'add_concepto' %} col-md-12 {% else %} col-md-6 {% endif %}" data-toggle="tooltip" data-placement="top" title="{{field.help_text}}" >
                         {{field.errors}}
-                        <label class="control-label mb-1" for="id_{{field.name}}">{{field.label}}</label>
+                        <label class="control-label mb-1" for="{{field.id_for_label}}">{{field.label}}</label>
                         {% if 'calle' in field.name or 'entre' in field.name %}
                         {% if perms.dpv_nomencladores.add_calle %}
-                            <button onclick="return abrir_modal('{% url 'agree_calle' %}', 'id_{{field.name}}')" class="pull-right btn btn-link">
+                            <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}', 'id_{{field.name}}')" class="pull-right btn btn-link">
                                 <i class="fa fa-plus text-success"></i>
                             </button>
                         {% endif %}
@@ -65,8 +67,23 @@
 {% endblock content_page %}
 {% block extra_scripts %}
 {{block.super}}
+    <script>
+    {% if entidad.id %}
+        var entidad_id = {{ entidad.id }};
+    {% else %}
+        var entidad_id = 0;
+    {% endif %}
+    </script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/calles_agree.js' %}"></script>
     <script src="{% static 'dpv_persona/js/persojur.js' %}"></script>
+    <script>
+    jQuery(document).ready(function() {
+        DPVEntidad.initForm();
+    });
+    </script>
 {% endblock extra_scripts %}
 {% block init_jquery %} {% endblock init_jquery %}

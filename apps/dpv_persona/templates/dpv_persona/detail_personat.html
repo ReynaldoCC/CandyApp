@@ -19,9 +19,9 @@
                 <div class="col-md-6"><span class="text-muted">Sexo:</span> {{personat.genero}}</div>
                 <div class="col-md-12"><span class="text-muted">Dirección Particular:</span></div>
                 <div class="col-md-12">Calle {{personat.direccion_calle}} # {{personat.direccion_numero}} entre {{personat.direccion_entrecalle1}} y {{personat.direccion_entrecalle2}}, Municipio {{personat.municipio}}</div>
-                <div class="col-md-12"><span class="text-muted">Email Contacto:</span> {{personat.email_address}}</div>
-                <div class="col-md-6"><span class="text-muted">Movil Contacto:</span> {{personat.movil}}</div>
-                <div class="col-md-6"><span class="text-muted">Teléfono Contacto:</span>{{personat.telefono}}</div>
+                <div class="col-md-12"><span class="text-muted">Email Contacto:</span>{% if personat.email_address %} {{personat.email_address}} {% else %} No especificado {% endif %}</div>
+                <div class="col-md-6"><span class="text-muted">Movil Contacto:</span>{% if personat.movil %}  {{personat.movil}} {% else %} No especificado {% endif %}</div>
+                <div class="col-md-6"><span class="text-muted">Teléfono Contacto:</span>{% if personat.telefono %} {{personat.telefono}} {% else %} No especificado {% endif %}</div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cerrar</button>

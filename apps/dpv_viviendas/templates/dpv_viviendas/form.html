@@ -21,7 +21,7 @@
 {% endblock breadcrumbs %}
 {% block content_page %}
     <div class="col-md-12">
-        <form id = 'vivienda-form' novalidate method="POST">
+        <form id='vivienda-form' novalidate method="POST">
             {% csrf_token %}
             {% if form.errors %}
             <div class="alert alert-danger alert-dismissible" role="alert">
@@ -65,7 +65,7 @@
     <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
     <script src="{% static 'dpv_viviendas/js/viviendas.js' %}"></script>
-    <script src="{% static 'dpv_viviendas/js/list.js' %}"></script>
+
     <script type="text/javascript">
         $(document).ready(function() {
             DPVViviendas.initForm();

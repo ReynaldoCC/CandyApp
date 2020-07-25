@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-sm">
+<div class="modal-dialog modal-md">
     <div class="modal-content">
         {% if municipio %}
         <form role="form" action="{% url 'municipio_edit' municipio.id %}" method="post" id="form_municipio">
@@ -14,28 +14,44 @@
             <div class="modal-body">
                 {% csrf_token %}
                 <div class="form-control-sm">
-                    <label for="">Nombre</label>
-                    {{ form.non_field_errors }}
+                    {{ form.nombre.errors }}
+                    <label for="{{ form.calles.id_for_label }}">{{ form.nombre.label }}</label>
                     {{ form.nombre }}
                 </div>
-               <div class="form-control-sm">
-                    <label for="">Número</label>
-                    {{ form.non_field_errors }}
+                <div class="form-control-sm">
+                    {{ form.numero.errors }}
+                    <label for="{{ form.calles.id_for_label }}">{{ form.numero.label }}</label>
                     {{ form.numero }}
                 </div>
                 <div class="form-control-sm">
-                    <label for="">Provincia</label>
-                    {{ form.non_field_errors }}
+                    {{ form.provincia.errors }}
+                    <label for="{{ form.calles.id_for_label }}">{{ form.provincia.label }}</label>
                     {{ form.provincia }}
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                <div class="form-control-sm">
+                    <div class="form-group">
+                        {{ form.calles.errors }}
+                        <label for="{{ form.calles.id_for_label }}">{{ form.calles.label }}</label>
+                        <span>
+                            <input id="filter_calles" class="pull-right" type="text" placeholder="Filtrar por:" >
+                            <label><input id="check_all_calles" type="checkbox"> Marcar todas las </label>
+                        </span>
+                        {{ form.calles }}
+                    </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
         </form>
     </div>
 </div>
 <script>
-    $('#form_municipio').validate();
+    {% if municipio %}
+     var mun_id = "{{municipio.id}}";
+    {% else %}
+     var mun_id = "0";
+    {% endif %}
+    DPVMunicipioNom.initForm();
 </script>

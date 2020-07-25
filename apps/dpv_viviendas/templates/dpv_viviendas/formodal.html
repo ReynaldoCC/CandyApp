@@ -1,11 +1,11 @@
 {% load static %}
-<div class="modal-dialog modal-lg" role="document">
+<div class="modal-dialog modal-lg" style="width: 90%!important;" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h4 class="modal-title" id="myModalLabel">Agregar Vivienda</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form novalidate method="POST"action="/vivienda/formodal/{{local}}">
+        <form id="vivienda-form" novalidate method="POST" action="/vivienda/formodal/{{local}}">
             <div class="modal-body">
             {% csrf_token %}
             {% if form.errors %}
@@ -40,28 +40,7 @@
     </div>
 </div>
 <script>
-
-$(function(){
-   $.datepicker.regional['es'] = {
-    closeText: 'Cerrar',
-    prevText: '<Ant',
-    nextText: 'Sig>',
-    currentText: 'Hoy',
-    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
-    dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-    weekHeader: 'Sm',
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1,
-    isRTL: false,
-    showMonthAfterYear: false,
-    yearSuffix: ''
-    };
-    $.datepicker.setDefaults($.datepicker.regional['es']);
-   $('.date').datepicker();
-});
+    $(document).ready(function() {
+        DPVViviendas.initForm();
+    });
 </script>
