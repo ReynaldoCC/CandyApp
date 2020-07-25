@@ -1,5 +1,8 @@
 .modal {
     opacity: 1 !important;
-    margin-top: 5%;
-    padding-top: 10%;
+    /*margin-top: 5%;*/
+    /*padding-top: 10%;*/
+}
+.modal-dialog.modal-md {
+    margin-top: 13rem;
 }
