@@ -11,6 +11,7 @@ urlpatterns = [
 
     path('municipio/', index_municipio, name='nomenclador_municipio'),
     path('nuevo_municipio/', add_municipio, name='municipio_new'),
+    path('verify_municipio/', verify_municipio, name='municipio_verify'),
     path('editar_municipio/<int:id_municipio>', update_municipio, name='municipio_edit'),
     path('eliminar_municipio/<int:id_municipio>', delete_municipio, name='municipio_delete'),
 
