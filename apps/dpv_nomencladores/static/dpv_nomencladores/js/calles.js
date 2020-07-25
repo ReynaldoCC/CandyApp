@@ -6,10 +6,7 @@ $(document).ready(function(){
         });
     });
     $("#check_all_municipios").on("click", function(){
-        if ($("#check_all_municipios").prop('checked'))
-            $("input[name='municipios']").attr('checked', true);
-        else
-            $("input[name='municipios']").attr('checked', false);
+        $("span:not([style='display: none;']) input[name='municipios']").prop('checked', this.checked);
     });
 
 });
