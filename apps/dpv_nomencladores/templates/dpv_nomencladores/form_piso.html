@@ -28,5 +28,12 @@
     </div>
 </div>
 <script>
-    $('#form_piso').validate();
+    {% if piso %}
+        var piso_id = "{{ piso.id }}";
+    {% else %}
+        var piso_id = "0";
+    {% endif %}
+    $(document).ready(function(){
+        DPVPisoNom.initForm();
+    });
 </script>
