@@ -34,5 +34,12 @@
 </div>
 
 <script>
-    $('#form_provincia').validate();
+    {% if provincia %}
+        var prov_id = "{{ provincia.id }}";
+    {% else %}
+        var prov_id = "0";
+    {% endif %}
+    $(document).ready(function(){
+        DPVProvinciaNom.initForm();
+    });
 </script>
