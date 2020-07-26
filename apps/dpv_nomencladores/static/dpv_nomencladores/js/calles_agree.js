@@ -101,7 +101,7 @@ var AgreeCalle = function () {
         }
 
         function success_agree(json) {
-            $('#id_nombre').val();
+            $('#id_nombre').val("");
             toastr.success('La calle ha sido agregada con exito', '<h3>Todo bien</h3>');
         }
 
