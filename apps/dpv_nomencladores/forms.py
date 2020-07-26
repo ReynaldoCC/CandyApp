@@ -83,7 +83,7 @@ class CalleForm(forms.ModelForm):
         model = Calle
         fields = ['nombre', 'municipios']
         widgets = {
-            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control malpha'}),
+            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
             'municipios': DivCheckboxSelectMultiple(attrs={'placeholder': 'Nombre', 'class': 'form-control multi-select-box'}),
         }
 
