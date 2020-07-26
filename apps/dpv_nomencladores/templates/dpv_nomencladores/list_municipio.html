@@ -46,8 +46,8 @@
                         {% for municipio in municipios %}
                             <tr>
                                 <td>{{municipio.numero}}</td>
-                                <td>{{municipio.nombre}}</td>
-                                <td>{{municipio.provincia}}</td>
+                                <td>{{municipio.nombre | capfirst}}</td>
+                                <td>{{municipio.provincia | capfirst}}</td>
                                 <td>
                                     {% if perms.dpv_nomencladores.change_municipio %}
                                     <a onclick="return abrir_modal('{% url 'municipio_edit' municipio.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
@@ -87,7 +87,6 @@
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/municipios.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
