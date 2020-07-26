@@ -1,6 +1,6 @@
 {% extends 'dpv_nomencladores/list.html' %}
 {% block page_title %} | Provincias {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
@@ -31,7 +31,7 @@
             <div class="card-body">
                 {% if provincias %}
                 <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <table id="provincia-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Número</th>
@@ -43,7 +43,7 @@
                         {% for provincia in provincias %}
                             <tr>
                                 <td>{{provincia.numero}}</td>
-                                <td>{{provincia.nombre}}</td>
+                                <td>{{provincia.nombre | capfirst}}</td>
                                 <td>
                                     {% if perms.dpv_nomencladores.change_provincia %}
                                     <a onclick="return abrir_modal('{% url 'provincia_edit' provincia.id %}')" class=" btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-pencil"></i></a>
@@ -83,11 +83,30 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/jquery-validation/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/jquery-validation/js/additional-methods.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/provincias.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Provincias que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Provincias' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Provincias' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total provincias' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Provincias' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin provincias coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVProvinciaNom.init(translations_datatables);
         } );
     </script>
 {% endblock extra_scripts %}
