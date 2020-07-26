@@ -14,18 +14,18 @@
             <div class="modal-body">
                 {% csrf_token %}
                 <div class="form-control-sm">
+                    {{ form.nombre.errors }}
                     <label for="">Nombre</label>
-                    {{ form.non_field_errors }}
                     {{ form.nombre }}
                 </div>
                <div class="form-control-sm">
+                    {{ form.numero.errors }}
                     <label for="">Número</label>
-                    {{ form.non_field_errors }}
                     {{ form.numero }}
                 </div>
                 <div class="form-control-sm">
+                    {{ form.municipio.errors }}
                     <label for="">Municipio</label>
-                    {{ form.non_field_errors }}
                     {{ form.municipio }}
                 </div>
                 <div class="modal-footer">
@@ -37,5 +37,12 @@
     </div>
 </div>
 <script>
-    $('#form_consejopopular').validate();
+    {% if consejopopular %}
+        var cpop_id = "{{ consejopopular.id }}";
+    {% else %}
+        var cpop_id = "0";
+    {% endif %}
+    $(document).ready(function(){
+        DPVConsejoPNom.initForm();
+    });
 </script>
