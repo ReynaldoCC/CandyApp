@@ -30,6 +30,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    {% if not calle %}
+                    <button id="save_more" type="button" class="btn btn-success" >Guardar y agregar otro</button>
+                    {% endif %}
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
@@ -37,19 +40,12 @@
     </div>
 </div>
 <script>
-    $('#form_calle').validate();
+    {% if calle %}
+        var calle_id = "{{ calle.id }}";
+    {% else %}
+        var calle_id = "0";
+    {% endif %}
     $(document).ready(function(){
-        $("#filter_municipios").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-                $("#id_municipios span").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-        $("#check_all_municipios").on("click", function(){
-            if ($("#check_all_municipios").prop('checked'))
-                $("input[name='municipios']").attr('checked', true);
-            else
-                $("input[name='municipios']").attr('checked', false);
-        });
+        DPVCalleNom.initForm();
     });
 </script>
