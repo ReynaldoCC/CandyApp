@@ -14,13 +14,13 @@
             <div class="modal-body">
                 {% csrf_token %}
                 <div class="form-control-sm">
-                    <label>Nombre</label>
-                    {{ form.non_field_errors }}
+                    {{ form.nombre.errors }}
+                    <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
                     {{ form.nombre }}
                 </div>
                 <div class="form-control-sm">
-                    <label>Número</label>
-                    {{ form.non_field_errors }}
+                    {{ form.numero.errors }}
+                    <label for="{{ form.numero.id_for_label }}">{{ form.numero.label }}</label>
                     {{ form.numero }}
                 </div>
 
@@ -33,5 +33,10 @@
     </div>
 </div>
 <script>
-    $('#form_areatrab').validate();
+    {% if areatrabajo %}
+     var dpto_id = "{{areatrabajo.id}}";
+    {% else %}
+     var dpto_id = "0";
+    {% endif %}
+    DPVDptoNom.initForm();
 </script>
