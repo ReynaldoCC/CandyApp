@@ -1,15 +1,4 @@
-$(document).ready(function(){
-    $("#filter_permissions").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-            $("#id_permissions span").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    });
-    $("#check_all_permissions").on("click", function(){
-        $("span:not([style='display: none;']) input[name='permissions']").prop('checked', this.checked);
-    });
-});
-
+'use strict';
 
 var DPVGrupo = function () {
     let group_form;
@@ -77,6 +66,15 @@ var DPVGrupo = function () {
         });
     };
     const _initGroupForm = function () {
+        $("#filter_permissions").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+                $("#id_permissions span").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#check_all_permissions").on("click", function(){
+            $("span:not([style='display: none;']) input[name='permissions']").prop('checked', this.checked);
+        });
 
         $.validator.setDefaults({
             errorClass: 'text-danger',
@@ -104,7 +102,7 @@ var DPVGrupo = function () {
 				    required: true,
                     maxlength: 130,
                     remote: {
-                        url: '/admin/group/verify/',
+                        url: '/admin/groups/verify/',
                         type: 'GET',
                         data: {
                             id: grp_id,
