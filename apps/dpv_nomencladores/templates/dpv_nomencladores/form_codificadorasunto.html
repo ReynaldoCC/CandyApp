@@ -14,13 +14,13 @@
             <div class="modal-body">
                 {% csrf_token %}
                 <div class="form-control-sm">
-                    <label>Número</label>
-                    {{ form.non_field_errors }}
+                    {{ form.numero.errors }}
+                    <label for="{{ form.numero.id_for_label }}">{{ form.numero.label }}</label>
                     {{ form.numero }}
                 </div>
                 <div class="form-control-sm">
-                    <label>Nombre</label>
-                    {{ form.non_field_errors }}
+                    {{ form.nombre.errors }}
+                    <label for="{{ form.numero.id_for_label }}">{{ form.numero.label }}</label>
                     {{ form.nombre }}
                 </div>
 
@@ -34,9 +34,10 @@
 </div>
 
 <script>
-    var id_element = '{{codificadorasunto}}';
-    if (id_element != '0')
-        id_element = '{{codificadorasunto.id}}';
-    $('#form_codificadorasunto').validate();
-    {#validateUniqForm.init();#}
+    {% if codificadorasunto %}
+     var codas_id = "{{codificadorasunto.id}}";
+    {% else %}
+     var codas_id = "0";
+    {% endif %}
+    DPVCodAsuntoNom.initForm();
 </script>

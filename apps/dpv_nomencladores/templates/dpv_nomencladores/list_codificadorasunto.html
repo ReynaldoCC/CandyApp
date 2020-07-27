@@ -1,6 +1,6 @@
 {% extends 'dpv_nomencladores/list.html' %}
 {% block page_title %} | Codificador de Asuntos {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
@@ -13,7 +13,7 @@
     {% else %}
     <li>
         <a href="{% url 'nomenclador_codificadorasunto' %}">
-            Provincia
+            Codificador de Asuntos
         </a>
     </li>
     {% endif %}
@@ -30,7 +30,7 @@
             </div>
             <div class="card-body">
                 {% if codificadorasuntos %}
-                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                <table id="codasunto-table" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>Número</th>
@@ -42,7 +42,7 @@
                     {% for codificadorasunto in codificadorasuntos %}
                         <tr>
                             <td>{{codificadorasunto.numero}}</td>
-                            <td>{{codificadorasunto.nombre}}</td>
+                            <td>{{codificadorasunto.nombre | capfirst}}</td>
                             <td>
                                 {% if perms.dpv_nomencladores.change_codificadorasunto %}
                                 <a onclick="return abrir_modal('{% url 'codificadorasunto_edit' codificadorasunto.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-pencil"></i></a>
@@ -80,12 +80,29 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/codificadorasuntos.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Codificadores de Asunto que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Codificadores de Asunto' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Codificadores de Asunto' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total codificadores de Asunto' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Codificadores de Asunto' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin codificadores de Asunto coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVCodAsuntoNom.init(translations_datatables);
         } );
     </script>
 {% endblock extra_scripts %}
