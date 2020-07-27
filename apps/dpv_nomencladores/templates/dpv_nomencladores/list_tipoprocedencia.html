@@ -1,6 +1,6 @@
 {% extends 'dpv_nomencladores/list.html' %}
 {% block page_title %} | Tipos de Procedencias {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
@@ -13,7 +13,7 @@
     {% else %}
     <li>
         <a href="{% url 'nomenclador_tipoprocedencia' %}">
-            Provincia
+            Tipo de Procedencia
         </a>
     </li>
     {% endif %}
@@ -30,7 +30,7 @@
             </div>
             <div class="card-body">
                 {% if tipoprocedencias %}
-                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                <table id="tproc-table" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -41,7 +41,7 @@
                     <tbody>
                     {% for tipoprocedencia in tipoprocedencias %}
                         <tr>
-                            <td>{{tipoprocedencia.nombre}}</td>
+                            <td>{{tipoprocedencia.nombre | capfirst}}</td>
                             <td>{{tipoprocedencia.cant_dias}}</td>
                             <td>
                                 {% if perms.dpv_nomencladores.change_tipoprocedencia %}
@@ -80,12 +80,29 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/tiposprocedencia.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Tipos de procedencia que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Tipos de procedencia' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Tipos de procedencia' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total tipos de procedencia' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Tipos de procedencia' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin tipos de procedencia coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVTipoProcNom.init(translations_datatables);
         } );
     </script>
 {% endblock extra_scripts %}
