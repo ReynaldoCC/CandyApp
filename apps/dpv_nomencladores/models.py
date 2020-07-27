@@ -5,11 +5,17 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import pre_save, post_init
 from django.dispatch import receiver
 from .validators import only_numbers, only_letters, not_special_char, not_letters
-from django.core.validators import MaxLengthValidator, MinLengthValidator, EmailValidator
+from django.core.validators import MaxLengthValidator, MinLengthValidator, EmailValidator, URLValidator
 from apps.dpv_base.mixins import LoggerMixin
+import uuid
 
 
 # Create your models here.
+def scramble_upload_logo(instance, filename, subdiretory='logos'):
+    ext = filename.split('.')[-1]
+    return subdiretory+'/{}.{}'.format(uuid.uuid4(), ext)
+
+
 class Provincia(LoggerMixin):
     nombre = models.CharField(max_length=30, help_text="Nombre del municipio", verbose_name="Provincia",
                               validators=[not_special_char, MaxLengthValidator(30)])
@@ -325,9 +331,10 @@ class RedSocial(LoggerMixin):
     nombre = models.CharField(verbose_name=_("Nombre"), blank=True, default="", max_length=25,
                               validators=[MinLengthValidator(3), MaxLengthValidator(25)],
                               help_text=_("Nombre de la red social"))
-    dominio = models.URLField(verbose_name=_("URL"), blank=True, default="", max_length=254,
-                              validators=[MinLengthValidator(3), MaxLengthValidator(254)],
-                              help_text=_("URL del dominio de la red social")),
+    dominio = models.CharField(verbose_name=_("URL"), blank=True, default="", max_length=254,
+                               validators=[MinLengthValidator(3), MaxLengthValidator(254), URLValidator],
+                               help_text=_("URL del dominio de la red social")),
+    logo = models.ImageField('Logo', upload_to=scramble_upload_logo, blank=True, null=True)
 
     class Meta:
         verbose_name = "Red Social"
