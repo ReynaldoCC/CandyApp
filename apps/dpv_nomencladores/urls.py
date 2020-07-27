@@ -11,6 +11,7 @@ urlpatterns = [
     path('eliminar_provincia/<int:id_provincia>', delete_provincia, name='provincia_delete'),
 
     path('municipio/', index_municipio, name='nomenclador_municipio'),
+    path('municipio/filter/<int:id_prov>', filter_municipio_prov, name='municipio_filter'),
     path('nuevo_municipio/', add_municipio, name='municipio_new'),
     path('verify_municipio/', verify_municipio, name='municipio_verify'),
     path('editar_municipio/<int:id_municipio>', update_municipio, name='municipio_edit'),
