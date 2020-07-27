@@ -10,7 +10,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% if '/admin/groups/' == request.path %}
-    <li class="active sitio">Grupos</li>
+    <li class="active">Grupos</li>
     {% else %}
     <li>
         <a href="{% url 'admin_group' %}">

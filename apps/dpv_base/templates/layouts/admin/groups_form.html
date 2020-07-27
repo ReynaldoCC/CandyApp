@@ -18,7 +18,7 @@
     <div class="animated fadeIn">
         <div class="row padding-short">
             <div class="col-md-12">
-                <form id="grp-form" novalidate method="POST">
+                <form id="grp-form" action="" novalidate method="POST">
                     {% csrf_token %}
                     {% if form.errors %}
                     <div class="alert alert-danger alert-dismissible" role="alert">
@@ -66,7 +66,7 @@
 {% block extra_scripts %}
 {{block.super}}
     <script>
-    {% if usuario.id %}
+    {% if grp.id %}
         var grp_id = {{ grp.id }};
     {% else %}
         var grp_id = 0;

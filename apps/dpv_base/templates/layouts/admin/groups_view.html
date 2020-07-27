@@ -1,4 +1,4 @@
-{% load static %}
+{% load static base_tags %}
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -10,9 +10,9 @@
                 <div class="col-md-6"><span class="text-muted">Cantidad de Usuarios:</span> {{grupo.user_set.count}}</div>
                 <div class="col-md-6"><span class="text-muted">Total de Permisos:</span> {{grupo.permissions.count}}</div>
                 <div class="col-md-12"><span class="text-muted">Usuarios:</span></div>
-                <div class="col-md-12 multi-view-box">{% for usr in grupo.user_set.all %} <span class="col-md-4">{{usr.username}}</span> {% endfor %}</div>
+                <div class="col-md-12 multi-view-box row col-12">{% for usr in grupo.user_set.all %} <span class="col-md-4 col-lg-3">{{usr.username}}</span> {% endfor %}</div>
                 <div class="col-md-12"><span class="text-muted">Permisos:</span></div>
-                <div class="col-md-12 multi-view-box"> {% for perm in grupo.permissions.all %} <span class="col-md-4">{{perm.name}}</span> {% endfor %}</div>
+                <div class="col-md-12 multi-view-box row col-12"> {% for perm in grupo.permissions.all %} <span class="col-md-6 col-lg-4">{{perm.name | translate_perm_name}}</span> {% endfor %}</div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cerrar</button>
