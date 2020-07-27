@@ -89,12 +89,12 @@ def verify_provincia(request):
         if not id:
             id = 0
         if nombre:
-            if not Provincia.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not Provincia.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if numero:
-            if not Provincia.objects.filter(numero=numero).exclude(id=id).exists():
+            if not Provincia.objects.filter(numero__iexact=numero).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -158,17 +158,24 @@ def verify_municipio(request):
         if not id:
             id = 0
         if nombre:
-            if not Municipio.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not Municipio.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if numero:
-            if not Municipio.objects.filter(numero=numero).exclude(id=id).exists():
+            if not Municipio.objects.filter(numero__iexact=numero).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         return JsonResponse("", status=400)
     return JsonResponse("", status=405)
+
+
+@login_required()
+def filter_municipio_prov(request, id_prov):
+    province = get_object_or_404(Provincia, id=id_prov)
+    municipios = list(Municipio.objects.filter(provincia=province).values('id', 'nombre'))
+    return JsonResponse(data=municipios, safe=False, status=200)
 
 
 # ------------------------------------ ConsejoPopular -----------------------------------------------------------------
@@ -267,12 +274,12 @@ def verify_consejopopular(request):
         if not id:
             id = 0
         if nombre:
-            if not ConsejoPopular.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not ConsejoPopular.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if numero:
-            if not ConsejoPopular.objects.filter(numero=numero).exclude(id=id).exists():
+            if not ConsejoPopular.objects.filter(numero__iexact=numero).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -401,7 +408,7 @@ def verify_calle(request):
         if not id:
             id = 0
         if nombre:
-            if not Calle.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not Calle.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -463,7 +470,7 @@ def verify_piso(request):
         if not id:
             id = 0
         if nombre:
-            if not Piso.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not Piso.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -595,7 +602,7 @@ def verify_destino(request):
         if not id:
             id = 0
         if nombre:
-            if not Destino.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not Destino.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -657,7 +664,7 @@ def verify_concepto(request):
         if not id:
             id = 0
         if nombre:
-            if not Concepto.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not Concepto.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -712,14 +719,21 @@ def delete_genero(request, id_genero):
 @permission_required('dpv_nomencladores.view_genero')
 def verify_genero(request):
     if request.method == 'GET':
-        nombre = False
+        nombre = sigla = False
         if request.GET.get('nombre'):
             nombre = request.GET.get('nombre')
+        if request.GET.get('sigla'):
+            sigla = request.GET.get('sigla')
         id = request.GET.get('id')
         if not id:
             id = 0
         if nombre:
-            if not Genero.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not Genero.objects.filter(nsigla__iexact=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if sigla:
+            if not Genero.objects.filter(sigla__iexact=sigla).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -783,12 +797,12 @@ def verify_areatrabajo(request):
         if not id:
             id = 0
         if nombre:
-            if not AreaTrabajo.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not AreaTrabajo.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if numero:
-            if not AreaTrabajo.objects.filter(numero=numero).exclude(id=id).exists():
+            if not AreaTrabajo.objects.filter(numero__iexact=numero).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -853,17 +867,17 @@ def verify_centrotrabajo(request):
         if not id:
             id = 0
         if nombre:
-            if not CentroTrabajo.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not CentroTrabajo.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if numero:
-            if not CentroTrabajo.objects.filter(numero=numero).exclude(id=id).exists():
+            if not CentroTrabajo.objects.filter(numero__iexact=numero).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
-        return JsonResponse("", status=400)
-    return JsonResponse("", status=405)
+        return JsonResponse("", safe=False, status=400)
+    return JsonResponse("", safe=False, status=405)
 
 
 # ------------------------------------------- CodificadorAsunto ----------------------------------------------------
@@ -923,12 +937,12 @@ def verify_codificadorasunto(request):
         if not id:
             id = 0
         if nombre:
-            if not CodificadorAsunto.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not CodificadorAsunto.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if numero:
-            if not CodificadorAsunto.objects.filter(numero=numero).exclude(id=id).exists():
+            if not CodificadorAsunto.objects.filter(numero__iexact=numero).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -992,12 +1006,12 @@ def verify_tipoqueja(request):
         if not id:
             id = 0
         if nombre:
-            if not TipoQueja.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not TipoQueja.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if numero:
-            if not TipoQueja.objects.filter(numero=numero).exclude(id=id).exists():
+            if not TipoQueja.objects.filter(numero__iexact=numero).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -1106,12 +1120,12 @@ def verify_tipoprocedencia(request):
         if not id:
             id = 0
         if nombre:
-            if not TipoProcedencia.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not TipoProcedencia.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if numero:
-            if not TipoProcedencia.objects.filter(numero=numero).exclude(id=id).exists():
+            if not TipoProcedencia.objects.filter(numero__iexact=numero).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -1173,7 +1187,7 @@ def verify_estado(request):
         if not id:
             id = 0
         if nombre:
-            if not Estado.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not Estado.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
@@ -1242,12 +1256,12 @@ def verify_clasificacionrespuesta(request):
         if not id:
             id = 0
         if nombre:
-            if not ClasificacionRespuesta.objects.filter(nombre=nombre).exclude(id=id).exists():
+            if not ClasificacionRespuesta.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if codigo:
-            if not ClasificacionRespuesta.objects.filter(codigo=codigo).exclude(id=id).exists():
+            if not ClasificacionRespuesta.objects.filter(codigo__iexact=codigo).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
