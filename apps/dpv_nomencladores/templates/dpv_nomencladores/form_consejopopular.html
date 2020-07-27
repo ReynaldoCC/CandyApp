@@ -15,17 +15,22 @@
                 {% csrf_token %}
                 <div class="form-control-sm">
                     {{ form.nombre.errors }}
-                    <label for="">Nombre</label>
+                    <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
                     {{ form.nombre }}
                 </div>
                <div class="form-control-sm">
                     {{ form.numero.errors }}
-                    <label for="">Número</label>
+                    <label for="{{ form.numero.id_for_label }}">{{ form.numero.label }}</label>
                     {{ form.numero }}
                 </div>
                 <div class="form-control-sm">
+                    {{ form.provincia.errors }}
+                    <label for="{{ form.provincia.id_for_label }}">{{ form.provincia.label }}</label>
+                    {{ form.provincia }}
+                </div>
+                <div class="form-control-sm">
                     {{ form.municipio.errors }}
-                    <label for="">Municipio</label>
+                    <label for="{{ form.municipio.id_for_label }}">{{ form.municipio.label }}</label>
                     {{ form.municipio }}
                 </div>
                 <div class="modal-footer">

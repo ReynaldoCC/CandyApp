@@ -50,15 +50,48 @@ var DPVConsejoPNom =  function () {
     };
     const _initConsejoPForm =  function () {
 
-        let $pj_prov = $("#id_municipio").selectize({
+        let $pj_provincia = $("#id_provincia").selectize({
+            create: false,
+            placeholder: "Selecione una Provincia",
+            allowEmptyOption: false,
+            onChange: function(value) {
+                if (!value.length) return;
+                $.ajax({
+                    url: '/nomenclador/municipio/filter/' + value,
+                    success: function(results) {
+                        let current_value = $pj_municipio[0].selectize.getValue();
+                        let exist = false;
+                        for (let i = 0; i < results.length; i++)
+                            if (results[i].id == current_value) {
+                                exist = true;
+                            }
+                        if (!exist)
+                            $pj_municipio[0].selectize.clear();
+                        $pj_municipio[0].selectize.clearOptions();
+                        $pj_municipio[0].selectize.load(function (callback) {
+                            callback(results);
+                        });
+                    }
+                });
+            },
+        });
+        let $pj_municipio = $("#id_municipio").selectize({
             create: false,
             placeholder: "Selecione un Municipio",
             allowEmptyOption: false,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            selectOnTab: true,
+            createOnBlur: false,
         });
 
         const _fill_selectizes_with_values = function () {
             if ($("#id_municipio").val())
-                $pj_prov[0].selectize.setValue($("#id_municipio").val());
+                $pj_municipio[0].selectize.setValue($("#id_municipio").val());
+            if ($("#id_provincia").val())
+                $pj_provincia[0].selectize.setValue($("#id_provincia").val());
         };
         $.validator.setDefaults({
             errorClass: 'text-danger',
