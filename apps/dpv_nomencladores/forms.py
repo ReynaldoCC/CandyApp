@@ -42,25 +42,37 @@ class MunicipioForm(forms.ModelForm):
 
 
 class ConsejoPopularForm(forms.ModelForm):
+    provincia = forms.ModelChoiceField(queryset=Provincia.objects.all(),
+                                       widget=forms.Select(attrs={'placeholder': 'Seleccione una provincia',
+                                                                  'class': 'form-control'}))
 
     class Meta:
         model = ConsejoPopular
-        fields = ['numero', 'nombre', 'municipio']
+        fields = ['numero', 'nombre', 'provincia', 'municipio']
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
             'numero': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
-            'municipio': forms.Select(attrs={'placeholder': 'Seleccione Municipio', 'class': 'form-control'})
+            'municipio': forms.Select(attrs={'placeholder': 'Seleccione un Municipio', 'class': 'form-control'})
         }
+
+    def __init__(self, *args, **kwargs):
+        super(ConsejoPopularForm, self).__init__(*args, **kwargs)
+        if self.instance and isinstance(self.instance, ConsejoPopular):
+            if hasattr(self.instance, 'municipio') and self.instance.municipio.id:
+                self.fields['provincia'].initial = self.instance.municipio.provincia
 
 
 class OrganismoForm(forms.ModelForm):
 
     class Meta:
         model = Organismo
-        fields = ['nombre', 'siglas']
+        fields = ['nombre', 'siglas', 'email', 'telefono', 'nombre_contacto']
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
             'siglas': forms.TextInput(attrs={'placeholder': 'Siglas', 'class': 'form-control'}),
+            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre de contacto', 'class': 'form-control'}),
+            'email': forms.TextInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono', 'class': 'form-control'}),
         }
 
 
@@ -212,10 +224,13 @@ class PrensaEscritaForm(forms.ModelForm):
 
     class Meta:
         model = PrensaEscrita
-        fields = ['nombre', 'siglas']
+        fields = ['nombre', 'siglas', 'nombre_contacto', 'email', 'telefono', ]
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
             'siglas': forms.TextInput(attrs={'placeholder': 'Siglas', 'class': 'form-control'}),
+            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre de contacto', 'class': 'form-control'}),
+            'email': forms.TextInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono', 'class': 'form-control'}),
         }
 
 
