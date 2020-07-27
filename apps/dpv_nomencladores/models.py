@@ -59,16 +59,24 @@ class ConsejoPopular(LoggerMixin):
 
 
 class Organismo(LoggerMixin):
-    nombre = models.CharField(max_length=90, help_text="Nombre del organismo.", verbose_name=" Organismo",
+    nombre = models.CharField(max_length=90, help_text=_("Nombre del organismo."), verbose_name=_("Organismo"),
                               validators=[not_special_char, MaxLengthValidator(90)])
-    siglas = models.CharField(max_length=15, help_text="Siglas representativas del organismo",
-                              validators=[not_special_char])
+    siglas = models.CharField(max_length=15, help_text=_("Siglas representativas del organismo"),
+                              verbose_name=_("Siglas"), validators=[not_special_char])
+    email = models.EmailField(verbose_name=_("Correo Electrónico"), blank=True, default="",
+                              help_text=_("Correo eletrónico de contacto del organismo"))
+    telefono = models.CharField(verbose_name=_("Teléfono"), blank=True, default="", max_length=8,
+                                validators=[MinLengthValidator(8), MaxLengthValidator(8), only_numbers],
+                                help_text=_("Teléfono de contacto del organismo"))
+    nombre_contacto = models.CharField(verbose_name=_("Nombre de contacto"), blank=True, default="", max_length=200,
+                                       validators=[MinLengthValidator(3), MaxLengthValidator(200), only_letters],
+                                       help_text=_("Nombre de la persona de contacto del organismo"))
 
     class Meta:
         verbose_name = "Organismo"
         verbose_name_plural = "Organismos"
         ordering = ['nombre', ]
-        unique_together = (('nombre', 'deleted_at'), ('siglas', 'deleted_at'))
+        unique_together = (('nombre', 'deleted_at'), ('email', 'deleted_at'), ('telefono', 'deleted_at'))
 
     def __str__(self):
         return self.nombre
@@ -136,7 +144,7 @@ class CentroTrabajo(LoggerMixin):
         verbose_name = "Unidad"
         verbose_name_plural = "Unidades"
         ordering = ["numero", "nombre", ]
-        unique_together = (('nombre', 'deleted_at'), )
+        unique_together = (('nombre', 'deleted_at'), ('numero', 'deleted_at'), )
 
     def __str__(self):
         return self.nombre
@@ -235,6 +243,14 @@ class PrensaEscrita(LoggerMixin):
                               validators=[MaxLengthValidator(90), not_special_char])
     siglas = models.CharField(max_length=15, verbose_name="Siglas",
                               validators=[MaxLengthValidator(10), not_special_char])
+    email = models.EmailField(verbose_name=_("Correo Electrónico"), blank=True, default="",
+                              help_text=_("Correo eletrónico de contacto de la prensa"))
+    telefono = models.CharField(verbose_name=_("Teléfono"), blank=True, default="", max_length=8,
+                                validators=[MinLengthValidator(8), MaxLengthValidator(8), only_numbers],
+                                help_text=_("Teléfono de contacto de la prensa"))
+    nombre_contacto = models.CharField(verbose_name=_("Nombre de contacto"), blank=True, default="", max_length=200,
+                                       validators=[MinLengthValidator(3), MaxLengthValidator(200), only_letters],
+                                       help_text=_("Nombre de la persona de contacto de la prensa"))
 
     class Meta:
         verbose_name = "Prensa Escrita"
@@ -305,6 +321,40 @@ class TipoProcedencia(LoggerMixin):
         return self.nombre
 
 
+class RedSocial(LoggerMixin):
+    nombre = models.CharField(verbose_name=_("Nombre"), blank=True, default="", max_length=25,
+                              validators=[MinLengthValidator(3), MaxLengthValidator(25)],
+                              help_text=_("Nombre de la red social"))
+    dominio = models.URLField(verbose_name=_("URL"), blank=True, default="", max_length=254,
+                              validators=[MinLengthValidator(3), MaxLengthValidator(254)],
+                              help_text=_("URL del dominio de la red social")),
+
+    class Meta:
+        verbose_name = "Red Social"
+        verbose_name_plural = "Redes Sociales"
+        ordering = ["nombre", ]
+        unique_together = (('nombre', 'deleted_at'), )
+
+
+class ProcedenciaWeb(LoggerMixin):
+    nombre = models.CharField(verbose_name=_("Nombre"), blank=True, default="", max_length=200,
+                              validators=[MinLengthValidator(3), MaxLengthValidator(200), only_letters],
+                              help_text=_("Nombre de la persona o Perfil"))
+    perfil = models.CharField(verbose_name=_("Perfil Social"), blank=True, default="", max_length=200,
+                              validators=[MinLengthValidator(3), MaxLengthValidator(200), only_letters],
+                              help_text=_("Idetntificador del perfil social"))
+    email = models.EmailField(verbose_name=_("Correo Electrónico"), blank=True, default="",
+                              help_text=_("Correo eletrónico del perfil"))
+    red_social = models.ForeignKey(RedSocial, on_delete=models.CASCADE, verbose_name=_("Red Social"), blank=True,
+                                   default="", help_text=_("Red social a la que pertenece el perfil."))
+
+    class Meta:
+        verbose_name = "Red Social"
+        verbose_name_plural = "Redes Sociales"
+        ordering = ["nombre", ]
+        unique_together = (('perfil', 'email', 'red_social', 'deleted_at'), )
+
+
 class Procedencia(LoggerMixin):
     nombre = models.CharField(max_length=50, verbose_name="Procedencia",
                               validators=[MaxLengthValidator(50), not_special_char])
@@ -316,6 +366,7 @@ class Procedencia(LoggerMixin):
         models.Q(app_label='dpv_nomencladores', model='telefono') | \
         models.Q(app_label='dpv_nomencladores', model='email') | \
         models.Q(app_label='dpv_nomencladores', model='gobierno') | \
+        models.Q(app_label='dpv_nomencladores', model='procedenciaweb') | \
         models.Q(app_label='dpv_persona', model='personanatural') | \
         models.Q(app_label='dpv_persona', model='personajuridica')
     tipo_contenido = models.ForeignKey(ContentType, verbose_name=_('Contenido de Procedencia'),
