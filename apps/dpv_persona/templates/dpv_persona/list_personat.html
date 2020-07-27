@@ -46,8 +46,8 @@
                                 <td>{{persona.nombre}}</td>
                                 <td>{{persona.apellidos}}</td>
                                 <td>{{persona.ci}}</td>
-                                <td>{{persona.movil}}</td>
-                                <td>{{persona.email_address}}</td>
+                                <td>{% if persona.movil %}{{persona.movil}}{% endif %}</td>
+                                <td>{% if persona.email_address %}{{persona.email_address}}{% endif %}</td>
                                 <td nowrap="">
                                     {% if perms.dpv_persona.view_personanatural %}
                                         <a onclick="return abrir_modal('{% url 'persona_natural_view' persona.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
