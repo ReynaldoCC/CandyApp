@@ -14,13 +14,13 @@
             <div class="modal-body">
                 {% csrf_token %}
                 <div class="form-control-sm">
-                    <label>Código</label>
-                    {{ form.non_field_errors }}
+                    {{ form.numero.errors }}
+                    <label for=" {{ form.numero.id_for_label }}"> {{ form.numero.label }}</label>
                     {{ form.numero }}
                 </div>
                 <div class="form-control-sm">
-                    <label>Nombre</label>
-                    {{ form.non_field_errors }}
+                    {{ form.nombre.errors }}
+                    <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
                     {{ form.nombre }}
                 </div>
 
@@ -34,9 +34,10 @@
 </div>
 
 <script>
-    var id_element = '{{tipoqueja}}';
-    if (id_element != '0')
-        id_element = '{{tipoqueja.id}}';
-    $('#form_tipoqueja').validate();
-    {#validateUniqForm.init();#}
+    {% if tipoqueja %}
+     var tqueja_id = "{{tipoqueja.id}}";
+    {% else %}
+     var tqueja_id = "0";
+    {% endif %}
+    DPVTipoQuejaNom.initForm();
 </script>
