@@ -1,6 +1,6 @@
 {% extends 'dpv_nomencladores/list.html' %}
 {% block page_title %} | Estados {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
@@ -31,7 +31,7 @@
             <div class="card-body">
                 {% if estados %}
                 <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <table id="estado-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -41,7 +41,7 @@
                         <tbody>
                         {% for estado in estados %}
                             <tr>
-                                <td>{{estado.nombre}}</td>
+                                <td>{{estado.nombre | capfirst}}</td>
                                 <td>
                                     {% if perms.dpv_nomencladores.change_estado %}
                                     <a onclick="return abrir_modal('{% url 'estado_edit' estado.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
@@ -79,13 +79,30 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/estados.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
-        } );
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Estados que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Estados' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Estados' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total estados' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Estados' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin estados coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVEstadoNom.init(translations_datatables);
+        });
     </script>
 {% endblock extra_scripts %}
 {% block init_jquery %} {% endblock init_jquery %}

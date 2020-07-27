@@ -14,8 +14,8 @@
             <div class="modal-body">
                 {% csrf_token %}
                 <div class="form-control-sm">
-                    <label>Nombre</label>
-                    {{ form.non_field_errors }}
+                    {{ form.nombre.errors }}
+                    <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
                     {{ form.nombre }}
                 </div>
 
@@ -28,5 +28,10 @@
     </div>
 </div>
 <script>
-    $('#form_estado').validate();
+    {% if estado %}
+     var estado_id = "{{estado.id}}";
+    {% else %}
+     var estado_id = "0";
+    {% endif %}
+    DPVEstadoNom.initForm();
 </script>
