@@ -1,6 +1,6 @@
 {% extends 'dpv_nomencladores/list.html' %}
 {% block page_title %} | Géneros {% endblock page_title %}
-{% load static %}
+{% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
@@ -31,7 +31,7 @@
             <div class="card-body">
                 {% if generos %}
                 <div class="table-responsive">
-                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <table id="genero-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -42,8 +42,8 @@
                         <tbody>
                         {% for genero in generos %}
                             <tr>
-                                <td>{{genero.nombre}}</td>
-                                <td>{{genero.sigla}}</td>
+                                <td>{{genero.nombre | capfirst}}</td>
+                                <td>{{genero.sigla | upper}}</td>
                                 <td>
                                     {% if perms.dpv_nomencladores.change_genero %}
                                     <a onclick="return abrir_modal('{% url 'genero_edit' genero.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
@@ -81,12 +81,29 @@
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/generos.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+            const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Géneros que mostrar' %}",
+                "info_init": "{% trans 'Mostrando' %}",
+                "info_end": "{% trans 'Géneros' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Géneros' %}",
+                "infoFiltered_init": "{% trans 'Filtrado de' %}",
+                "infoFiltered_end": "{% trans 'total géneros' %}",
+                "lengthMenu_init": "{% trans 'Mostrar' %}",
+                "lengthMenu_end": "{% trans 'Géneros' %}",
+                "loadingRecords": "{% trans 'Cargando...' %}",
+                "processing": "{% trans 'Procesando...' %}",
+                "search": "{% trans 'Buscar:' %}",
+                "zeroRecords": "{% trans 'Sin géneros coincidentes encontrados' %}",
+                "first": "{% trans 'Primero' %}",
+                "last": "{% trans 'Ultimo' %}",
+                "next": "{% trans 'Siguiente' %}",
+                "previous": "{% trans 'Anterior' %}"
+            };
+            DPVGeneroNom.init(translations_datatables);
         } );
     </script>
 {% endblock extra_scripts %}

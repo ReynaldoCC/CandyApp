@@ -14,13 +14,13 @@
             <div class="modal-body">
                 {% csrf_token %}
                 <div class="form-control-sm">
-                    <label for="">Nombre</label>
-                    {{ form.non_field_errors }}
+                    {{ form.nombre.errors }}
+                    <label for="{{ form.sigla.id_for_label }}">{{ form.sigla.label }}</label>
                     {{ form.nombre }}
                 </div>
                 <div class="form-control-sm">
-                    <label for="">Sigla</label>
-                    {{ form.non_field_errors }}
+                    {{ form.sigla.errors }}
+                    <label for="{{ form.sigla.id_for_label }}">{{ form.sigla.label }}</label>
                     {{ form.sigla }}
                 </div>
                 <div class="modal-footer">
@@ -33,5 +33,10 @@
 </div>
 
 <script>
-    $('#form_genero').validate();
+    {% if genero %}
+     var gen_id = "{{genero.id}}";
+    {% else %}
+     var gen_id = "0";
+    {% endif %}
+    DPVGeneroNom.initForm();
 </script>
