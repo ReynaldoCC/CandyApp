@@ -1,6 +1,6 @@
 function abrir_modal(url, id=null)
 {
-    $('#add_calle').load(url, function(id)
+    $('#popup').load(url, function(id)
     {
         $(this).modal('show');
     });
@@ -9,12 +9,12 @@ function abrir_modal(url, id=null)
 
 function cerrar_modal()
 {
-    $('#add_calle').modal('hide');
+    $('#popup').modal('hide');
     return false;
 }
 
 
-const DPVPersona = function () {
+var DPVPersona = function () {
     let persona_form;
     let persona;
     let tmp;
@@ -52,8 +52,33 @@ const DPVPersona = function () {
             }
         });
     };
-    const _initPersoNatPane = function () {
-
+    const _initPersoNatPane = function (translations) {
+        $('#personat-table').DataTable({
+            responsive: true,
+            order: [ 0, 'desc' ],
+            sScrollX: "100%",
+            lengthMenu: [20, 35, 50, "All"],
+            language: {
+                "decimal": "",
+                "emptyTable": translations.emptyTable,
+                "info": translations.info_init + " _START_ a _END_ de _TOTAL_ " + translations.info_end,
+                "infoEmpty": translations.infoEmpty,
+                "infoFiltered": "(" + translations.infoFiltered_init + " _MAX_ " + translations.infoFiltered_end + ")",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": translations.lengthMenu_init + " _MENU_ " + translations.lengthMenu_end,
+                "loadingRecords": translations.loadingRecords,
+                "processing": translations.processing,
+                "search":  translations.search,
+                "zeroRecords": translations.zeroRecords,
+                "paginate": {
+                        "first": translations.first,
+                        "last": translations.last,
+                        "next": translations.next,
+                        "previous": translations.previous,
+                }
+            },
+        });
     };
     const _initPersoNatForm = function () {
 
@@ -329,8 +354,8 @@ const DPVPersona = function () {
     };
 
     return {
-        init: function () {
-            _initPersoNatPane();
+        init: function (translations) {
+            _initPersoNatPane(translations);
         },
         initForm: function () {
             persona_form = $("#personat-form");

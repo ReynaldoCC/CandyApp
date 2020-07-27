@@ -2243,8 +2243,8 @@ header .form-inline {
 }
 .modal {
     opacity: 1 !important;
-    margin-top: 5%;
-    padding-top: 10%;
+    /*margin-top: 5%;*/
+    /*padding-top: 10%;*/
 }
 .padding-d-15 {
     padding-top: 15px !important;

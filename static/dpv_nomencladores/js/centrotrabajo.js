@@ -16,12 +16,12 @@ function cerrar_modal()
     return false;
 }
 
-var DPVCalleNom =  function () {
-    let calle_form;
+var DPVUnidadNom =  function () {
+    let unidad_form;
     let validator_form;
 
-    const _initCallePane = function (translations) {
-        $('#calle-table').DataTable({
+    const _initUnidadPane = function (translations) {
+        $('#unidad-table').DataTable({
             responsive: true,
             order: [ 0, 'desc' ],
             lengthMenu: [20, 35, 50, "All"],
@@ -48,49 +48,16 @@ var DPVCalleNom =  function () {
             },
         });
     };
-    const _initCalleForm =  function () {
-        $("#filter_municipios").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-                $("#id_municipios span").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-        $("#check_all_municipios").on("click", function(){
-            $("span:not([style='display: none;']) input[name='municipios']").prop('checked', this.checked);
-        });
-        $('#save_more').on('click', function (e) {
-            e.preventDefault();
-            if (!$('#form_calle').valid())
-                return;
-            create_post(true);
+    const _initUnidadForm =  function () {
+        let $pj_prov = $("#id_municipio").selectize({
+            create: false,
+            placeholder: "Selecione un Municipio",
+            allowEmptyOption: false,
         });
 
-        var error_do = function (xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! Hemos encontrado un error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-              // console.log(xhr);
-            toastr.error(xhr.responseJSON.errmsg.nombre[0], '<h3>Error</h3>');
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        };
-        var success_agree = function (json) {
-            $('#id_nombre').val("");
-            toastr.success('La calle ha sido agregada con exito', '<h3>Todo bien</h3>');
-        };
-        var create_post = function (save_more=false) {
-
-            let form_data = $("#form_calle").serialize();
-            $.ajax({
-                url : "/nomenclador/new_calle/", // the endpoint
-                type : "POST", // http method
-                data : form_data,
-                success : function(json) {
-                    // console.log(json);
-                    success_agree(json);
-                },
-                error : function(xhr,errmsg,err) {
-                    error_do(xhr,errmsg,err);
-                }
-            });
+        const _fill_selectizes_with_values = function () {
+            if ($("#id_municipio").val())
+                $pj_prov[0].selectize.setValue($("#id_municipio").val());
         };
 
         $.validator.setDefaults({
@@ -115,39 +82,76 @@ var DPVCalleNom =  function () {
         $.validator.addMethod("letterswithbasicpuncandspace", function(value, element) {
             return this.optional(element) || /^[a-zA-Z0-9áéíóúÁÉÚÍÓñÑ \-.,()'"\s]+$/i.test(value);
         }, "solo puede tener letras, números, y signos de puntuación básicos");
-        validator_form = calle_form.validate({
+        validator_form = unidad_form.validate({
 			rules: {
 				nombre: {
-				    maxlength: 90,
+				    maxlength: 100,
 				    required: true,
                     letterswithbasicpuncandspace: true,
                     remote: {
-                        url: '/nomenclador/verify_calle/',
+                        url: '/nomenclador/verify_unidad/',
                         type: 'GET',
                         data: {
-                            id: calle_id,
+                            id: unidad_id,
                         },
                     },
+				},
+				numero: {
+				    maxlength: 3,
+                    min: 1,
+				    required: true,
+                    digits: true,
+                    remote: {
+                        url: '/nomenclador/verify_unidad/',
+                        type: 'GET',
+                        data: {
+                            id: unidad_id,
+                        },
+                    },
+				},
+				siglas: {
+				    maxlength: 15,
+				    required: true,
+                    letterswithbasicpuncandspace: true,
+				},
+				municipio: {
+				    required: true,
 				},
 			},
 			messages: {
 				nombre: {
-				    maxlength: "El nombre de la calle no puede tener más de 90 caracteres.",
-				    required: "El nombre de la calle es obligatorio.",
-                    letterswithbasicpuncandspace: "El nombre de la calle solo puede tener letras, números, y signos de puntuación básicos.",
-                    remote: "Ya existe otra calle registrada con ese nombre.",
+				    maxlength: "El nombre de la unidad no puede tener más de 100 caracteres.",
+				    required: "El nombre de la unidad es obligatorio.",
+                    letterswithbasicpuncandspace: "El nombre de la unidad solo puede tener letras, números, y signos de puntuación básicos.",
+                    remote: "Ya existe otra unidad registrada con ese nombre.",
+				},
+				numero: {
+				    maxlength: "El número de la unidad no puede tener más de 3 dígitos.",
+                    min: "El número de la unidad no puede ser menor que 1.",
+				    required: "El número de la unidad es obligatorio.",
+                    digits: "El número de la unidad solo puede tener dígitos.",
+                    remote: "Ya existe otra unidad registrada con ese número.",
+				},
+				siglas: {
+				    maxlength: "Las siglas de la unidad no puede tener más de 15 caracteres.",
+				    required: "Las siglas de la unidad no puede quedar en blanco.",
+                    letterswithbasicpuncandspace: "Las siglas de la unidad solo puede tener letras, números, y signos de puntuación básicos.",
+				},
+				municipio: {
+				    required: "Tiene que seleccionar una municipio.",
 				},
 			},
 		});
+        _fill_selectizes_with_values();
     };
 
     return {
         init: function (translations) {
-            _initCallePane(translations);
+            _initUnidadPane(translations);
         },
         initForm: function () {
-            calle_form = $('#form_calle');
-            _initCalleForm();
+            unidad_form = $('#form_centtrab');
+            _initUnidadForm();
         },
     }
 }();

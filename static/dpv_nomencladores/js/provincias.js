@@ -16,12 +16,12 @@ function cerrar_modal()
     return false;
 }
 
-var DPVCalleNom =  function () {
-    let calle_form;
+var DPVProvinciaNom =  function () {
+    let provincia_form;
     let validator_form;
 
-    const _initCallePane = function (translations) {
-        $('#calle-table').DataTable({
+    const _initProvinciaPane = function (translations) {
+        $('#provincia-table').DataTable({
             responsive: true,
             order: [ 0, 'desc' ],
             lengthMenu: [20, 35, 50, "All"],
@@ -48,50 +48,7 @@ var DPVCalleNom =  function () {
             },
         });
     };
-    const _initCalleForm =  function () {
-        $("#filter_municipios").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-                $("#id_municipios span").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-        $("#check_all_municipios").on("click", function(){
-            $("span:not([style='display: none;']) input[name='municipios']").prop('checked', this.checked);
-        });
-        $('#save_more').on('click', function (e) {
-            e.preventDefault();
-            if (!$('#form_calle').valid())
-                return;
-            create_post(true);
-        });
-
-        var error_do = function (xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! Hemos encontrado un error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-              // console.log(xhr);
-            toastr.error(xhr.responseJSON.errmsg.nombre[0], '<h3>Error</h3>');
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        };
-        var success_agree = function (json) {
-            $('#id_nombre').val("");
-            toastr.success('La calle ha sido agregada con exito', '<h3>Todo bien</h3>');
-        };
-        var create_post = function (save_more=false) {
-
-            let form_data = $("#form_calle").serialize();
-            $.ajax({
-                url : "/nomenclador/new_calle/", // the endpoint
-                type : "POST", // http method
-                data : form_data,
-                success : function(json) {
-                    // console.log(json);
-                    success_agree(json);
-                },
-                error : function(xhr,errmsg,err) {
-                    error_do(xhr,errmsg,err);
-                }
-            });
-        };
+    const _initProvinciaForm =  function () {
 
         $.validator.setDefaults({
             errorClass: 'text-danger',
@@ -115,39 +72,57 @@ var DPVCalleNom =  function () {
         $.validator.addMethod("letterswithbasicpuncandspace", function(value, element) {
             return this.optional(element) || /^[a-zA-Z0-9áéíóúÁÉÚÍÓñÑ \-.,()'"\s]+$/i.test(value);
         }, "solo puede tener letras, números, y signos de puntuación básicos");
-        validator_form = calle_form.validate({
+        validator_form = provincia_form.validate({
 			rules: {
 				nombre: {
 				    maxlength: 90,
 				    required: true,
                     letterswithbasicpuncandspace: true,
                     remote: {
-                        url: '/nomenclador/verify_calle/',
+                        url: '/nomenclador/verify_provincia/',
                         type: 'GET',
                         data: {
-                            id: calle_id,
+                            id: prov_id,
                         },
                     },
 				},
+                numero: {
+				    required: true,
+                    digits: true,
+                    min: 1,
+                    remote: {
+                        url: '/nomenclador/verify_provincia/',
+                        type: 'GET',
+                        data: {
+                            id: prov_id,
+                        },
+                    },
+                },
 			},
 			messages: {
 				nombre: {
-				    maxlength: "El nombre de la calle no puede tener más de 90 caracteres.",
-				    required: "El nombre de la calle es obligatorio.",
-                    letterswithbasicpuncandspace: "El nombre de la calle solo puede tener letras, números, y signos de puntuación básicos.",
-                    remote: "Ya existe otra calle registrada con ese nombre.",
+				    maxlength: "El nombre de la provincia no puede tener más de 90 caracteres.",
+				    required: "El nombre de la provincia es obligatorio.",
+                    letterswithbasicpuncandspace: "El nombre de la provincia solo puede tener letras, números, y signos de puntuación básicos.",
+                    remote: "Ya existe otra provincia registrada con ese nombre.",
 				},
+                numero: {
+				    required: "El número de la provincia es obligatorio.",
+                    digits: "El número de la provincia solo puede tener dígitos.",
+                    min: "El número de la provincia no puede ser menor que 1.",
+                    remote: "Ya existe otra provincia registrada con ese número.",
+                }
 			},
 		});
     };
 
     return {
         init: function (translations) {
-            _initCallePane(translations);
+            _initProvinciaPane(translations);
         },
         initForm: function () {
-            calle_form = $('#form_calle');
-            _initCalleForm();
+            provincia_form = $('#form_provincia');
+            _initProvinciaForm();
         },
     }
 }();

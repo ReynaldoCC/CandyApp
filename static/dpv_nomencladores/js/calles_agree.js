@@ -11,10 +11,7 @@ var AgreeCalle = function () {
             });
         });
         $("#check_all_municipios").on("click", function(){
-            if ($("#check_all_municipios").prop('checked'))
-                $("input[name='municipios']").attr('checked', true);
-            else
-                $("input[name='municipios']").attr('checked', false);
+            $("span:not([style='display: none;']) input[name='municipios']").prop('checked', this.checked);
         });
         $('#form_calle').on('submit', function(event){
             event.preventDefault();
@@ -22,6 +19,12 @@ var AgreeCalle = function () {
             if (!$('#form_calle').valid())
                 return;
             create_post();
+        });
+        $('#save_more').on('click', function (e) {
+            e.preventDefault();
+            if (!$('#form_calle').valid())
+                return;
+            create_post(true);
         });
 
         // This function gets cookie with a given name
@@ -75,7 +78,34 @@ var AgreeCalle = function () {
             }
         });
 
-        function create_post() {
+        function success_do(json) {
+            $('#id_nombre').val(''); // remove the value from the input
+            let id_select_element = $("#selected[type='hidden']").val();
+            let mun_select = $(':not(#form_calle) select[id$=municipio]');
+            mun_select[0].selectize.setValue(mun_select[0].selectize.getValue());
+            $("#"+id_select_element)[0].selectize.on('load', function() {
+                $("#"+id_select_element)[0].selectize.setValue(json.id);
+            });
+        }
+
+        function close_modal() {
+            $('#close_md').click();
+        }
+
+        function error_do(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! Hemos encontrado un error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+              // console.log(xhr);
+            toastr.error(xhr.responseJSON.errmsg.nombre[0], '<h3>Error</h3>');
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+
+        function success_agree(json) {
+            $('#id_nombre').val("");
+            toastr.success('La calle ha sido agregada con exito', '<h3>Todo bien</h3>');
+        }
+
+        function create_post(save_more=false) {
 
             let form_data = $("#form_calle").serialize();
             $.ajax({
@@ -83,24 +113,16 @@ var AgreeCalle = function () {
                 type : "POST", // http method
                 data : form_data,
                 success : function(json) {
-                    $('#id_nombre').val(''); // remove the value from the input
-                    let id_select_element = $("#selected[type='hidden']").val();
-                    //console.log("success"); // another sanity check
-                    let mun_select = $(':not(#form_calle) select[id$=municipio]');
-                    //console.log(mun_select);
-                    mun_select[0].selectize.setValue(mun_select[0].selectize.getValue());
-                    $("#"+id_select_element)[0].selectize.on('load', function() {
-                        $("#"+id_select_element)[0].selectize.setValue(json.id);
-                    });
-                    //setTimeout( function () {$("#"+id_select_element)[0].selectize.setValue(json.id);}, 1500);
-                    $('#close_md').click();
+                    // console.log(json);
+                    success_do(json);
+                    if (!save_more)
+                        close_modal();
+                    else
+                        success_agree(json);
+
                 },
                 error : function(xhr,errmsg,err) {
-                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! Hemos encontrado un error: "+errmsg+
-                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-                      console.log(xhr);
-                    toastr.error(xhr.responseJSON.errmsg.nombre[0], '<h3>Error</h3>');
-                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    error_do(xhr,errmsg,err);
                 }
             });
 
@@ -112,7 +134,4 @@ var AgreeCalle = function () {
         }
     }
 }();
-$(document).ready(function(){
-
-});
 
