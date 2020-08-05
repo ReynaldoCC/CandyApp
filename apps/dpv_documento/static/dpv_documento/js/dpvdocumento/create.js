@@ -254,7 +254,7 @@ var DPVDocumentos = function () {
         $.validator.addMethod('myNotEqualTo', function( value, element, param ) {
 
 			var target = $( param );
-			// console.log('distinctTo', target);
+
 			if ( this.settings.onfocusout && target.not( ".validate-notEqualTo-blur" ).length ) {
 				target.addClass( "validate-notEqualTo-blur" ).on( "blur.validate-notEqualTo", function() {
 					$( element ).valid();
@@ -287,10 +287,6 @@ var DPVDocumentos = function () {
                     required: true,
                     maxlength: 20,
                 },
-                'asunto': {
-                    required: false,
-                    maxlength: 400,
-                },
                 'promovente': {
                     required: true,
                 },
@@ -299,6 +295,7 @@ var DPVDocumentos = function () {
                 },
                 'asunto': {
                     required: true,
+                    maxlength: 400
                 },
                 'dir_numero': {
                     required: false,

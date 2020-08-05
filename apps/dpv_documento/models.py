@@ -26,7 +26,7 @@ class TipoDPVDocumento(LoggerMixin):
         verbose_name = _("Tipo de Documento")
         verbose_name_plural = _("Tipos de Documentos")
         ordering = ("nombre", )
-        unique_together = (("nombre", "deleted_at"), )
+        unique_together = ("nombre", "deleted_at", )
 
     def __str__(self):
         return self.nombre
@@ -75,6 +75,10 @@ class DPVDocumento(LoggerMixin):
         verbose_name_plural = _("Documentos")
         ordering = ("-fecha_registro", "no_registro", )
         unique_together = (("no_registro", "deleted_at"), )
+
+    @property
+    def direccion(self):
+        return "{calle} #{numero} entre {entrecalle1} y {entrecalle2} en el consejo popular {cpopular} del municipio {municipio}".format(calle=self.dir_calle, numero=self.dir_numero, entrecalle1=self.dir_entrecalle1, entrecalle2=self.dir_entrecalle2, cpopular=self.dir_cpopular, municipio=self.municipio) if self.municipio else ""
 
 
 # signals
