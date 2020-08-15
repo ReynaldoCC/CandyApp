@@ -1650,3 +1650,75 @@ def create_reponder_a_json(request):
             data = model_to_dict(resp, fields=['id', 'nombre', ])
             return JsonResponse(data=data, status=201)
     return JsonResponse({"error": "Method not allowed"}, status=405)
+
+
+# --------------------------------------- Red Social ------------------------------------------------
+@permission_required('dpv_nomencladores.view_redsocial', raise_exception=True)
+def index_redsocial(request):
+    redessoc = RedSocial.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_rsocial.html',
+                  {'redes_sociales': redessoc})
+
+
+@permission_required('dpv_nomencladores.add_redsocial')
+def add_redsocial(request):
+    form = RedSocialForm()
+    if request.method == 'POST':
+        form = RedSocialForm(request.POST, request.FILES)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_gobierno')
+    return render(request, 'dpv_nomencladores/form_rsocial.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_redsocial')
+def update_redsocial(request, id_redsoc):
+    redsoc = get_object_or_404(RedSocial, id=id_redsoc)
+    form = RedSocialForm(instance=redsoc)
+    if request.method == 'POST':
+        form = RedSocialForm(request.POST, request.FILES, instance=redsoc)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_gobierno')
+    return render(request, 'dpv_nomencladores/form_rsocial.html', {'form': form, 'red_social': redsoc})
+
+
+@permission_required('dpv_nomencladores.delete_redsocial')
+def delete_redsocial(request, id_redsoc):
+    redsoc = get_object_or_404(RedSocial, id=id_redsoc)
+    if request.method == 'POST':
+        redsoc.perform_log(request=request, af=2)
+        redsoc.delete()
+        return redirect('nomenclador_gobierno')
+    return render(request,
+                  'dpv_nomencladores/delete_rsocial.html',
+                  {'red_social': redsoc})
+
+
+@permission_required('dpv_nomencladores.view_redsocial')
+def verify_redsocial(request):
+    if request.method == 'GET':
+        nombre = dominio = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        if request.GET.get('dominio'):
+            dominio = request.GET.get('dominio')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not ClasificacionRespuesta.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if dominio:
+            if not ClasificacionRespuesta.objects.filter(dominio=dominio).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
