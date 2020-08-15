@@ -289,3 +289,28 @@ class AnonimoForm(forms.ModelForm):
     class Meta:
         model = Anonimo
         fields = ["name", ]
+
+
+class RedSocialForm(forms.ModelForm):
+
+    class Meta:
+        model = RedSocial
+        fields = ["nombre", "logo", ]
+        widgets = {
+            "nombre": forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
+            "dominio": forms.URLInput(attrs={'placeholder': 'Dominio', 'class': 'form-control'}),
+            "logo": forms.FileInput(attrs={'placeholder': 'Subir un Logo', 'class': 'form-control'}),
+        }
+
+
+class ProcedenciaWebForm(forms.ModelForm):
+
+    class Meta:
+        model = ProcedenciaWeb
+        fields = ["nombre", "perfil", "email", "red_social", ]
+        widgets = {
+            "nombre": forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
+            "perfil": forms.TextInput(attrs={'placeholder': 'Perfil', 'class': 'form-control'}),
+            "email": forms.EmailInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
+            "red_social": forms.Select(attrs={'placeholder': 'Seleccione una Red Social', 'class': 'form-control'}),
+        }
