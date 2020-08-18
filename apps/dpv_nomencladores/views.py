@@ -1745,28 +1745,28 @@ def add_procedenciaweb(request):
 
 
 @permission_required('dpv_nomencladores.change_procedenciaweb')
-def update_procedenciaweb(request, id_redsoc):
-    redsoc = get_object_or_404(ProcedenciaWeb, id=id_redsoc)
-    form = ProcedenciaWebForm(instance=redsoc)
+def update_procedenciaweb(request, id_pweb):
+    pweb = get_object_or_404(ProcedenciaWeb, id=id_pweb)
+    form = ProcedenciaWebForm(instance=pweb)
     if request.method == 'POST':
-        form = ProcedenciaWebForm(request.POST, request.FILES, instance=redsoc)
+        form = ProcedenciaWebForm(request.POST, request.FILES, instance=pweb)
         if form.is_valid():
             model = form.save()
             model.perform_log(request=request, af=1)
         return redirect('nomenclador_gobierno')
-    return render(request, 'dpv_nomencladores/form_rsocial.html', {'form': form, 'red_social': redsoc})
+    return render(request, 'dpv_nomencladores/form_rsocial.html', {'form': form, 'pweb': pweb})
 
 
 @permission_required('dpv_nomencladores.delete_procedenciaweb')
-def delete_procedenciaweb(request, id_redsoc):
-    redsoc = get_object_or_404(ProcedenciaWeb, id=id_redsoc)
+def delete_procedenciaweb(request, id_pweb):
+    pweb = get_object_or_404(ProcedenciaWeb, id=id_pweb)
     if request.method == 'POST':
-        redsoc.perform_log(request=request, af=2)
-        redsoc.delete()
+        pweb.perform_log(request=request, af=2)
+        pweb.delete()
         return redirect('nomenclador_gobierno')
     return render(request,
                   'dpv_nomencladores/delete_pweb.html',
-                  {'red_social': redsoc})
+                  {'pweb': pweb})
 
 
 @permission_required('dpv_nomencladores.view_procedenciaweb')
