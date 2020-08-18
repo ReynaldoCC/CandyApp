@@ -1,0 +1,41 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if pweb %}
+        <form role="form" action="{% url 'pweb_edit' pweb.id %}" method="post" id="form_pweb">
+        {% else %}
+        <form role="form" action="{% url 'pweb_new' %}" method="post" id="form_pweb">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Procedencia Web</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                {% for field in form  %}
+                <div class="form-control-sm">
+                    {{ field.label_tag }}
+                    {{ field.errors }}
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    {% if pweb %}
+        var pweb_id = "{{ pweb.id }}";
+    {% else %}
+        var pweb_id = "0";
+    {% endif %}
+{#    $(document).ready(function(){#}
+{#        DPVProvinciaNom.initForm();#}
+{#    });#}
+</script>
