@@ -4,8 +4,9 @@
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_documento/css/dpvdocumento/dpvdocumento.css' %}">
-    <link rel="stylesheet" href="{% static 'dpv_documento/css/fixedColumns.dataTables.scss' %}">
-    <link rel="stylesheet" href="{% static 'dpv_documento/css/fixedColumns.bootstrap.scss' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/dataTables.fixedColumns.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/fixedColumns.bootstrap.min.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Gestión de Documentos {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -21,7 +22,7 @@
     {% endif %}
 {% endblock breadcrumbs %}
 {% block content_page %}
-    <div class="col-md-12" style="width: calc(100vw - 280px);">
+    <div class="col-md-12 overrided-width">
         <div class="card">
             <div class="card-header">
                 <strong class="card-title">Documentos</strong>
@@ -73,25 +74,33 @@
                                 <td class="text-nowrap">{{ doc.fecha_registro|date:"d/m/Y" }}</td>
                                 <td class="text-nowrap">{{ doc.no_registro }}</td>
                                 <td class="text-nowrap">{{ doc.no_refer }}</td>
-                                <td class="text-nowrap">{{ doc.procedencia }}</td>
+                                <td class="text-nowrap">{{ doc.procedencia|default:"" }}</td>
                                 <td class="text-nowrap">{{ doc.promovente }}</td>
-                                <td class="text-nowrap">{{ doc.clasificacion }}</td>
+                                <td class="text-nowrap">{{ doc.clasificacion|default:"" }}</td>
                                 <td class="text-nowrap">{{ doc.destino }}</td>
-                                <td class="text-nowrap">{{ doc.fecha_entrega|date:"d/m/Y" }}</td>
-                                <td class="text-nowrap">{{ doc.fecha_termino|date:"d/m/Y" }}</td>
-                                <td class="text-nowrap">{{ doc.dir_calle }} #{{ doc.dir_numero }} entre {{ doc.dir_entrecalle1 }} y {{ doc.dir_entrecalle2 }} en el consejo popular {{ doc.dir_cpopular }} del municipio {{ doc.municipio }}</td>
-                                <td class="text-nowrap">{{ doc.asunto }}</td>
-                                <td class="text-nowrap">{{ doc.respuesta_a }}</td>
                                 <td class="text-nowrap">
-<!--                                    {% if perms.dpv_documento.view_dpvdocumento %}-->
-<!--                                        <a onclick="return abrir_modal('{% url 'docs_detail' doc.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>-->
-<!--                                    {% endif %}-->
-<!--                                    {% if perms.dpv_documento.change_dpvdocumento %}-->
-<!--                                        <a href="{% url 'docs_edit' doc.id %}" type="button" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></a>-->
-<!--                                    {% endif %}-->
-<!--                                    {% if perms.dpv_documento.delete_dpvdocumento %}-->
-<!--                                        <a onclick="return abrir_modal('{% url 'docs_delete' doc.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>-->
-<!--                                    {% endif %}-->
+                                    {% if doc.fecha_entrega %}
+                                        {{ doc.fecha_entrega|date:"d/m/Y" }}
+                                    {% else %}
+                                        {% if perms.dpv_documento.change_dpvdocumento %}
+                                        <a onclick="return abrir_modal('{% url 'docs_setdate' doc.id %}')" type="button" class="btn btn-info btn-sm" title="Ingresar fecha de entrega"><i class="fa fa-calendar"></i></a>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td class="text-nowrap">{{ doc.fecha_termino|date:"d/m/Y" }}</td>
+                                <td class="text-nowrap">{{ doc.direccion }}</td>
+                                <td class="text-nowrap">{{ doc.asunto }}</td>
+                                <td class="text-nowrap">{{ doc.respuesta_a|default:"" }}</td>
+                                <td class="text-nowrap">
+                                    {% if perms.dpv_documento.view_dpvdocumento and doc.archivo_digital %}
+                                        <a href="/media/{{ doc.archivo_digital }}" target="_blank" type="button" class="btn btn-primary btn-sm" title="Ver documento digital"><i class="fa fa-eye"></i></a>
+                                    {% endif %}
+                                    {% if perms.dpv_documento.change_dpvdocumento %}
+                                        <a href="{% url 'docs_edit' doc.id %}" type="button" class="btn btn-warning btn-sm" title="Editar documento"><i class="fa fa-pencil"></i></a>
+                                    {% endif %}
+                                    {% if perms.dpv_documento.delete_dpvdocumento %}
+                                        <a onclick="return abrir_modal('{% url 'docs_delete' doc.id %}')" type="button" class="btn btn-danger btn-sm" title="Eliminar documento"><i class="fa fa-trash-o"></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -125,54 +134,6 @@
     <script src="{% static 'dpv_documento/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_documento/js/validation.functions.js' %}"></script>
     <script src="{% static 'dpv_documento/js/dataTables.fixedColumns.js' %}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var table = $('#doc-table').DataTable({
-                responsive: true,
-                //scrollX: 850,
-                // scrollX: true,
-                // scrollCollapse: true,
-                order: [ 0, 'desc' ],
-  		        sScrollX: "100%",
- 		        // sScrollXInner: "150%",
-                // fixedColumns:   {
-                //     leftColumns: 1,
-                //     rightColumns: 1,
-                // },
-                // dom:
-                //         "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                //         "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>" +
-                //         "<'row'<'col-sm-12'tr>>" +
-                //         "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                //         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // read more: https://datatables.net/examples/basic_init/dom.html
-                language: {
-                    "decimal": "",
-                    "emptyTable": "{% trans 'No hay Documentos que mostrar' %}",
-                    "info": "{% trans 'Mostrando' %} _START_ a _END_ de _TOTAL_ {% trans 'Documentos' %}",
-                    "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Documentos' %}",
-                    "infoFiltered": "({% trans 'Filtrado de' %} _MAX_ {% trans 'total documentos' %})",
-                    "infoPostFix": "",
-                    "thousands": ",",
-                    "lengthMenu": "{% trans 'Mostrar' %} _MENU_ {% trans 'Documentos' %}",
-                    "loadingRecords": "{% trans 'Cargando...' %}",
-                    "processing": "{% trans 'Procesando...' %}",
-                    "search": "{% trans 'Buscar:' %}",
-                    "zeroRecords": "{% trans 'Sin documentos coincidentes encontrados' %}",
-                    "paginate": {
-                            "first": "{% trans 'Primero' %}",
-                            "last": "{% trans 'Ultimo' %}",
-                            "next": "{% trans 'Siguiente' %}",
-                            "previous": "{% trans 'Anterior' %}"
-                    }
-                },
-            });
-            $('button.toggle-column').on( 'click', function (e) {
-                e.preventDefault();
-                $(this).toggleClass('btn-secondary').toggleClass('btn-outline-secondary')
-                var column = table.column( $(this).attr('data-column') );
-                column.visible( ! column.visible() );
-            });
-        });
-    </script>
+    <script src="{% static 'dpv_documento/js/dpvdocumento/list.js' %}"></script>
 {% endblock extra_scripts %}
 {% block init_jquery %} {% endblock init_jquery %}

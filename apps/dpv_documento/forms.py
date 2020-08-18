@@ -40,6 +40,25 @@ class DPVDocumentoForm(forms.ModelForm):
         }
 
 
+class DVPDocumentoEditForm(forms.ModelForm):
+
+    class Meta:
+        model = DPVDocumento
+        fields = ["asunto", "destino", "respuesta_a", ]
+        widgets = {
+            "asunto": forms.TextInput(attrs={"class": "form-control"}),
+            "destino": forms.Select(attrs={"class": "form-control"}),
+            "respuesta_a": forms.Select(attrs={"class": "form-control"}),
+        }
+
+
+class DVPDocumentoFechaEntregaForm(forms.ModelForm):
+
+    class Meta:
+        model = DPVDocumento
+        fields = ["fecha_entrega", ]
+
+
 class TipoDPVDocumentoForm(forms.ModelForm):
 
     class Meta:
@@ -49,7 +68,6 @@ class TipoDPVDocumentoForm(forms.ModelForm):
 
     widgets = {
         "nombre": forms.TextInput(attrs={"class": "form-control"}),
-        # "dias_proceso": forms.TextInput(attrs={"class": "form-control"}),
     }
 
 

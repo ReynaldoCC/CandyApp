@@ -1710,12 +1710,86 @@ def verify_redsocial(request):
         if not id:
             id = 0
         if nombre:
-            if not ClasificacionRespuesta.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
+            if not RedSocial.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if dominio:
-            if not ClasificacionRespuesta.objects.filter(dominio=dominio).exclude(id=id).exists():
+            if not RedSocial.objects.filter(dominio=dominio).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
+# --------------------------------------- Precedencia Web ------------------------------------------------
+@permission_required('dpv_nomencladores.view_procedenciaweb', raise_exception=True)
+def index_procedenciaweb(request):
+    pwebs = ProcedenciaWeb.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_pweb.html',
+                  {'pwebs': pwebs})
+
+
+@permission_required('dpv_nomencladores.add_procedenciaweb')
+def add_procedenciaweb(request):
+    form = ProcedenciaWebForm()
+    if request.method == 'POST':
+        form = ProcedenciaWebForm(request.POST, request.FILES)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_gobierno')
+    return render(request, 'dpv_nomencladores/form_pweb.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_procedenciaweb')
+def update_procedenciaweb(request, id_redsoc):
+    redsoc = get_object_or_404(ProcedenciaWeb, id=id_redsoc)
+    form = ProcedenciaWebForm(instance=redsoc)
+    if request.method == 'POST':
+        form = ProcedenciaWebForm(request.POST, request.FILES, instance=redsoc)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_gobierno')
+    return render(request, 'dpv_nomencladores/form_rsocial.html', {'form': form, 'red_social': redsoc})
+
+
+@permission_required('dpv_nomencladores.delete_procedenciaweb')
+def delete_procedenciaweb(request, id_redsoc):
+    redsoc = get_object_or_404(ProcedenciaWeb, id=id_redsoc)
+    if request.method == 'POST':
+        redsoc.perform_log(request=request, af=2)
+        redsoc.delete()
+        return redirect('nomenclador_gobierno')
+    return render(request,
+                  'dpv_nomencladores/delete_pweb.html',
+                  {'red_social': redsoc})
+
+
+@permission_required('dpv_nomencladores.view_procedenciaweb')
+def verify_procedenciaweb(request):
+    if request.method == 'GET':
+        perfil = email = False
+        if request.GET.get('perfil'):
+            perfil = request.GET.get('perfil')
+        if request.GET.get('email'):
+            email = request.GET.get('email')
+        id = request.GET.get('id')
+        red_social = request.GET.get('red_social')
+        if not id:
+            id = 0
+        if not red_social:
+            return JsonResponse("", safe=False, status=200)
+        if perfil:
+            if not ProcedenciaWeb.objects.filter(perfil__iexact=perfil, red_social_id=red_social).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if email:
+            if not ProcedenciaWeb.objects.filter(email=email, red_social_id=red_social).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)

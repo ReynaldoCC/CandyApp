@@ -1,0 +1,38 @@
+{% load static %}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form action="{% url 'docs_setdate' doc.id %}" method="post" id="formodal_setdate">{% csrf_token %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Ingresar fecha de entrega</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col col-md-3">{{ form.fecha_entrega.label_tag }}</div>
+                            <div class="col-12 col-md-9">
+                                {{ form.fecha_entrega.errors }}
+                                {{ form.fecha_entrega }}
+                                <small class="form-text text-muted">{{ form.fecha_entrega.help_text }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="close_md" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" onclick="return ">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'dpv_base/js/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js' %}"></script>
+<script>
+    jQuery(document).ready(function() {
+        DPVDocumento.initSetDateModal();
+    });
+</script>

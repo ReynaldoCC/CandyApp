@@ -13,17 +13,16 @@ def configurar_numero_registro(instancia=None, sender=None):
         if len(ultimo_numero) < 11:
             if len(ultimo_numero) == 10:
                 try:
-                    consecutivo = str(int(ultimo_numero[10:])+1).zfill(4)
+                    consecutivo = str(int(ultimo_numero[9:])+1).zfill(4)
                 except:
                     consecutivo = '0001'
             else:
                 try:
-                    consecutivo = str(int(ultimo_doc.numero[6:])+1).zfill(4)
+                    consecutivo = str(int(ultimo_doc.numero[5:])+1).zfill(4)
                 except:
                     consecutivo = '0001'
-                # revisar a partir de que pardete del codigo falla
         elif len(ultimo_numero) < 10:
-            consecutivo = str(int(ultimo_numero[6:])+1).zfill(4)
+            consecutivo = str(int(ultimo_numero[5:])+1).zfill(4)
         else:
             consecutivo = str(int(ultimo_numero[-4:])+1).zfill(4)
 

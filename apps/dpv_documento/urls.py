@@ -6,6 +6,9 @@ from .views import (
     delete_typedocs,
     list_docs,
     create_doc,
+    update_doc,
+    setdate_doc,
+    delete_docs,
     typedoc_filter_con_respuesta,
     create_procedencia,
 )
@@ -20,9 +23,9 @@ urlpatterns = [
     # DOCUMENTOS
     path('', list_docs, name='list_docs'),
     path('add/', create_doc, name='docs_add'),
-    path('edit/<int:id_doc>/', list_docs, name='docs_edit'),
-    path('remove/<int:id_doc>/', list_docs, name='docs_delete'),
-    path('<int:id_doc>/', list_docs, name='docs_detail'),
+    path('edit/<int:doc_id>/', update_doc, name='docs_edit'),
+    path('setdate/<int:doc_id>/', setdate_doc, name='docs_setdate'),
+    path('remove/<int:doc_id>/', delete_docs, name='docs_delete'),
     # PROCEDENCIA
     path('procedencia/add/', create_procedencia, name='create_procedencia'),
 
