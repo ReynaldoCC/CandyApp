@@ -150,4 +150,10 @@ urlpatterns = [
 
     path('responder/add/json', create_reponder_a_json, name="resp_new_json"),
 
+    path('pweb/', index_procedenciaweb, name='nomenclador_pweb'),
+    path('nuevo_pweb/', add_procedenciaweb, name='pweb_new'),
+    path('verify_pweb/', verify_procedenciaweb, name='pweb_verify'),
+    path('editar_pweb/<int:id_pweb>', update_procedenciaweb, name='pweb_edit'),
+    path('eliminar_pweb/<int:id_pweb>', delete_procedenciaweb, name='pweb_delete'),
+
 ]
