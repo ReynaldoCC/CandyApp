@@ -96,21 +96,6 @@
                 <a href="{% url 'nomenclador_prensaescrita' %}"><i class="fa fa-tag"></i>Prensa Escrita</a>
             </li>
             {% endif %}
-{#			{% if perms.dpv_nomencladores.view_telefono %}#}
-{#            <li class="{% if '/nomenclador/telefono/' in request.path %} active {% endif %}">#}
-{#                <a href="{% url 'nomenclador_telefono' %}"><i class="fa fa-tag"></i>Teléfono</a>#}
-{#            </li>#}
-{#            {% endif %}#}
-{#			{% if perms.dpv_nomencladores.view_email %}#}
-{#            <li class="{% if '/nomenclador/email/' in request.path %} active {% endif %}">#}
-{#                <a href="{% url 'nomenclador_email' %}"><i class="fa fa-tag"></i>Dirección de Correo Electrónico</a>#}
-{#            </li>#}
-{#            {% endif %}#}
-			{% if perms.dpv_nomencladores.view_gobierno %}
-            <li class="{% if '/nomenclador/gobierno/' in request.path %} active {% endif %}">
-                <a href="{% url 'nomenclador_gobierno' %}"><i class="fa fa-tag"></i>Gobierno</a>
-            </li>
-            {% endif %}
 			{% if perms.dpv_nomencladores.view_organizacion %}
             <li class="{% if '/nomenclador/organizacion/' in request.path %} active {% endif %}">
                 <a href="{% url 'nomenclador_organizacion' %}"><i class="fa fa-tag"></i>Organización</a>
