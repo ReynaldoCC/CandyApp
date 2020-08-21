@@ -177,7 +177,7 @@ class Organizacion(LoggerMixin):
     siglas = models.CharField(max_length=15, verbose_name="Siglas", default="",
                               validators=[MaxLengthValidator(10), not_special_char])
     email = models.EmailField(verbose_name=_("Correo Electrónico"), blank=True, default="",
-                              help_text=_("Correo eletrónico de contacto de la prensa"))
+                              help_text=_("Correo eletrónico de contacto de la organización"))
     telefono = models.CharField(verbose_name=_("Teléfono"), blank=True, default="", max_length=8,
                                 validators=[MinLengthValidator(8), MaxLengthValidator(8), only_numbers],
                                 help_text=_("Teléfono de contacto de la organización"))
