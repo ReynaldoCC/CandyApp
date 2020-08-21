@@ -1164,20 +1164,6 @@ def add_procedencia(request):
     )
 
 
-@permission_required('dpv_nomencladores.change_procedencia')
-def update_procedencia(request, id_procedencia):
-    procedencia = Procedencia.objects.get(id=id_procedencia)
-    if request.method == 'POST':
-        form = ProcedenciaForm(request.POST, instance=procedencia)
-        if form.is_valid():
-            model = form.save()
-            model.perform_log(request=request, af=1)
-        return redirect('nomenclador_procedencia')
-    else:
-        form = ProcedenciaForm(instance=procedencia)
-    return render(request, 'dpv_nomencladores/form_procedencia.html', {'form': form, 'procedencia': procedencia})
-
-
 @permission_required('dpv_nomencladores.delete_procedencia')
 def delete_procedencia(request, id_procedencia):
     procedencia = Procedencia.objects.get(id=id_procedencia)

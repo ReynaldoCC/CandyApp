@@ -92,7 +92,6 @@ urlpatterns = [
 
     path('procedencia/', index_procedencia, name='nomenclador_procedencia'),
     path('nuevo_procedencia/', add_procedencia, name='procedencia_new'),
-    path('editar_procedencia/<int:id_procedencia>', update_procedencia, name='procedencia_edit'),
     path('eliminar_procedencia/<int:id_procedencia>', delete_procedencia, name='procedencia_delete'),
 
     path('tipoprocedencia/', index_tipoprocedencia, name='nomenclador_tipoprocedencia'),
