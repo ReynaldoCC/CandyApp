@@ -194,7 +194,6 @@ class ProcedenciaForm(forms.ModelForm):
         fields = ['nombre', 'tipo', ]
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
-            'enviar': forms.CheckboxInput(attrs={"class": "form-check-input"}),
             'tipo': forms.Select(attrs={'placeholder': 'Seleccione', 'class': 'form-control'}),
         }
 
