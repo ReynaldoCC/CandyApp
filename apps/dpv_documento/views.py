@@ -4,11 +4,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from apps.dpv_nomencladores.models import TipoProcedencia, Procedencia, PrensaEscrita, Telefono, Email, Gobierno, \
+from apps.dpv_nomencladores.models import TipoProcedencia, Procedencia, PrensaEscrita, Telefono, Email, \
     Organizacion
 from apps.dpv_persona.models import PersonaNatural, PersonaJuridica
 from apps.dpv_quejas.forms import QPrensaEscritaForm, AQPersonaNaturalForm, QTelefonoForm, QEmailForm, \
-    QPersonaJuridicaForm, QGobiernoForm, QOrganizationForm, QAnonimoForm
+    QPersonaJuridicaForm, QOrganizationForm, QAnonimoForm
 from .models import TipoDPVDocumento, DPVDocumento
 from django.forms.models import model_to_dict
 from .forms import TipoDPVDocumentoForm, DPVDocumentoForm, DVPDocumentoEditForm, DVPDocumentoFechaEntregaForm, DocsProcedenciaForm
@@ -150,7 +150,6 @@ def create_procedencia(request):
     tform = QTelefonoForm(prefix='telefono', empty_permitted=True, use_required_attribute=False)
     eform = QEmailForm(prefix='email', empty_permitted=True, use_required_attribute=False)
     pjform = QPersonaJuridicaForm(prefix='empresa', empty_permitted=True, use_required_attribute=False)
-    gform = QGobiernoForm(prefix='gob', empty_permitted=True, use_required_attribute=False)
     oform = QOrganizationForm(prefix='organiza', empty_permitted=True, use_required_attribute=False)
 
 
@@ -204,14 +203,6 @@ def create_procedencia(request):
             else:
                 procedence_form = pjform = QPersonaJuridicaForm(request.POST, prefix='empresa', empty_permitted=True,
                                                                 use_required_attribute=False)
-        elif request.POST.get('gob-nombre'):
-            gob = Gobierno.objects.filter(nombre=request.POST.get('gob-nombre')[0])
-            if gob:
-                procedence_form = gform = QGobiernoForm(request.POST, prefix='gob', use_required_attribute=False,
-                                                        instance=gob.first(), empty_permitted=True)
-            else:
-                procedence_form = gform = QGobiernoForm(request.POST, prefix='gob', use_required_attribute=False,
-                                                        empty_permitted=True)
         elif request.POST.get('organiza-nombre'):
             org = Organizacion.objects.filter(nombre=request.POST.get('organiza-nombre')[0])
             if org:
@@ -248,7 +239,6 @@ def create_procedencia(request):
             'eform': eform,
             'oform': oform,
             'peform': peform,
-            'gform': gform,
             'aqform': aqform
         }
     )

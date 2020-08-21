@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from apps.dpv_persona.forms import PersonaNaturalForm, PersonaJuridicaForm
 from apps.dpv_nomencladores.forms import TelefonoForm, EmailForm, OrganismoForm, OrganizationForm, PrensaEscritaForm, \
-    GobiernoForm, AnonimoForm
+    AnonimoForm
 from .models import *
 
 
@@ -202,14 +202,6 @@ class QPrensaEscritaForm(PrensaEscritaForm):
                                                    'placeholder': 'Nombre'})
         self.fields['siglas'].widget.attrs.update({'class': 'form-control',
                                                    'placeholder': 'siglas'})
-
-
-class QGobiernoForm(GobiernoForm):
-
-    def __init__(self, *args, **kwargs):
-        super(QGobiernoForm, self).__init__(*args, **kwargs)
-        self.fields['nombre'].widget.attrs.update({'class': 'form-control',
-                                                   'placeholder': 'Nombre'})
 
 
 class QAnonimoForm(AnonimoForm):

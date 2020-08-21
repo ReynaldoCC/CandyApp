@@ -97,7 +97,6 @@ def agregar_queja(request):
     orgform = QOrganismoForm(prefix='organismo', empty_permitted=True, use_required_attribute=False)
     oform = QOrganizationForm(prefix='organiza', empty_permitted=True, use_required_attribute=False)
     peform = QPrensaEscritaForm(prefix='pe', empty_permitted=True, use_required_attribute=False)
-    gform = QGobiernoForm(prefix='gob', empty_permitted=True, use_required_attribute=False)
     person_list = None
     if request.method == "POST":
         form = QuejaForm(request.POST, prefix='queja')
@@ -150,14 +149,6 @@ def agregar_queja(request):
             else:
                 procedence_form = pjform = QPersonaJuridicaForm(request.POST, prefix='empresa', empty_permitted=True,
                                                                 use_required_attribute=False)
-        elif request.POST.get('gob-nombre'):
-            gob = Gobierno.objects.filter(nombre=request.POST.get('gob-nombre')[0])
-            if gob:
-                procedence_form = gform = QGobiernoForm(request.POST, prefix='gob', use_required_attribute=False,
-                                                        instance=gob.first(), empty_permitted=True)
-            else:
-                procedence_form = gform = QGobiernoForm(request.POST, prefix='gob', use_required_attribute=False,
-                                                        empty_permitted=True)
         elif request.POST.get('organiza-nombre'):
             org = Organizacion.objects.filter(nombre=request.POST.get('organiza-nombre')[0])
             if org:
@@ -237,9 +228,6 @@ def agregar_queja(request):
                     'empresa-codigo_reuup'):
                 pjform = procedence_form
                 pjform.initial = model_to_dict(procedence_form.instance)
-            elif request.POST.get('gob-nombre'):
-                gform = procedence_form
-                gform.initial = model_to_dict(procedence_form.instance)
             elif request.POST.get('organiza-nombre'):
                 oform = procedence_form
                 oform.initial = model_to_dict(procedence_form.instance)
@@ -255,7 +243,6 @@ def agregar_queja(request):
                                                             'orgform': orgform,
                                                             'oform': oform,
                                                             'peform': peform,
-                                                            'gform': gform,
                                                             'person_list': person_list,
                                                             'aqform': aqform})
     return render(request, 'dpv_quejas/form.html', {'form': form,
@@ -266,7 +253,6 @@ def agregar_queja(request):
                                                     'orgform': orgform,
                                                     'oform': oform,
                                                     'peform': peform,
-                                                    'gform': gform,
                                                     'person_list': person_list,
                                                     'aqform': aqform})
 
