@@ -4,6 +4,11 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse_lazy
+
+from apps.dpv_persona.forms import PersonaJuridicaForm, PersonaNaturalForm
+from apps.dpv_persona.models import PersonaJuridica, PersonaNatural
+
 from .forms import *
 from .models import *
 
@@ -1026,17 +1031,137 @@ def index_procedencia(request):
     return render(request, 'dpv_nomencladores/list_procedencia.html', {'procedencias': procedencias})
 
 
+
+
+
 @permission_required('dpv_nomencladores.add_procedencia')
 def add_procedencia(request):
+    form = ProcedenciaForm(prefix='procedencia')
+    peform = PrensaEscritaForm(prefix='pe', empty_permitted=True, use_required_attribute=False)
+    aqform = PersonaNaturalForm(prefix='person_procedence', empty_permitted=True, use_required_attribute=False)
+    tform = TelefonoForm(prefix='telefono', empty_permitted=True, use_required_attribute=False)
+    eform = EmailForm(prefix='email', empty_permitted=True, use_required_attribute=False)
+    pjform = PersonaJuridicaForm(prefix='empresa', empty_permitted=True, use_required_attribute=False)
+    oform = OrganizationForm(prefix='organiza', empty_permitted=True, use_required_attribute=False)
+    orgform = OrganismoForm(prefix='organism', empty_permitted=True, use_required_attribute=False)
+    pwform = ProcedenciaWebForm(prefix='web', empty_permitted=True, use_required_attribute=False)
+
     if request.method == 'POST':
-        form = ProcedenciaForm(request.POST)
-        if form.is_valid():
-            model = form.save()
-            model.perform_log(request=request, af=0)
-        return redirect('nomenclador_procedencia')
-    else:
-        form = ProcedenciaForm()
-    return render(request, 'dpv_nomencladores/form_procedencia.html', {'form': form})
+        data = {}
+        status = 200
+
+        procedence_form = AnonimoForm()
+
+        if request.POST.get('pe-nombre'):
+            pe = PrensaEscrita.objects.filter(nombre=request.POST.get('pe-nombre'))
+            if pe:
+                procedence_form = peform = PrensaEscritaForm(request.POST, prefix='pe', use_required_attribute=False,
+                                                              instance=pe.first(), empty_permitted=True)
+            else:
+                procedence_form = peform = PrensaEscritaForm(request.POST, prefix='pe',
+                                                              use_required_attribute=False, empty_permitted=True)
+        elif request.POST.get('person_procedence-ci') and request.POST.get('person_procedence-nombre'):
+            pn = PersonaNatural.objects.filter(ci=request.POST.get('person_procedence-ci'))
+            if pn:
+                procedence_form = aqform = PersonaNaturalForm(request.POST, prefix='person_procedence',
+                                                                use_required_attribute=False,
+                                                                instance=pn.first(), empty_permitted=True)
+            else:
+                procedence_form = aqform = PersonaNaturalForm(request.POST, prefix='person_procedence',
+                                                                use_required_attribute=False, empty_permitted=True)
+        elif request.POST.get('web-perfil') and request.POST.get('web-email'):
+            pw = ProcedenciaWeb.objects.filter(perfil__iexact=request.POST.get('web-perfil'),
+                                               email=request.POST.get('web-email'),
+                                               red_social=request.POST.get('web-red_social'))
+            if pw:
+                procedence_form = pwform = ProcedenciaWebForm(request.POST, prefix='web',
+                                                              use_required_attribute=False,
+                                                              instance=pw.first(), empty_permitted=True)
+            else:
+                procedence_form = pwform = ProcedenciaWebForm(request.POST, prefix='web',
+                                                              use_required_attribute=False, empty_permitted=True)
+        elif request.POST.get('organism-nombre'):
+            org = ProcedenciaWeb.objects.filter(nombre__iexact=request.POST.get('organism-nombre'))
+            if org:
+                procedence_form = orgform = OrganismoForm(request.POST, prefix='organism',
+                                                          use_required_attribute=False,
+                                                          instance=org.first(), empty_permitted=True)
+            else:
+                procedence_form = orgform = OrganismoForm(request.POST, prefix='organism',
+                                                          use_required_attribute=False, empty_permitted=True)
+        elif request.POST.get('telefono-numero'):
+            tel = Telefono.objects.filter(numero=request.POST.get('telefono-numero'))
+            if tel:
+                procedence_form = tform = TelefonoForm(request.POST, prefix='telefono', use_required_attribute=False,
+                                                        instance=tel.first(), empty_permitted=True)
+            else:
+                procedence_form = tform = TelefonoForm(request.POST, prefix='telefono', use_required_attribute=False,
+                                                        empty_permitted=True)
+        elif request.POST.get('email-email'):
+            ema = Email.objects.filter(email=request.POST.get('email-email'))
+            if ema:
+                procedence_form = EmailForm(request.POST, prefix='email', use_required_attribute=False,
+                                                     instance=ema.first(), empty_permitted=True)
+            else:
+                procedence_form = EmailForm(request.POST, prefix='email', use_required_attribute=False,
+                                                     empty_permitted=True)
+        elif request.POST.get('empresa-nombre') and request.POST.get('empresa-codigo_nit') and request.POST.get('empresa-codigo_reuup'):
+            pj = PersonaJuridica.objects.filter(codigo_nit=request.POST.get('empresa-codigo_nit'),
+                                                codigo_reuup=request.POST.get('empresa-codigo_reuup'),
+                                                nombre=request.POST.get('empresa-nombre'))
+            if pj:
+                procedence_form = pjform = PersonaJuridicaForm(request.POST, prefix='empresa',
+                                                                instance=pj.first(), empty_permitted=True,
+                                                                use_required_attribute=False)
+            else:
+                procedence_form = pjform = PersonaJuridicaForm(request.POST, prefix='empresa', empty_permitted=True,
+                                                                use_required_attribute=False)
+        elif request.POST.get('organiza-nombre'):
+            org = Organizacion.objects.filter(nombre=request.POST.get('organiza-nombre')[0])
+            if org:
+                procedence_form = oform = OrganizationForm(request.POST, prefix='organiza',
+                                                            use_required_attribute=False,
+                                                            instance=org.first(), empty_permitted=True)
+            else:
+                procedence_form = oform = OrganizationForm(request.POST, prefix='organiza',
+                                                            use_required_attribute=False,
+                                                            empty_permitted=True)
+
+        if procedence_form.is_valid():
+            content_type_form = procedence_form.save()
+            if content_type_form:
+                content_type = ContentType.objects.get_for_model(content_type_form)
+                proc = Procedencia.objects.create(objecto_contenido=content_type_form, tipo_contenido=content_type, id_objecto=content_type_form.id)
+                proc.save_and_log(request=request, af=0)
+            else:
+                proc, pcreated = Procedencia.objects.get_or_create(nombre="Anónimo", tipo=TipoProcedencia.objects.filter(id=1).first())
+            if request.is_ajax():
+                data = model_to_dict(proc)
+                data["message"] = "procedencia agregada satisfactoriamente"
+                return JsonResponse(data=data, status=status)
+            else:
+                messages.success(request, "procedencia agregada satisfactoriamente")
+                return redirect(reverse_lazy("nomenclador_procedencia"))
+        else:
+            data['errors'] = form.errors
+            status = 400
+        return JsonResponse(data=data, status=status)
+
+    return render(
+        request,
+        'dpv_nomencladores/form_procedencia.html',
+        {
+            'form': form,
+            'pjform': pjform,
+            'tform': tform,
+            'eform': eform,
+            'oform': oform,
+            'orgform': orgform,
+            'pwform': pwform,
+            'peform': peform,
+            'aqform': aqform
+        }
+    )
 
 
 @permission_required('dpv_nomencladores.change_procedencia')
