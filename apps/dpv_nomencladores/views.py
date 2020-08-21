@@ -1468,6 +1468,7 @@ def delete_email(request, id_email):
 def autofill_email(request):
     if request.method == 'POST':
         email = request.POST.get('email')
+        emails = []
         if email:
             if len(email) >= 3:
                 emails = [model_to_dict(mot) for mot in Email.objects.filter(email__icontains=email)[:10]]
@@ -1485,80 +1486,6 @@ def found_email_by_address(request):
             if found_email:
                 data['exist'] = True
                 data['email'] = model_to_dict(found_email)
-            else:
-                data['exist'] = False
-        return JsonResponse(data=data, status=200)
-    return JsonResponse({'error': 'Method not allowed'}, status=405)
-
-
-# --------------------------------------- Gobierno ------------------------------------------------
-@permission_required('dpv_nomencladores.view_gobierno', raise_exception=True)
-def index_gobierno(request):
-    gobiernos = Gobierno.objects.all()
-    return render(request,
-                  'dpv_nomencladores/list_gobierno.html',
-                  {'gobiernos': gobiernos})
-
-
-@permission_required('dpv_nomencladores.add_gobierno')
-def add_gobierno(request):
-    if request.method == 'POST':
-        form = GobiernoForm(request.POST)
-        if form.is_valid():
-            model = form.save()
-            model.perform_log(request=request, af=0)
-        return redirect('nomenclador_gobierno')
-    else:
-        form = GobiernoForm()
-    return render(request, 'dpv_nomencladores/form_gobierno.html', {'form': form})
-
-
-@permission_required('dpv_nomencladores.change_gobierno')
-def update_gobierno(request, id_gobierno):
-    gobierno = Gobierno.objects.get(id=id_gobierno)
-    if request.method == 'POST':
-        form = GobiernoForm(request.POST, instance=gobierno)
-        if form.is_valid():
-            model = form.save()
-            model.perform_log(request=request, af=1)
-        return redirect('nomenclador_gobierno')
-    else:
-        form = GobiernoForm(instance=gobierno)
-    return render(request, 'dpv_nomencladores/form_gobierno.html', {'form': form, 'gobierno': gobierno})
-
-
-@permission_required('dpv_nomencladores.delete_gobierno')
-def delete_gobierno(request, id_email):
-    gobierno = Gobierno.objects.get(id=id_email)
-    if request.method == 'POST':
-        gobierno.perform_log(request=request, af=2)
-        gobierno.delete()
-        return redirect('nomenclador_gobierno')
-    return render(request,
-                  'dpv_nomencladores/delete_gobierno.html',
-                  {'gobierno': gobierno})
-
-
-def autofill_gobierno(request):
-    if request.method == 'POST':
-        nombre = request.POST.get('nombre')
-        if nombre:
-            if len(nombre) >= 3:
-                gobiernos = [model_to_dict(mot) for mot in Gobierno.objects.filter(nombre__icontains=nombre)[:10]]
-        return JsonResponse(data=gobiernos, safe=False, status=200)
-    return JsonResponse({'error': 'Method not allowed'}, status=405)
-
-
-def found_gobierno_by_name(request):
-    if request.method == 'POST':
-        data = dict()
-        nombre = request.POST.get('nombre')
-        print(nombre)
-        if nombre:
-            gobierno = Gobierno.objects.filter(nombre=nombre).first()
-            if gobierno:
-                data['exist'] = True
-                data['gobierno'] = model_to_dict(gobierno)
             else:
                 data['exist'] = False
         return JsonResponse(data=data, status=200)

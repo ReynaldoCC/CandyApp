@@ -264,16 +264,6 @@ class OrganizationForm(forms.ModelForm):
         }
 
 
-class GobiernoForm(forms.ModelForm):
-
-    class Meta:
-        model = Gobierno
-        fields = ['nombre']
-        widgets = {
-            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
-        }
-
-
 class RespuestaAQuejaForm(forms.ModelForm):
 
     class Meta:

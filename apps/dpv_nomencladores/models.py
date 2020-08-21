@@ -174,6 +174,16 @@ class AreaTrabajo(LoggerMixin):
 class Organizacion(LoggerMixin):
     nombre = models.CharField(max_length=90, verbose_name="Organización",
                               validators=[MaxLengthValidator(90), not_special_char])
+    siglas = models.CharField(max_length=15, verbose_name="Siglas", default="",
+                              validators=[MaxLengthValidator(10), not_special_char])
+    email = models.EmailField(verbose_name=_("Correo Electrónico"), blank=True, default="",
+                              help_text=_("Correo eletrónico de contacto de la prensa"))
+    telefono = models.CharField(verbose_name=_("Teléfono"), blank=True, default="", max_length=8,
+                                validators=[MinLengthValidator(8), MaxLengthValidator(8), only_numbers],
+                                help_text=_("Teléfono de contacto de la organización"))
+    nombre_contacto = models.CharField(verbose_name=_("Nombre de contacto"), blank=True, default="", max_length=200,
+                                       validators=[MinLengthValidator(3), MaxLengthValidator(200), only_letters],
+                                       help_text=_("Nombre de la persona de contacto de la organización"))
 
     class Meta:
         verbose_name = "Organización"
@@ -296,20 +306,6 @@ class Telefono(LoggerMixin):
         return self.numero
 
 
-class Gobierno(LoggerMixin):
-    nombre = models.CharField(max_length=90, verbose_name="Gobierno",
-                              validators=[MaxLengthValidator(90), not_special_char])
-
-    class Meta:
-        verbose_name = "Gobierno"
-        verbose_name_plural = "Gobierno"
-        ordering = ["nombre", ]
-        unique_together = (('nombre', 'deleted_at'), )
-
-    def __str__(self):
-        return self.nombre
-
-
 class TipoProcedencia(LoggerMixin):
     nombre = models.CharField(max_length=90, verbose_name="Tipo de Procedencia",
                               validators=[MaxLengthValidator(90), not_special_char])
@@ -372,7 +368,6 @@ class Procedencia(LoggerMixin):
         models.Q(app_label='dpv_nomencladores', model='prensaescrita') | \
         models.Q(app_label='dpv_nomencladores', model='telefono') | \
         models.Q(app_label='dpv_nomencladores', model='email') | \
-        models.Q(app_label='dpv_nomencladores', model='gobierno') | \
         models.Q(app_label='dpv_nomencladores', model='procedenciaweb') | \
         models.Q(app_label='dpv_persona', model='personanatural') | \
         models.Q(app_label='dpv_persona', model='personajuridica')

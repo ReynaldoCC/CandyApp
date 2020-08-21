@@ -134,13 +134,6 @@ urlpatterns = [
     path('email/autofill', autofill_email, name='email_autofill'),
     path('email/found', found_email_by_address, name='email_found'),
 
-    path('gobierno/', index_gobierno, name='nomenclador_gobierno'),
-    path('nuevo_gobierno/', add_gobierno, name='gobierno_new'),
-    path('editar_gobierno/<int:id_gobierno>', update_gobierno, name='gobierno_edit'),
-    path('eliminar_gobierno/<int:id_gobierno>', delete_gobierno, name='gobierno_delete'),
-    path('gobierno/autofill', autofill_gobierno, name='gobierno_autofill'),
-    path('gobierno/found', found_gobierno_by_name, name='gobierno_found'),
-
     path('organizacion/', index_organizacion, name='nomenclador_organizacion'),
     path('nuevo_organizacion/', add_organizacion, name='organizacion_new'),
     path('editar_organizacion/<int:id_organizacion>', update_organizacion, name='organizacion_edit'),
