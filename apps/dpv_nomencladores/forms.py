@@ -258,9 +258,13 @@ class OrganizationForm(forms.ModelForm):
 
     class Meta:
         model = Organizacion
-        fields = ['nombre']
+        fields = ['nombre', 'siglas', 'email', 'telefono', 'nombre_contacto', ]
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
+            'siglas': forms.TextInput(attrs={'placeholder': 'Siglas', 'class': 'form-control'}),
+            'email': forms.TextInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono', 'class': 'form-control'}),
+            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre de contacto', 'class': 'form-control'}),
         }
 
 
