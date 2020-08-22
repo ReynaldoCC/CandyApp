@@ -1168,8 +1168,12 @@ def add_procedencia(request):
 def delete_procedencia(request, id_procedencia):
     procedencia = Procedencia.objects.get(id=id_procedencia)
     if request.method == 'POST':
-        procedencia.perform_log(request=request, af=2)
-        messages.warning(request=request, message=_("No se puede eliminar procedencias de esta lista verifique con el administrador del sistema para ver que desea hacer y si es posible"))
+        if procedencia.dpvdocumento_set.count() <= 0 or procedencia.quejas.count() <= 0:
+            procedencia.perform_log(request=request, af=2)
+            procedencia.delete()
+            messages.success(request, 'Procedencia eliminada satisfactoriamente')
+        else:
+            messages.warning(request=request, message=_("No se puede eliminar esta procedencia porque ha sido referenciada desde un documento o queja"))
         # procedencia.delete()
         return redirect('nomenclador_procedencia')
     return render(request, 'dpv_nomencladores/delete_procedencia.html', {'procedencia': procedencia})

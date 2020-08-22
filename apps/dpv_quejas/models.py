@@ -32,7 +32,7 @@ class Queja(LoggerMixin):
     tipo = models.ForeignKey(TipoQueja, related_name="tipo_queja", on_delete=models.CASCADE, blank=True, default='', verbose_name=_("Tipo"))
     numero = models.CharField(max_length=14, verbose_name=_('Número Queja'))
     codigo_numero = models.CharField(max_length=10, default='', blank=True)
-    procedencia = models.ForeignKey(Procedencia, related_name="prodencia",
+    procedencia = models.ForeignKey(Procedencia, related_name="quejas",
                                     on_delete=models.CASCADE, blank=True, null=True, default='')
     no_procendencia = models.CharField(max_length=14, verbose_name=_("No. de Procedencia"), default='', blank=True)
     referencia = models.CharField(default='', max_length=50, blank=True, verbose_name='Referencia')
