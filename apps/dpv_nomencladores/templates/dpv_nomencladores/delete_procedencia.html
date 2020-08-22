@@ -1,21 +1,30 @@
 <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-       <div class="modal-header" >
-            <h4 class="modal-title">Procedencia</h4>
-            <div class="actions">
-                <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            </div>
-       </div>
-        <div class="modal-body">
-            <form class="row" role="form" method="post" action="{% url 'procedencia_delete' procedencia.id %}"> {% csrf_token %}
-                <div class="col-sm-10">
-                        <h5>¿Seguro desea borrar la procedencia {{procedencia.nombre}}?</h5>
-                    </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
-                    <!--<button type="submit" class="btn btn-primary">Eliminar</button>-->
+    <form class="row" role="form" method="post" action="{% url 'procedencia_delete' procedencia.id %}"> {% csrf_token %}
+        <div class="modal-content">
+           <div class="modal-header" >
+                <h4 class="modal-title">Procedencia</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 </div>
-            </form>
+           </div>
+            <div class="modal-body">
+                <div class="col-sm-10 offset-sm-1">
+                    {% if procedencia.dpvdocumento_set.count > 0 or procedencia.quejas.count > 0 %}
+                     <h5>No se puede eliminar la procedencia {{procedencia.nombre}} porque ha sido referenciada en una queja o documento.</h5>
+                    {% else %}
+                    <h5>¿Seguro desea borrar la procedencia {{procedencia.nombre}}?</h5>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                <button type="submit"
+                        {% if procedencia.dpvdocumento_set.count > 0 or procedencia.quejas.count > 0 %}
+                        disabled="disabled"
+                        {% endif %}
+                        class="btn btn-primary">Eliminar
+                </button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
