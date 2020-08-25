@@ -281,6 +281,8 @@ class PrensaEscrita(LoggerMixin):
 class Email(LoggerMixin):
     email = models.EmailField(max_length=255, verbose_name="Correo Electrónico",
                               validators=[MaxLengthValidator(255), EmailValidator()])
+    nombre_contacto = models.CharField(verbose_name="Nombre de contacto", max_length=220, default="", blank=True,
+                                       help_text=_("Nombre de la persona que contacto por email"))
 
     class Meta:
         verbose_name = "Correo Electrónico"
