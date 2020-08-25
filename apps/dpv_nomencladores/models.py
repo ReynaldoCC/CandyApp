@@ -297,6 +297,8 @@ class Email(LoggerMixin):
 class Telefono(LoggerMixin):
     numero = models.CharField(max_length=11, verbose_name="Teléfono",
                               validators=[MaxLengthValidator(11), not_special_char])
+    nombre_contacto = models.CharField(verbose_name="Nombre de contacto", max_length=220, default="", blank=True,
+                                       help_text=_("Nombre de la persona que contacto por teléfono"))
 
     class Meta:
         verbose_name = "Teléfono"
