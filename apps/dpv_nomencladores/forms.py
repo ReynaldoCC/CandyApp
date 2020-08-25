@@ -71,7 +71,7 @@ class OrganismoForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
             'siglas': forms.TextInput(attrs={'placeholder': 'Siglas', 'class': 'form-control'}),
             'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre de contacto', 'class': 'form-control'}),
-            'email': forms.TextInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono', 'class': 'form-control'}),
         }
 
@@ -237,9 +237,10 @@ class TelefonoForm(forms.ModelForm):
 
     class Meta:
         model = Telefono
-        fields = ['numero', ]
+        fields = ['numero', 'nombre_contacto', ]
         widgets = {
             'numero': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
+            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
         }
 
 
@@ -247,9 +248,10 @@ class EmailForm(forms.ModelForm):
 
     class Meta:
         model = Email
-        fields = ['email']
+        fields = ['email', 'nombre_contacto', ]
         widgets = {
-            'email': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
+            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
         }
 
 
@@ -261,7 +263,7 @@ class OrganizationForm(forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
             'siglas': forms.TextInput(attrs={'placeholder': 'Siglas', 'class': 'form-control'}),
-            'email': forms.TextInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono', 'class': 'form-control'}),
             'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre de contacto', 'class': 'form-control'}),
         }
