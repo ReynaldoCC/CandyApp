@@ -1,5 +1,9 @@
 from django import forms
+from django.utils.translation import ugettext_lazy as _
+
 from apps.dpv_base.Widgets import DivCheckboxSelectMultiple
+from apps.dpv_persona.models import PersonaNatural, PersonaJuridica
+
 from .models import *
 
 
@@ -187,11 +191,54 @@ class TipoProcedenciaForm(forms.ModelForm):
         }
 
 
+class ProcedenciaAddForm(forms.ModelForm):
+    webs = forms.ModelChoiceField(queryset=ProcedenciaWeb.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(ProcedenciaWeb)).values_list('id_objecto')),
+                                  label=_('Perfiles Web'),
+                                  widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                                             'class': 'form-control'}))
+    emails = forms.ModelChoiceField(queryset=Email.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(Email)).values_list('id_objecto')),
+                                    label=_('Correos Electronicos'),
+                                    widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                                               'class': 'form-control'}))
+    phones = forms.ModelChoiceField(queryset=Telefono.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(Telefono)).values_list('id_objecto')),
+                                    label=_('Teléfonos'),
+                                    widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                                               'class': 'form-control'}))
+    organismos = forms.ModelChoiceField(queryset=Organismo.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(Organismo)).values_list('id_objecto')),
+                                        label=_('Organismos'),
+                                        widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                                                   'class': 'form-control'}))
+    organizaciones = forms.ModelChoiceField(queryset=Organizacion.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(Organizacion)).values_list('id_objecto')),
+                                            label=_('Organizaciones'),
+                                            widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                                                       'class': 'form-control'}))
+    prensas = forms.ModelChoiceField(queryset=PrensaEscrita.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(PrensaEscrita)).values_list('id_objecto')),
+                                     label=_('Organizaciones'),
+                                     widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                                                'class': 'form-control'}))
+    personas = forms.ModelChoiceField(queryset=PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True).exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(PersonaNatural)).values_list('id_objecto')),
+                                      label=_('Organizaciones'),
+                                      widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                                                 'class': 'form-control'}))
+    empresas = forms.ModelChoiceField(queryset=PersonaJuridica.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(PersonaJuridica)).values_list('id_objecto')),
+                                      label=_('Organizaciones'),
+                                      widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                                                 'class': 'form-control'}))
+
+    class Meta:
+        model = Procedencia
+        fields = ['tipo', 'empresas', 'personas', 'prensas', 'organizaciones',
+                  'organismos', 'phones', 'emails', 'webs', ]
+        widgets = {
+            'tipo': forms.Select(attrs={'placeholder': 'Seleccione', 'class': 'form-control'}),
+        }
+
+
 class ProcedenciaForm(forms.ModelForm):
 
     class Meta:
         model = Procedencia
-        fields = ['nombre', 'tipo', ]
+        fields = ['tipo', ]
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
             'tipo': forms.Select(attrs={'placeholder': 'Seleccione', 'class': 'form-control'}),
