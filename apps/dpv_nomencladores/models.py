@@ -288,7 +288,7 @@ class Email(LoggerMixin):
         verbose_name = "Correo Electrónico"
         verbose_name_plural = "Correos Electrónicos"
         ordering = ["email", ]
-        unique_together = (('email', 'deleted_at'), )
+        unique_together = (('email', 'nombre_contacto', 'deleted_at'), )
 
     def __str__(self):
         return self.email
@@ -304,7 +304,7 @@ class Telefono(LoggerMixin):
         verbose_name = "Teléfono"
         verbose_name_plural = "Teléfonos"
         ordering = ["numero", ]
-        unique_together = (('numero', 'deleted_at'), )
+        unique_together = (('numero', 'nombre_contacto', 'deleted_at'), )
 
     def __str__(self):
         return self.numero
