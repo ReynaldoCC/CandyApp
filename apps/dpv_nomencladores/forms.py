@@ -194,41 +194,57 @@ class TipoProcedenciaForm(forms.ModelForm):
 class ProcedenciaAddForm(forms.ModelForm):
     webs = forms.ModelChoiceField(queryset=ProcedenciaWeb.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(ProcedenciaWeb)).values_list('id_objecto')),
                                   label=_('Perfiles Web'),
+                                  required=False,
                                   widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
                                                              'class': 'form-control'}))
     emails = forms.ModelChoiceField(queryset=Email.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(Email)).values_list('id_objecto')),
                                     label=_('Correos Electronicos'),
-                                    widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                    required=False,
+                                    widget=forms.Select(attrs={'placeholder': 'Seleccionar un email',
                                                                'class': 'form-control'}))
     phones = forms.ModelChoiceField(queryset=Telefono.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(Telefono)).values_list('id_objecto')),
                                     label=_('Teléfonos'),
-                                    widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                    required=False,
+                                    widget=forms.Select(attrs={'placeholder': 'Seleccionar un teléfono',
                                                                'class': 'form-control'}))
     organismos = forms.ModelChoiceField(queryset=Organismo.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(Organismo)).values_list('id_objecto')),
                                         label=_('Organismos'),
-                                        widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                        required=False,
+                                        widget=forms.Select(attrs={'placeholder': 'Seleccionar un organismo',
                                                                    'class': 'form-control'}))
     organizaciones = forms.ModelChoiceField(queryset=Organizacion.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(Organizacion)).values_list('id_objecto')),
                                             label=_('Organizaciones'),
-                                            widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                            required=False,
+                                            widget=forms.Select(attrs={'placeholder': 'Seleccionar una organizacion',
                                                                        'class': 'form-control'}))
     prensas = forms.ModelChoiceField(queryset=PrensaEscrita.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(PrensaEscrita)).values_list('id_objecto')),
-                                     label=_('Organizaciones'),
-                                     widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                     label=_('Prensas Escritas'),
+                                     required=False,
+                                     widget=forms.Select(attrs={'placeholder': 'Seleccionar una prensa escrita',
                                                                 'class': 'form-control'}))
     personas = forms.ModelChoiceField(queryset=PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True).exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(PersonaNatural)).values_list('id_objecto')),
-                                      label=_('Organizaciones'),
-                                      widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                      label=_('Personas'),
+                                      required=False,
+                                      widget=forms.Select(attrs={'placeholder': 'Seleccionar una persona',
                                                                  'class': 'form-control'}))
     empresas = forms.ModelChoiceField(queryset=PersonaJuridica.objects.exclude(id__in=Procedencia.objects.filter(tipo_contenido=ContentType.objects.get_for_model(PersonaJuridica)).values_list('id_objecto')),
-                                      label=_('Organizaciones'),
-                                      widget=forms.Select(attrs={'placeholder': 'Seleccionar un perfil',
+                                      label=_('Entidades'),
+                                      required=False,
+                                      widget=forms.Select(attrs={'placeholder': 'Seleccionar una entidad',
                                                                  'class': 'form-control'}))
 
     class Meta:
         model = Procedencia
-        fields = ['tipo', 'empresas', 'personas', 'prensas', 'organizaciones',
-                  'organismos', 'phones', 'emails', 'webs', ]
+        fields = ['tipo',
+                  'empresas',
+                  'personas',
+                  'prensas',
+                  'organizaciones',
+                  'organismos',
+                  'phones',
+                  'emails',
+                  'webs',
+                  ]
         widgets = {
             'tipo': forms.Select(attrs={'placeholder': 'Seleccione', 'class': 'form-control'}),
         }
