@@ -49,6 +49,7 @@ class PersonaNatural(Persona):
         verbose_name = "Persona Natural"
         verbose_name_plural = "Personas Naturales"
         ordering = ["ci", "apellidos", ]
+        unique_together = ("ci", "deleted_at")
 
     def __str__(self):
         return '%s %s' % (self.nombre, self.apellidos)
@@ -66,6 +67,7 @@ class PersonaJuridica(Persona):
     class Meta:
         verbose_name = "Persona Jurídica"
         verbose_name_plural = "Personas Jurídicas"
+        unique_together = (("codigo_nit", "deleted_at"), ("codigo_reuup", "deleted_at"), ("nombre", "deleted_at"))
 
     def __str__(self):
         return self.nombre
