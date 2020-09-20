@@ -118,13 +118,14 @@ urlpatterns = [
     path('eliminar_prensaescrita/<int:id_prensaescrita>', delete_prensaescrita, name='prensaescrita_delete'),
     path('prensaescrita/autofill', autofill_prensaescrita, name='prensaescrita_autofill'),
     path('prensaescrita/found', found_prensaescrita_by_name, name='prensaescrita_found'),
+    path('prensaescrita/verify', verify_prensaescrita, name='prensaescrita_verify'),
 
     path('telefono/', index_telefono, name='nomenclador_telefono'),
     path('nuevo_telefono/', add_telefono, name='telefono_new'),
     path('editar_telefono/<int:id_telefono>', update_telefono, name='telefono_edit'),
     path('eliminar_telefono/<int:id_telefono>', delete_telefono, name='telefono_delete'),
     path('telefono/autofill', autofill_telefono, name='telefono_autofill'),
-    path('telefono/found', found_telefono_by_number, name='telefono_found'),
+    path('telefono/verfy', verify_telefono, name='telefono_verify'),
 
     path('email/', index_email, name='nomenclador_email'),
     path('nuevo_email/', add_email, name='email_new'),
@@ -132,6 +133,7 @@ urlpatterns = [
     path('eliminar_email/<int:id_email>', delete_email, name='email_delete'),
     path('email/autofill', autofill_email, name='email_autofill'),
     path('email/found', found_email_by_address, name='email_found'),
+    path('email/verify', verify_email, name='email_verify'),
 
     path('organizacion/', index_organizacion, name='nomenclador_organizacion'),
     path('nuevo_organizacion/', add_organizacion, name='organizacion_new'),
@@ -139,6 +141,7 @@ urlpatterns = [
     path('eliminar_organizacion/<int:id_organizacion>', delete_organizacion, name='organizacion_delete'),
     path('organizacion/autofill', autofill_organizacion, name='organizacion_autofill'),
     path('organizacion/found', found_organizacion_by_name, name='organizacion_found'),
+    path('organizacion/verify', verify_organizacion, name='organizacion_verify'),
 
     path('responder/add/json', create_reponder_a_json, name="resp_new_json"),
 
