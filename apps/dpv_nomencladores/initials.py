@@ -297,8 +297,9 @@ def create_initial():
             TipoProcedencia(id=4, nombre='Teléfono', cant_dias=30, enviar=False),
             TipoProcedencia(id=5, nombre='Correo', cant_dias=30, enviar=True),
             TipoProcedencia(id=6, nombre='Empresa', cant_dias=30, enviar=True),
-            TipoProcedencia(id=7, nombre='Gobierno', cant_dias=30, enviar=True),
-            TipoProcedencia(id=8, nombre='Organización', cant_dias=30, enviar=True),
+            TipoProcedencia(id=7, nombre='Organización', cant_dias=30, enviar=True),
+            TipoProcedencia(id=8, nombre='Organismo', cant_dias=30, enviar=True),
+            TipoProcedencia(id=9, nombre='Web', cant_dias=30, enviar=True),
         ])
     else:
         pass
