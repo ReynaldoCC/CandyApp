@@ -254,14 +254,12 @@ def get_person_data(request, id_person):
 def verify_personat(request):
     if request.method == 'GET':
         movil = ci = False
-        if request.GET.get('movil'):
-            movil = request.GET.get('movil')
-        if request.GET.get('person_queja-movil'):
-            movil = request.GET.get('person_queja-movil')
-        if request.GET.get('person_procedence-movil'):
-            movil = request.GET.get('person_procedence-movil')
-        if request.GET.get('ci'):
-            ci = request.GET.get('ci')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'movil' in k:
+                movil = k
+            if 'ci' in k:
+                ci = k
 
         id = request.GET.get('id')
 
@@ -285,20 +283,20 @@ def verify_personat(request):
 def verify_persojur(request):
     if request.method == 'GET':
         movil = nombre = email_address = codigo_nit = codigo_reuup = telefono = False
-        if request.GET.get('movil'):
-            movil = request.GET.get('movil')
-        if request.GET.get('telefono'):
-            telefono = request.GET.get('telefono')
-        if request.GET.get('codigo_nit'):
-            codigo_nit = request.GET.get('codigo_nit')
-        if request.GET.get('codigo_reuup'):
-            codigo_reuup = request.GET.get('codigo_reuup')
-        if request.GET.get('email_address'):
-            movil = request.GET.get('email_address')
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('email_address'):
-            email_address = request.GET.get('email_address')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'movil' in k:
+                movil = k
+            if 'telefono' in k:
+                telefono = k
+            if 'codigo_nit' in k:
+                codigo_nit = k
+            if 'codigo_reuup' in k:
+                codigo_reuup = k
+            if 'nombre' in k:
+                nombre = k
+            if 'email_address' in k:
+                email_address = k
 
         id = request.GET.get('id')
 
