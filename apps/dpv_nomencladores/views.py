@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import permission_required, login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.forms.models import model_to_dict
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse_lazy
 
-from apps.dpv_persona.forms import PersonaJuridicaForm, PersonaNaturalForm
 from apps.dpv_persona.models import PersonaJuridica, PersonaNatural
+from apps.dpv_persona.forms import PersonaJuridicaForm, PersonaNaturalForm
 
 from .forms import *
 from .models import *
@@ -86,6 +86,12 @@ def delete_provincia(request, id_provincia):
 def verify_provincia(request):
     if request.method == 'GET':
         nombre = numero = False
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'nombre_contacto' in k:
+                nombre = k
         if request.GET.get('nombre'):
             nombre = request.GET.get('nombre')
         if request.GET.get('numero'):
@@ -155,10 +161,12 @@ def delete_municipio(request, id_municipio):
 def verify_municipio(request):
     if request.method == 'GET':
         nombre = numero = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('numero'):
-            numero = request.GET.get('numero')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'nombre' in k:
+                nombre = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -271,10 +279,12 @@ def delete_consejopopular(request, id_consejopopular):
 def verify_consejopopular(request):
     if request.method == 'GET':
         nombre = numero = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('numero'):
-            numero = request.GET.get('numero')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'nombre' in k:
+                nombre = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -407,8 +417,10 @@ def delete_calle(request, id_calle):
 def verify_calle(request):
     if request.method == 'GET':
         nombre = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'nombre' in k:
+                nombre = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -469,8 +481,10 @@ def delete_piso(request, id_piso):
 def verify_piso(request):
     if request.method == 'GET':
         nombre = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'nombre' in k:
+                nombre = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -553,6 +567,26 @@ def found_organismo_by_name(request):
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
+@login_required()
+def verify_organismo(request):
+    if request.method == 'GET':
+        nombre = False
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'nombre' in k:
+                nombre = k
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Organismo.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
 # ------------------------------------------- Destino -----------------------------------------------------------------
 @permission_required('dpv_nomencladores.view_destino', raise_exception=True)
 def index_destino(request):
@@ -601,8 +635,10 @@ def delete_destino(request, id_destino):
 def verify_destino(request):
     if request.method == 'GET':
         nombre = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'nombre' in k:
+                nombre = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -663,8 +699,10 @@ def delete_concepto(request, id_concepto):
 def verify_concepto(request):
     if request.method == 'GET':
         nombre = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'nombre' in k:
+                nombre = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -725,10 +763,12 @@ def delete_genero(request, id_genero):
 def verify_genero(request):
     if request.method == 'GET':
         nombre = sigla = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('sigla'):
-            sigla = request.GET.get('sigla')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'sigla' in k:
+                sigla = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -794,10 +834,12 @@ def delete_areatrabajo(request, id_areatrabajo):
 def verify_areatrabajo(request):
     if request.method == 'GET':
         nombre = numero = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('numero'):
-            numero = request.GET.get('numero')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'numero' in k:
+                numero = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -864,10 +906,12 @@ def delete_centrotrabajo(request, id_centrotrabajo):
 def verify_centrotrabajo(request):
     if request.method == 'GET':
         nombre = numero = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('numero'):
-            numero = request.GET.get('numero')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'numero' in k:
+                numero = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -934,10 +978,12 @@ def delete_codificadorasunto(request, id_codificadorasunto):
 def verify_codificadorasunto(request):
     if request.method == 'GET':
         nombre = numero = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('numero'):
-            numero = request.GET.get('numero')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'nombre' in k:
+                nombre = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -1031,12 +1077,9 @@ def index_procedencia(request):
     return render(request, 'dpv_nomencladores/list_procedencia.html', {'procedencias': procedencias})
 
 
-
-
-
 @permission_required('dpv_nomencladores.add_procedencia')
 def add_procedencia(request):
-    form = ProcedenciaForm(prefix='procedencia')
+    form = ProcedenciaAddForm(prefix='procedencia')
     peform = PrensaEscritaForm(prefix='pe', empty_permitted=True, use_required_attribute=False)
     aqform = PersonaNaturalForm(prefix='person_procedence', empty_permitted=True, use_required_attribute=False)
     tform = TelefonoForm(prefix='telefono', empty_permitted=True, use_required_attribute=False)
@@ -1049,103 +1092,118 @@ def add_procedencia(request):
     if request.method == 'POST':
         data = {}
         status = 200
-
-        procedence_form = AnonimoForm()
-
-        if request.POST.get('pe-nombre'):
-            pe = PrensaEscrita.objects.filter(nombre=request.POST.get('pe-nombre'))
-            if pe:
-                procedence_form = peform = PrensaEscritaForm(request.POST, prefix='pe', use_required_attribute=False,
-                                                              instance=pe.first(), empty_permitted=True)
-            else:
-                procedence_form = peform = PrensaEscritaForm(request.POST, prefix='pe',
-                                                              use_required_attribute=False, empty_permitted=True)
-        elif request.POST.get('person_procedence-ci') and request.POST.get('person_procedence-nombre'):
-            pn = PersonaNatural.objects.filter(ci=request.POST.get('person_procedence-ci'))
-            if pn:
-                procedence_form = aqform = PersonaNaturalForm(request.POST, prefix='person_procedence',
-                                                                use_required_attribute=False,
-                                                                instance=pn.first(), empty_permitted=True)
-            else:
-                procedence_form = aqform = PersonaNaturalForm(request.POST, prefix='person_procedence',
-                                                                use_required_attribute=False, empty_permitted=True)
-        elif request.POST.get('web-perfil') and request.POST.get('web-email'):
-            pw = ProcedenciaWeb.objects.filter(perfil__iexact=request.POST.get('web-perfil'),
-                                               email=request.POST.get('web-email'),
-                                               red_social=request.POST.get('web-red_social'))
-            if pw:
-                procedence_form = pwform = ProcedenciaWebForm(request.POST, prefix='web',
-                                                              use_required_attribute=False,
-                                                              instance=pw.first(), empty_permitted=True)
-            else:
-                procedence_form = pwform = ProcedenciaWebForm(request.POST, prefix='web',
-                                                              use_required_attribute=False, empty_permitted=True)
-        elif request.POST.get('organism-nombre'):
-            org = ProcedenciaWeb.objects.filter(nombre__iexact=request.POST.get('organism-nombre'))
-            if org:
-                procedence_form = orgform = OrganismoForm(request.POST, prefix='organism',
-                                                          use_required_attribute=False,
-                                                          instance=org.first(), empty_permitted=True)
-            else:
-                procedence_form = orgform = OrganismoForm(request.POST, prefix='organism',
+        objeto_contenido = None
+        form = ProcedenciaAddForm(request.POST, prefix='procedencia')
+        if form.is_valid():
+            tipo = form.cleaned_data.get('tipo')
+            if 'anónimo' in tipo.nombre.lower() or 'anonimo' in tipo.nombre.lower():
+                if not Procedencia.objects.filter(tipo_contenido__model__iexact='anonimo').exists():
+                    anon = Anonimo()
+                    anon.save()
+                    objeto_contenido = anon
+            elif 'prensa' in tipo.nombre.lower() and 'escrita' in tipo.nombre.lower():
+                if form.cleaned_data.get('prensas'):
+                    objeto_contenido = form.cleaned_data.get('prensas')
+                else:
+                    peform = PrensaEscritaForm(request.POST, prefix='pe', use_required_attribute=False,
+                                               empty_permitted=True)
+                    if peform.is_valid():
+                        objeto_contenido = peform.save()
+            elif 'correo' in tipo.nombre.lower():
+                if form.cleaned_data.get('emails'):
+                    objeto_contenido = form.cleaned_data.get('emails')
+                else:
+                    eform  = EmailForm(request.POST, prefix='email', use_required_attribute=False,
+                                       empty_permitted=True)
+                    if eform.is_valid():
+                        objeto_contenido = eform.save()
+            elif 'empresa' in tipo.nombre.lower():
+                if form.cleaned_data.get('empresas'):
+                    objeto_contenido = form.cleaned_data.get('empresas')
+                else:
+                    pjform = PersonaJuridicaForm(request.POST, prefix='empresa', empty_permitted=True,
+                                                 use_required_attribute=False)
+                    if pjform.is_valid():
+                        objeto_contenido = pjform.save()
+            elif 'organismo' in tipo.nombre.lower():
+                if form.cleaned_data.get('organismos'):
+                    objeto_contenido = form.cleaned_data.get('organismos')
+                else:
+                    orgform = OrganismoForm(request.POST, prefix='organism',
                                                           use_required_attribute=False, empty_permitted=True)
-        elif request.POST.get('telefono-numero'):
-            tel = Telefono.objects.filter(numero=request.POST.get('telefono-numero'))
-            if tel:
-                procedence_form = tform = TelefonoForm(request.POST, prefix='telefono', use_required_attribute=False,
-                                                        instance=tel.first(), empty_permitted=True)
-            else:
-                procedence_form = tform = TelefonoForm(request.POST, prefix='telefono', use_required_attribute=False,
-                                                        empty_permitted=True)
-        elif request.POST.get('email-email'):
-            ema = Email.objects.filter(email=request.POST.get('email-email'))
-            if ema:
-                procedence_form = EmailForm(request.POST, prefix='email', use_required_attribute=False,
-                                                     instance=ema.first(), empty_permitted=True)
-            else:
-                procedence_form = EmailForm(request.POST, prefix='email', use_required_attribute=False,
-                                                     empty_permitted=True)
-        elif request.POST.get('empresa-nombre') and request.POST.get('empresa-codigo_nit') and request.POST.get('empresa-codigo_reuup'):
-            pj = PersonaJuridica.objects.filter(codigo_nit=request.POST.get('empresa-codigo_nit'),
-                                                codigo_reuup=request.POST.get('empresa-codigo_reuup'),
-                                                nombre=request.POST.get('empresa-nombre'))
-            if pj:
-                procedence_form = pjform = PersonaJuridicaForm(request.POST, prefix='empresa',
-                                                                instance=pj.first(), empty_permitted=True,
-                                                                use_required_attribute=False)
-            else:
-                procedence_form = pjform = PersonaJuridicaForm(request.POST, prefix='empresa', empty_permitted=True,
-                                                                use_required_attribute=False)
-        elif request.POST.get('organiza-nombre'):
-            org = Organizacion.objects.filter(nombre=request.POST.get('organiza-nombre')[0])
-            if org:
-                procedence_form = oform = OrganizationForm(request.POST, prefix='organiza',
-                                                            use_required_attribute=False,
-                                                            instance=org.first(), empty_permitted=True)
-            else:
-                procedence_form = oform = OrganizationForm(request.POST, prefix='organiza',
+                    if orgform.is_valid():
+                        objeto_contenido = orgform.save()
+            elif 'organizaci' in tipo.nombre.lower():
+                if form.cleaned_data.get('organizaciones'):
+                    objeto_contenido = form.cleaned_data.get('organizaciones')
+                else:
+                    oform = OrganizationForm(request.POST, prefix='organiza',
                                                             use_required_attribute=False,
                                                             empty_permitted=True)
+                    if oform.is_valid():
+                        objeto_contenido = oform.save()
+            elif 'personal' in tipo.nombre.lower():
+                if form.cleaned_data.get('personas'):
+                    objeto_contenido = form.cleaned_data.get('personas')
+                else:
+                    aqform = PersonaNaturalForm(request.POST, prefix='person_procedence',
+                                                                use_required_attribute=False, empty_permitted=True)
+                    if aqform.is_valid():
+                        objeto_contenido = aqform.save()
+            elif 'web' in tipo.nombre.lower():
+                if form.cleaned_data.get('webs'):
+                    objeto_contenido = form.cleaned_data.get('webs')
+                else:
+                    pwform = ProcedenciaWebForm(request.POST, prefix='web',
+                                                use_required_attribute=False, empty_permitted=True)
+                    if pwform.is_valid():
+                        objeto_contenido = pwform.save()
+            elif 'teléfono' in tipo.nombre.lower() or 'telefono' in tipo.nombre.lower():
+                if form.cleaned_data.get('phones'):
+                    objeto_contenido = form.cleaned_data.get('phones')
+                else:
+                    tform = TelefonoForm(request.POST, prefix='telefono', empty_permitted=True,
+                                         use_required_attribute=False)
+                    if tform.is_valid():
+                        objeto_contenido = tform.save()
 
-        if procedence_form.is_valid():
-            content_type_form = procedence_form.save()
-            if content_type_form:
-                content_type = ContentType.objects.get_for_model(content_type_form)
-                proc = Procedencia.objects.create(objecto_contenido=content_type_form, tipo_contenido=content_type, id_objecto=content_type_form.id)
-                proc.save_and_log(request=request, af=0)
-            else:
-                proc, pcreated = Procedencia.objects.get_or_create(nombre="Anónimo", tipo=TipoProcedencia.objects.filter(id=1).first())
-            if request.is_ajax():
-                data = model_to_dict(proc)
-                data["message"] = "procedencia agregada satisfactoriamente"
-                return JsonResponse(data=data, status=status)
-            else:
-                messages.success(request, "procedencia agregada satisfactoriamente")
-                return redirect(reverse_lazy("nomenclador_procedencia"))
-        else:
-            data['errors'] = form.errors
+            if tipo and objeto_contenido:
+                procedencia = Procedencia()
+                procedencia.tipo = tipo
+                procedencia.objecto_contenido = objeto_contenido
+                procedencia.id_objecto = objeto_contenido.id
+                procedencia.tipo_contenido = ContentType.objects.get_for_model(objeto_contenido)
+                procedencia.save_and_log(request=request, af=0)
+                if request.is_ajax():
+                    data = model_to_dict(procedencia)
+                    data["message"] = "procedencia agregada satisfactoriamente"
+                    return JsonResponse(data=data, status=status)
+                else:
+                    messages.success(request, "procedencia agregada satisfactoriamente")
+                    return redirect(reverse_lazy("nomenclador_procedencia"))
+            elif tipo and 'anónimo' in tipo.nombre.lower() and not Procedencia.objects.filter(tipo_contenido__model__iexact='anonimo').exists():
+                procedencia, pcreated = Procedencia.objects.get_or_create(nombre="Anónimo", tipo=TipoProcedencia.objects.filter(id=1).first())
+                if request.is_ajax():
+                    data = model_to_dict(procedencia)
+                    data["message"] = "procedencia agregada satisfactoriamente"
+                    return JsonResponse(data=data, status=status)
+                else:
+                    messages.success(request, "procedencia agregada satisfactoriamente")
+                    return redirect(reverse_lazy("nomenclador_procedencia"))
+        if request.is_ajax():
+            data['errors'] = dict(dict(form.errors),
+                                  **dict(peform.errors),
+                                  **dict(orgform.errors),
+                                  **dict(pwform.errors),
+                                  **dict(oform.errors),
+                                  **dict(pjform.errors),
+                                  **dict(eform.errors),
+                                  **dict(tform.errors),
+                                  **dict(aqform.errors))
             status = 400
-        return JsonResponse(data=data, status=status)
+            return JsonResponse(data=data, status=status)
+        else:
+            return redirect(reverse_lazy('nomenclador_procedencia'))
 
     return render(
         request,
@@ -1159,7 +1217,8 @@ def add_procedencia(request):
             'orgform': orgform,
             'pwform': pwform,
             'peform': peform,
-            'aqform': aqform
+            'aqform': aqform,
+            'anon': Procedencia.objects.filter(tipo_contenido__model__iexact='anonimo').exists()
         }
     )
 
@@ -1227,10 +1286,12 @@ def delete_tipoprocedencia(request, id_tipoprocedencia):
 def verify_tipoprocedencia(request):
     if request.method == 'GET':
         nombre = numero = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('numero'):
-            numero = request.GET.get('numero')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'numero' in k:
+                numero = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -1363,10 +1424,12 @@ def delete_clasificacionrespuesta(request, id_clasificacionrespuesta):
 def verify_clasificacionrespuesta(request):
     if request.method == 'GET':
         nombre = codigo = False
-        if request.GET.get('nombre'):
-            nombre = request.GET.get('nombre')
-        if request.GET.get('codigo'):
-            codigo = request.GET.get('codigo')
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'codigo' in k:
+                codigo = k
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -1434,6 +1497,7 @@ def delete_prensaescrita(request, id_prensaescrita):
 
 def autofill_prensaescrita(request):
     if request.method == 'POST':
+        prensasescritas = []
         nombre = request.POST.get('nombre')
         if nombre:
             if len(nombre) >= 3:
@@ -1446,7 +1510,6 @@ def found_prensaescrita_by_name(request):
     if request.method == 'POST':
         data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             prensaescrita = PrensaEscrita.objects.filter(nombre=nombre).first()
             if prensaescrita:
@@ -1456,6 +1519,26 @@ def found_prensaescrita_by_name(request):
                 data['exist'] = False
         return JsonResponse(data=data, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@login_required()
+def verify_prensaescrita(request):
+    if request.method == 'GET':
+        nombre = False
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'nombre' in k:
+                nombre = k
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not PrensaEscrita.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
 
 
 # --------------------------------------- Telefono ------------------------------------------------
@@ -1508,6 +1591,7 @@ def delete_telefono(request, id_telefono):
 
 def autofill_telefono(request):
     if request.method == 'POST':
+        telefonos = []
         numero = request.POST.get('numero')
         if numero:
             if len(numero) >= 3:
@@ -1530,6 +1614,28 @@ def found_telefono_by_number(request):
                 data['exist'] = False
         return JsonResponse(data=data, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@login_required()
+def verify_telefono(request):
+    if request.method == 'GET':
+        numero = nombre_contacto = False
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'numero' in k:
+                numero = k
+            if 'nombre_contacto' in k:
+                nombre_contacto = k
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if numero:
+            if not Telefono.objects.filter(numero=numero, nombre_contacto=nombre_contacto).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
 
 
 # --------------------------------------- Email ------------------------------------------------
@@ -1607,6 +1713,28 @@ def found_email_by_address(request):
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
+@login_required()
+def verify_email(request):
+    if request.method == 'GET':
+        email = nombre_contacto = False
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'email' in k:
+                email = k
+            if 'nombre_contacto' in k:
+                nombre_contacto = k
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if email:
+            if not Email.objects.filter(email=email, nombre_contacto=nombre_contacto).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", safe=False, status=400)
+    return JsonResponse("", safe=False, status=405)
+
+
 # --------------------------------------- Organizacion ------------------------------------------------
 @permission_required('dpv_nomencladores.view_organizacion', raise_exception=True)
 def index_organizacion(request):
@@ -1658,6 +1786,7 @@ def delete_organizacion(request, id_organizacion):
 def autofill_organizacion(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
+        organizaciones = []
         if nombre:
             if len(nombre) >= 3:
                 organizaciones = [model_to_dict(mot) for mot in Organizacion.objects.filter(nombre__icontains=nombre)[:10]]
@@ -1669,7 +1798,6 @@ def found_organizacion_by_name(request):
     if request.method == 'POST':
         data = dict()
         nombre = request.POST.get('nombre')
-        print(nombre)
         if nombre:
             organizacion = Organizacion.objects.filter(nombre=nombre).first()
             if organizacion:
@@ -1679,6 +1807,24 @@ def found_organizacion_by_name(request):
                 data['exist'] = False
         return JsonResponse(data=data, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@login_required()
+def verify_organizacion(request):
+    if request.method == 'GET':
+        nombre = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Organizacion.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
 
 
 @login_required()
