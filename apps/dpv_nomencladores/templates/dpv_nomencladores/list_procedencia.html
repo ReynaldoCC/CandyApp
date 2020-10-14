@@ -3,7 +3,9 @@
 {% load static %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/awesomplete/awesomplete.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Gestión de las Procedencias {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -30,7 +32,7 @@
             </div>
             <div class="card-body">
                 {% if procedencias %}
-                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                <table id="procedencia-table" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>Procedencia</th>
@@ -86,9 +88,12 @@
     <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/awesomplete/awesomplete.min.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/procedencia.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+
         } );
     </script>
 {% endblock extra_scripts %}
