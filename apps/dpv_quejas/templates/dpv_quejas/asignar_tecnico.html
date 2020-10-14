@@ -16,9 +16,14 @@
                 </div>
                 {% endif %}
                 <div class="form-control-sm">
-                    <label>Técnico</label>
-                    {{ form.non_field_errors }}
-                    {{ form.tecnico }}
+                    <label for="{{ form.tecnico.id_for_label }}">{{ form.tecnico.label }}</label>
+                    <select name="tecnico" placeholder="Seleccionar Técnico" class="form-control select2" id="id_tecnico">
+                        <option value="" selected="">---------</option>
+                        {% for tec in tecs %}
+                        <option value="{{ tec.id }}" selected=""> {{ tec }}</option>
+                        {% endfor %}
+                    </select>
+                    {{ form.tecnico.errors }}
                 </div>
 				<div class="form-control-dm">
                     <label>Observaciones</label>
