@@ -1,311 +1,299 @@
 <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <form action="{% url 'procedencia_new' %}" method="post" id="formodal_procedencia">{% csrf_token %}
+    <form action="{% url 'procedencia_new' %}" method="post" id="formodal_procedencia">{% csrf_token %}
+        <div class="modal-content">
             <div class="modal-header" >
                 <h4 class="modal-title">Procedencia</h4>
                 <div class="actions">
                     <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 </div>
             </div>
-            <div class="modal-body">
-                <div class="row form-group col-lg-12">
-                    <div class="col col-md-3">{{form.tipo.label_tag}}</div>
-                    <div class="col-12 col-md-9">
-                        {{ form.tipo.errors }}
-                        {{ form.tipo }}
-                        <small class="form-text text-muted">{{ form.tipo.help_text }}</small>
-                    </div>
-                </div>
-                <div class="row form-group col-lg-12 no-show procedent" id="anon_block">
-                    <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
-                        <span class="badge badge-pill badge-success">Anónnimo</span>
-                        Ha seleccionado como procedencia de la queja Anónima por lo tanto no tiene que agregar más datos en este apartado por favor continue. Esto trae implicaciones a la hora de informar la respuesta.
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="row form-group col-lg-12 no-show procedent" id="prensa_block">
-                    <div class="col-md-12 row">
-                        <div class="col col-md-3">{{peform.nombre.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{peform.nombre.errors}}
-                            {{peform.nombre}}
-                            <small class="form-text text-muted">{{peform.nombre.help_text}}</small>
+            <div class="modal-body" style="min-height: 300px">
+                <div class="row pl-4">
+                    <div class="row col-lg-12 max-h-6">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{form.tipo.label_tag}}</div>
+                            <div class="col-12 col-md-9">
+                                {{ form.tipo.errors }}
+                                {{ form.tipo }}
+                                <small class="form-text text-muted">{{ form.tipo.help_text }}</small>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-12 row">
-                        <div class="col col-md-3">{{peform.siglas.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{peform.siglas.errors}}
-                            {{peform.siglas}}
-                            <small class="form-text text-muted">{{peform.siglas.help_text}}</small>
+                    <div class="row col-lg-12 no-show procedent" id="anon_block">
+                        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show col-12">
+                            <span class="badge badge-pill badge-success">Anónnimo</span>
+                            Ha seleccionado como procedencia de la queja Anónima por lo tanto no tiene que agregar más datos en este apartado por favor continue. Esto trae implicaciones a la hora de informar la respuesta.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        {% if anon %}
+                        <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show col-12">
+                            <span class="badge badge-pill badge-danger">Anónnimo</span>
+                            Ya existe una procedencia de tipo anónimo por la naturaleza de este tipo de procendencia no se permiten mas de una procedencia de este tipo.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="row col-lg-12 no-show procedent" id="prensa_block">
+                        <div class="row form-group col-lg-12 max-h-6">
+                            <div class="col col-md-3">{{ form.prensas.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ form.prensas.errors }}
+                                {{ form.prensas }}
+                                <small class="form-text text-muted">{{ form.prensas.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_nomencladores.add_prensaescrita %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="prensa-new-form" class="no-show row col-lg-12">
+                            {% for field in peform %}
+                            <div class="col-md-12 row">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                </div>
-                <div class="row col-lg-12 no-show procedent" id="persona_block">
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.ci.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.ci.errors}}
-                            {{aqform.ci}}
-                            <small class="form-text text-muted">{{aqform.ci.help_text}}</small>
+                    <div class="row col-lg-12 no-show procedent" id="persona_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ form.personas.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ form.personas.errors }}
+                                {{ form.personas }}
+                                <small class="form-text text-muted">{{ form.personas.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_persona.add_personanatural %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="persona-new-form" class="no-show">
+                            {% for field in aqform %}
+                            <div class="row form-group col-md-6">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.nombre.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.nombre.errors}}
-                            {{aqform.nombre}}
-                            <small class="form-text text-muted">{{aqform.nombre.help_text}}</small>
+                    <div class="row col-lg-12 no-show procedent" id="telefono_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ form.phones.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ form.phones.errors }}
+                                {{ form.phones }}
+                                <small class="form-text text-muted">{{ form.phones.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_nomencladores.add_phone %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="phone-new-form" class="no-show row col-lg-12">
+                            {% for field in tform %}
+                            <div class="row form-group col-lg-12">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.apellidos.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.apellidos.errors}}
-                            {{aqform.apellidos}}
-                            <small class="form-text text-muted">{{aqform.apellidos.help_text}}</small>
+                    <div class="row col-lg-12 no-show procedent" id="correo_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ form.emails.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ form.emails.errors }}
+                                {{ form.emails }}
+                                <small class="form-text text-muted">{{ form.emails.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_nomencladores.add_email %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="email-new-form" class="no-show">
+                            {% for field in eform %}
+                            <div class="row form-group col-lg-12">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.genero.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.genero.errors}}
-                            {{aqform.genero}}
-                            <small class="form-text text-muted">{{aqform.genero.help_text}}</small>
+                    <div class="row col-lg-12 no-show procedent" id="empresa_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ form.empresas.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ form.empresas.errors }}
+                                {{ form.empresas }}
+                                <small class="form-text text-muted">{{ form.empresas.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_persona.add_personajuridica %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="empresa-new-form" class="no-show">
+                            {%  for field in pjform %}
+                            <div class="row form-group col-md-6">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.email_address.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.email_address.errors}}
-                            {{aqform.email_address}}
-                            <small class="form-text text-muted">{{aqform.email_address.help_text}}</small>
+                    <div class="row col-lg-12 no-show procedent" id="orgz_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ form.organizaciones.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ form.organizaciones.errors }}
+                                {{ form.organizaciones }}
+                                <small class="form-text text-muted">{{ form.organizaciones.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_nomencladores.add_organizacion %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="organiz-new-form" class="no-show">
+                            {% for field in oform %}
+                            <div class="row form-group col-lg-12">
+                                <div class="col col-md-3">{{ field.label }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                            {%  endfor %}
                         </div>
                     </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.movil.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.movil.errors}}
-                            {{aqform.movil}}
-                            <small class="form-text text-muted">{{aqform.movil.help_text}}</small>
+                    <div class="row col-lg-12 no-show procedent" id="org_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ form.organismos.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ form.organismos.errors }}
+                                {{ form.organismos }}
+                                <small class="form-text text-muted">{{ form.organismos.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_nomencladores.add_organismo %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="organis-new-form" class="no-show">
+                            {% for field in orgform %}
+                            <div class="row form-group col-lg-12">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.telefono.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.telefono.errors}}
-                            {{aqform.telefono}}
-                            <small class="form-text text-muted">{{aqform.telefono.help_text}}</small>
+                    <div class="row col-lg-12 no-show procedent" id="web_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ form.webs.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ form.webs.errors }}
+                                {{ form.webs }}
+                                <small class="form-text text-muted">{{ form.webs.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_nomencladores.add_procedenciaweb %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="web-new-form" class="no-show">
+                            {% for field in pwform %}
+                            <div class="row form-group col-lg-12">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.municipio.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.municipio.errors}}
-                            {{aqform.municipio}}
-                            <small class="form-text text-muted">{{aqform.municipio.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.cpopular.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.cpopular.errors}}
-                            {{aqform.cpopular}}
-                            <small class="form-text text-muted">{{aqform.cpopular.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.direccion_calle.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.direccion_calle.errors}}
-                            {{aqform.direccion_calle}}
-                            <small class="form-text text-muted">{{aqform.direccion_calle.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.direccion_numero.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.direccion_numero.errors}}
-                            {{aqform.direccion_numero}}
-                            <small class="form-text text-muted">{{aqform.direccion_numero.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.direccion_entrecalle1.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.direccion_entrecalle1.errors}}
-                            {{aqform.direccion_entrecalle1}}
-                            <small class="form-text text-muted">{{aqform.direccion_entrecalle1.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{aqform.direccion_entrecalle2.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{aqform.direccion_entrecalle2.errors}}
-                            {{aqform.direccion_entrecalle2}}
-                            <small class="form-text text-muted">{{aqform.direccion_entrecalle2.help_text}}</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group col-lg-12 no-show procedent" id="telefono_block">
-                    <div class="col col-md-3">{{tform.numero.label_tag}}</div>
-                    <div class="col-12 col-md-9">
-                        {{tform.numero.errors}}
-                        {{tform.numero}}
-                        <small class="form-text text-muted">{{tform.numero.help_text}}</small>
-                    </div>
-                </div>
-                <div class="row form-group col-lg-12 no-show procedent" id="correo_block">
-                    <div class="col col-md-3">{{eform.email.label_tag}}</div>
-                    <div class="col-12 col-md-9">
-                        {{eform.email.errors}}
-                        {{eform.email}}
-                        <small class="form-text text-muted">{{eform.email.help_text}}</small>
-                    </div>
-                </div>
-                <div class="row col-lg-12 no-show procedent" id="empresa_block">
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.nombre.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.nombre.errors}}
-                            {{pjform.nombre}}
-                            <small class="form-text text-muted">{{pjform.nombre.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.sigla.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.sigla.errors}}
-                            {{pjform.sigla}}
-                            <small class="form-text text-muted">{{pjform.sigla.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.telefono.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.telefono.errors}}
-                            {{pjform.telefono}}
-                            <small class="form-text text-muted">{{pjform.telefono.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.movil.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.movil.errors}}
-                            {{pjform.movil}}
-                            <small class="form-text text-muted">{{pjform.movil.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.nombre_contacto.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.nombre_contacto.errors}}
-                            {{pjform.nombre_contacto}}
-                            <small class="form-text text-muted">{{pjform.nombre_contacto.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.email_address.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.email_address.errors}}
-                            {{pjform.email_address}}
-                            <small class="form-text text-muted">{{pjform.email_address.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.codigo_nit.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.codigo_nit.errors}}
-                            {{pjform.codigo_nit}}
-                            <small class="form-text text-muted">{{pjform.codigo_nit.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.codigo_reuup.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.codigo_reuup.errors}}
-                            {{pjform.codigo_reuup}}
-                            <small class="form-text text-muted">{{pjform.codigo_reuup.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.municipio.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.municipio.errors}}
-                            {{pjform.municipio}}
-                            <small class="form-text text-muted">{{pjform.municipio.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.cpopular.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.cpopular.errors}}
-                            {{pjform.cpopular}}
-                            <small class="form-text text-muted">{{pjform.cpopular.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.direccion_calle.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.direccion_calle.errors}}
-                            {{pjform.direccion_calle}}
-                            <small class="form-text text-muted">{{pjform.direccion_calle.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.direccion_numero.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.direccion_numero.errors}}
-                            {{pjform.direccion_numero}}
-                            <small class="form-text text-muted">{{pjform.direccion_numero.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.direccion_entrecalle1.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.direccion_entrecalle1.errors}}
-                            {{pjform.direccion_entrecalle1}}
-                            <small class="form-text text-muted">{{pjform.direccion_entrecalle1.help_text}}</small>
-                        </div>
-                    </div>
-                    <div class="row form-group col-md-6">
-                        <div class="col col-md-3">{{pjform.direccion_entrecalle2.label_tag}}</div>
-                        <div class="col-12 col-md-9">
-                            {{pjform.direccion_entrecalle2.errors}}
-                            {{pjform.direccion_entrecalle2}}
-                            <small class="form-text text-muted">{{pjform.direccion_entrecalle2.help_text}}</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group col-lg-12 no-show procedent" id="gob_block">
-                    <div class="col col-md-3">{{gform.nombre.label}}</div>
-                    <div class="col-12 col-md-9">
-                        {{gform.nombre.errors}}
-                        {{gform.nombre}}
-                        <small class="form-text text-muted">{{gform.nombre.help_text}}</small>
-                    </div>
-                </div>
-                <div class="row form-group col-lg-12 no-show procedent" id="org_block">
-                    <div class="col col-md-3">{{oform.nombre.label_tag}}</div>
-                    <div class="col-12 col-md-9">
-                        {{oform.nombre.errors}}
-                        {{oform.nombre}}
-                        <small class="form-text text-muted">{{oform.nombre.help_text}}</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="close_md" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" onclick="return ">Guardar</button>
                 </div>
             </div>
-        </form>
-    </div>
+            <div class="modal-footer">
+                <button id="close_md" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" onclick="return ">Guardar</button>
+            </div>
+        </div>
+    </form>
 </div>
 
 <script>
+    {% if anon %}
+        var anon = true;
+    {% else %}
+        var anon = false;
+    {% endif %}
     jQuery(document).ready(function() {
-        {#DPVDocumentos.initModal();#}
+        DPVProcedenciaNom.initForm();
     });
 </script>
