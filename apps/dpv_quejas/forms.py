@@ -89,9 +89,6 @@ class AsignaQuejaDptoForm(forms.ModelForm):
 
 
 class AsignaQuejaTecnicoForm(forms.ModelForm):
-    tecnico = forms.ModelChoiceField(queryset=Tecnico.objects.all(),
-                                     label=_("Técnicos"),
-                                     widget=forms.Select(attrs={"class": "form-control select2"}))
 
     class Meta:
         model = AsignaQuejaTecnico
