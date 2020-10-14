@@ -258,11 +258,14 @@ def agregar_queja(request):
 
 
 def editar_queja(request, id_queja):
-    return render(request, 'dpv_quejas/form.html')
+    queja = get_object_or_404(Queja, id=id_queja)
+    queja_form = QuejaForm(instance=queja)
+    return render(request, 'dpv_quejas/form.html', {'queja': queja, 'quejaform': queja_form})
 
 
 def eliminar_queja(request, id_queja):
-    return render(request, 'dpv_quejas/delete.html')
+    queja = get_object_or_404(Queja, id=id_queja)
+    return render(request, 'dpv_quejas/delete.html', {'queja': queja})
 
 
 @permission_required('dpv_quejas.add_asignaquejadpto', raise_exception=True)
@@ -285,7 +288,7 @@ def asignar_queja_depto(request, id_queja):
 @permission_required('dpv_quejas.add_asignaquejatecnico', raise_exception=True)
 def asignar_queja_tecnico(request, id_queja):
     tecnico = AsignaQuejaTecnico()
-    tecnico.quejatecnico = Queja.objects.filter(id=id_queja).first()
+    tecnico.quejatecnico = get_object_or_404(Queja, id=id_queja)
     form = AsignaQuejaTecnicoForm(instance=tecnico)
     if request.method == 'POST':
         form = AsignaQuejaTecnicoForm(request.POST, instance=tecnico)
@@ -295,8 +298,9 @@ def asignar_queja_tecnico(request, id_queja):
             return redirect(reverse_lazy('quejas_list'))
         else:
             return render(request, 'dpv_quejas/asignar_tecnico.html', {'form': form})
-    else:
-        return render(request, 'dpv_quejas/asignar_tecnico.html', {'form': form, 'queja': id_queja})
+    tecs = Tecnico.objects.filter(profile__depto_trabajo=request.user.perfil_usuario.depto_trabajo,
+                                  profile__centro_trabajo=request.user.perfil_usuario.centro_trabajo)
+    return render(request, 'dpv_quejas/asignar_tecnico.html', {'form': form, 'queja': id_queja, 'tecs': tecs})
 
 
 def responder_queja(request, id_queja):
@@ -304,21 +308,23 @@ def responder_queja(request, id_queja):
     if request.user and queja.get_tecnico_asignado:
         if request.user != queja.get_tecnico_asignado.profile.datos_usuario:
             return HttpResponseForbidden()
-    respuesta = RespuestaQueja()
-    respuesta.queja = queja
-    form = QRespuestaForm(instance=respuesta)
-    if request.method == "POST":
-        form = QRespuestaForm(request.POST, instance=respuesta)
-        if form.is_valid():
-            respuesta = form.save(commit=False)
-            respuesta.responde = request.user.perfil_usuario.tecnico.first()
-            respuesta.save_and_log(request=request, af=0)
-            messages.success(request=request, message="Respuesta de la queja guardada satisfacoriamente")
-            return redirect(reverse_lazy("quejas_list"))
-        else:
-            messages.success(request=request,
-                             message="Existen errores en el fomrulario de respuesta por lo que no se pudo guardar.")
-    return render(request, 'dpv_quejas/response_form.html', {"form": form, "queja": queja})
+        respuesta = RespuestaQueja()
+        respuesta.queja = queja
+        form = QRespuestaForm(instance=respuesta)
+        if request.method == "POST":
+            form = QRespuestaForm(request.POST, instance=respuesta)
+            if form.is_valid():
+                respuesta = form.save(commit=False)
+                respuesta.responde = request.user.perfil_usuario.tecnico.first()
+                respuesta.save_and_log(request=request, af=0)
+                messages.success(request=request, message="Respuesta de la queja guardada satisfacoriamente")
+                return redirect(reverse_lazy("quejas_list"))
+            else:
+                messages.success(request=request,
+                                 message="Existen errores en el fomrulario de respuesta por lo que no se pudo guardar.")
+        return render(request, 'dpv_quejas/response_form.html', {"form": form, "queja": queja})
+    messages.warning(request, "Puede existir un error del sistema pero al parecer está intentando responder una queja que no le ha sido asignada")
+    return redirect(reverse_lazy("quejas_list"))
 
 
 def aprobar_respuesta_tecnico(request, id_queja):
