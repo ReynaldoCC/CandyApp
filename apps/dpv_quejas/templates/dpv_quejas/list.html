@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/dataTables.fixedColumns.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/fixedColumns.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Gestión de Quejas {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -204,6 +206,8 @@
     <script src="{% static 'dpv_quejas/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/validation.functions.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
 <!--    <script src="{% static 'dpv_quejas/js/fixedColumns.bootstrap.js' %}"></script>-->
     <script type="text/javascript">
         $(document).ready(function() {
