@@ -17,6 +17,7 @@ function cerrar_modal()
 
 var DPVQuejas = function () {
     var queja_form;
+    var asigne_form;
     var response_form;
     var personas;
     var persona;
@@ -2259,6 +2260,56 @@ var DPVQuejas = function () {
 
 		// validator_form.resetForm();
     };
+    var _initQuejaAsignaForm = function () {
+        var $personas_list = $('#id_tecnico').selectize({
+            create: false,
+            maxItems: 1,
+            placeholder: "Selecione un técnico",
+            allowEmptyOption: false,
+        });
+
+        $.validator.setDefaults({
+            errorClass: 'text-danger',
+            highlight: function(element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element) {
+                $(element).removeClass('is-invalid');
+            },
+            // Validate only visible fields
+			ignore: ":hidden",
+
+            errorPlacement: function(error, element) {
+                if (element[0].attributes['type']) {
+                    if (element[0].attributes['type'].nodeValue == 'select-one' || element[0].attributes['type'].nodeValue == 'select-multiple')
+                        error.insertBefore(element.parent());
+                    else
+                        error.insertBefore(element);
+                } else {
+                    error.insertBefore(element);
+                }
+            },
+
+        });
+        let validator_form = asigne_form.validate({
+			rules: {
+				tecnico: {
+				    required: true,
+				},
+				observaciones: {
+                    maxlength: 500,
+				},
+			},
+			messages:{
+				tecnico: {
+				    required: "Tiene que seleccionar un técnico.",
+				},
+				observaciones: {
+                    maxlength: "las observaciones no puede tener más de 500 caracteres.",
+				},
+            },
+		});
+    };
     var _initResponse = function () {
         $("#show_form").on("click", function (e) {
             $("#show_detail").removeClass("my-hidden");
@@ -2320,6 +2371,7 @@ var DPVQuejas = function () {
 			},
 		});
     };
+
     return {
         init: function () {
             _initQuejas();
@@ -2328,6 +2380,10 @@ var DPVQuejas = function () {
             queja_form = $("#queja_form");
             _initTabWizard();
             _initQuejaForm();
+        },
+        initAsigneTech: function () {
+            asigne_form = $("#form_asig_tecnico");
+            _initQuejaAsignaForm();
         },
         initResponse: function () {
             response_form = $("#response_form");
