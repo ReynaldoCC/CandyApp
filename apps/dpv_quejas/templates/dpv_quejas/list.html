@@ -109,11 +109,11 @@
                                 <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
                                 <td class="text-nowrap">{% if queja.respuesta_set.exists %}{{queja}}{% else %}Aún sin respuesta{% endif %}</td>
                                 <td class="text-nowrap">
-                                    <!--{% if perms.dpv_quejas.view_queja %}
+                                    {% if perms.dpv_quejas.view_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_detail' queja.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.change_queja %}
-                                        <a href="{% url 'quejas_edit' queja.id %}" type="button" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></a>
+                                    <!--    <a href="{% url 'quejas_edit' queja.id %}" type="button" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.delete_queja %}
                                         <a onclick="return abrir_modal('{% url 'quejas_del' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
