@@ -257,12 +257,15 @@ def agregar_queja(request):
                                                     'aqform': aqform})
 
 
-def editar_queja(request, id_queja):
+@permission_required('dpv_quejas.view_queja', raise_exception=True)
+def detalle_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
-    queja_form = QuejaForm(instance=queja)
-    return render(request, 'dpv_quejas/form.html', {'queja': queja, 'quejaform': queja_form})
+    if request.user.perfil_usuario.centro_trabajo.oc or request.user.perfil_usuario.centro_trabajo.municipio == queja.dir_municipio:
+        return render(request, 'dpv_quejas/detail.html', {'queja': queja})
+    return HttpResponseForbidden()
 
 
+@permission_required('dpv_quejas.delete_queja', raise_exception=True)
 def eliminar_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     return render(request, 'dpv_quejas/delete.html', {'queja': queja})
