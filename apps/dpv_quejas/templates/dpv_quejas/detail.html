@@ -1,0 +1,142 @@
+{% load static i18n %}
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">{% trans "Detalles de la queja" %} {{ queja }}</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+            <div class="modal-body">
+                {% if not queja or not queja.procedencia and not queja.get_quejoso and not queja.asunto_texto %}
+                <div class="col-md-12">
+                    <div class="card border border-danger">
+                        <div class="card-header border border-danger">
+                            <strong class="card-title">{% trans "Sin Datos" %}</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                {% blocktrans %}
+                                <p class="mb-0 text-danger">
+                                Esta queja no tienes datos, será un error por favor si cree que es así contacte con la administracin del sistema.
+                                </p>
+                                {% endblocktrans %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-md-12">
+                    <div class="card border border-dark">
+                        <div class="card-header border border-dark">
+                            <strong class="card-title">{% trans "Procedencia" %}</strong>
+                        </div>
+                        <div class="card-body">
+                        {% if queja.procedencia %}
+                            <p class="card-text"><strong>{% trans "Procedencia" %}:</strong>{{ queja.procedencia.tipo }}</p>
+                            {% if queja.procedencia.tipo.id == 2 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.procedencia.objecto_contenido.nombre }}</p>
+                            <p class="card-text"><strong>{% trans "Siglas" %}: </strong>{{ queja.procedencia.objecto_contenido.siglas }}</p>
+                            {% elif queja.procedencia.tipo.id == 3 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.procedencia.objecto_contenido.nombre }} {{ queja.procedencia.objecto_contenido.apellidos }}</p>
+                            <p class="card-text"><strong>{% trans "CI" %}: </strong>{{ queja.procedencia.objecto_contenido.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{% trans "Sexo" %}:</strong>{{ queja.procedencia.objecto_contenido.genero }}</p>
+                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.procedencia.objecto_contenido.email_address !=  "" %}{{ queja.procedencia.objecto_contenido.email_address }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if queja.procedencia.objecto_contenido.telefono !=  "" %}{{ queja.procedencia.objecto_contenido.telefono }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.procedencia.objecto_contenido.movil !=  "" %}{{ queja.procedencia.objecto_contenido.movil }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                {% if queja.procedencia.objecto_contenido.direccion_calle !=  "" %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.procedencia.objecto_contenido.direccion_calle }} #{{ queja.procedencia.objecto_contenido.direccion_numero }} entre {{ queja.procedencia.objecto_contenido.direccion_entrecalle1 }} y {{ queja.procedencia.objecto_contenido.direccion_entrecalle2 }}, en el{% if queja.procedencia.objecto_contenido.cpopular != "" %} consejo popular {{ queja.procedencia.objecto_contenido.cpopular }} del{% endif %} municipio {{ queja.procedencia.objecto_contenido.municipio }}.</p>
+                                {% else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                            {% elif queja.procedencia.tipo.id == 3 %}
+                            <p class="card-text"><strong>{% trans "Número" %}: </strong>{{ queja.procedencia.objecto_contenido.numero }}</p>
+                            {% elif queja.procedencia.tipo.id == 5 %}
+                            <p class="card-text"><strong>{% trans "Correo Electónico" %}: </strong>{{ queja.procedencia.objecto_contenido.email }}</p>
+                            {% elif queja.procedencia.tipo.id == 6 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.procedencia.objecto_contenido.nombre }} ({{ queja.procedencia.objecto_contenido.sigla }})</p>
+                            <p class="card-text"><strong>{% trans "Teléfono:" %} </strong>{% if queja.procedencia.objecto_contenido.telefono != "" %}{{ queja.procedencia.objecto_contenido.telefono}}{% else %}{% trans "No especificada" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.procedencia.objecto_contenido.movil != "" %}{{queja.procedencia.objecto_contenido.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.procedencia.objecto_contenido.email_address != "" %}{{ queja.procedencia.objecto_contenido.email_address }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Nombre Persona Contacto" %}: </strong>{% if  queja.procedencia.objecto_contenido.nombre_contacto != "" %}{{ queja.procedencia.objecto_contenido.nombre_contacto }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Código NiT" %}: </strong>{{ queja.procedencia.objecto_contenido.codigo_nit }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{% trans "Código ReUUP" %}: </strong>{{ queja.procedencia.objecto_contenido.codigo_reuup }}</p>
+                                {% if queja.procedencia.objecto_contenido.direccion_calle != "" %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.procedencia.objecto_contenido.direccion_calle }} #{{ queja.procedencia.objecto_contenido.direccion_numero }} entre {{ queja.procedencia.objecto_contenido.direccion_entrecalle1 }} y {{ queja.procedencia.objecto_contenido.direccion_entrecalle2 }} en el{% if queja.procedencia.objecto_contenido.cpopular != "" %} consejo popular {{ queja.procedencia.objecto_contenido.cpopular }} del{% endif %} municipio de {{ queja.procedencia.objecto_contenido.municipio }}</p>
+                                {%  else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                            {% elif queja.procedencia.tipo.id == 7 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}:</strong>{{ queja.procedencia.objecto_contenido.nombre }}</p>
+                            {% elif queja.procedencia.tipo.id == 8 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}:</strong>{{ queja.procedencia.objecto_contenido.nombre }}</p>
+                            {% endif %}
+                        {% else %}
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                <p class="mb-0">{% blocktrans %}No hay datos de procedencia de la queja puede deberse a un error pero revise cuidadosamente.{% endblocktrans %}</p>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card border border-primary">
+                        <div class="card-header border border-primary">
+                            <strong class="card-title">{% trans "Aquejado" %}</strong>
+                        </div>
+                        <div class="card-body">
+                        {% if not queja.get_quejoso or not queja.get_quejoso.ci %}
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                <p class="mb-0">{% blocktrans %}No hay datos sobre la persona que se queja esto debe ser un error, si así lo cree por favor contacte con la administración del sistema{% endblocktrans %}</p>
+                            </div>
+                        {% else %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.get_quejoso.nombre }} {{ queja.get_quejoso.apellidos }}</p>
+                            <p class="card-text"><strong>{% trans "CI" %}: </strong>{{ queja.get_quejoso.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Sexo:</strong>{{ queja.get_quejoso.genero }}</p>
+                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.get_quejoso.email_address %}{{ queja.get_quejoso.email_address}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if queja.get_quejoso.telefono %}{{ queja.get_quejoso.telefono}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.get_quejoso.movil %}{{ queja.get_quejoso.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                {% if queja.get_quejoso.direccion_calle %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.get_quejoso.direccion_calle }} #{{ queja.get_quejosodireccion_numero }} entre {{ queja.get_quejoso.direccion_entrecalle1 }} y {{ queja.get_quejoso.direccion_entrecalle2 }}, en el consejo popular {{ queja.get_quejoso.cpopular}} del municipio {{ queja.get_quejoso.municipio }}.</p>
+                                {% else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card border border-info">
+                        <div class="card-header border border-info">
+                            <strong class="card-title">{% trans "Queja" %}</strong>
+                        </div>
+                        <div class="card-body">
+                            {% if queja.texto and queja.asunto_texto %}
+                            <p class="card-text"><strong>{% trans "No. Procedencia" %}: </strong>{{ queja.no_procendencia }}</p>
+                            <p class="card-text"><strong>{% trans "Referencia" %}: </strong>{{ queja.referencia }}</p>
+                                {% if queja.dir_calle %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.dir_calle }} #{{ queja.dir_num }} entre {{ queja.dir_entrecalle1 }} y {{ queja.dir_entrecalle2 }}, en el consejo popular {{ queja.dir_cpopular }} del municipio {{ queja.dir_municipio }}.</p>
+                                {% else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                            <p class="card-text"><strong>{% trans "Tipo" %}: </strong>{{ queja.tipo }}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Código Asunto: </strong>{{ queja.asunto }} </p>
+                            <p class="card-text"><strong>{% trans "Asunto" %}: </strong>{{ queja.asunto_texto }}</p>
+                            <p class="card-text"><strong>{% trans "Cuerpo de la Queja" %}: </strong>{{ queja.texto }}</p>
+                            {% else %}
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                <p class="mb-0">{% blocktrans %}No hay texto ni en el asunto ni en el cuerpo de la queja esto debe ser un error, si así lo cree por favor contacte con la administración del sistema{% endblocktrans %}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cerrar</button>
+            </div>
+    </div>
+</div>
