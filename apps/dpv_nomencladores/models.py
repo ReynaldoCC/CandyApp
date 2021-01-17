@@ -87,6 +87,10 @@ class Organismo(LoggerMixin):
     def __str__(self):
         return self.nombre
 
+    @property
+    def get_email(self):
+        return self.email or None
+
 
 class Destino(LoggerMixin):
     nombre = models.CharField(max_length=90, help_text="Identificador del destino",
@@ -194,6 +198,10 @@ class Organizacion(LoggerMixin):
     def __str__(self):
         return self.nombre
 
+    @property
+    def get_email(self):
+        return self.email or None
+
 
 class Genero(LoggerMixin):
     nombre = models.CharField(max_length=11, verbose_name="Género",
@@ -277,6 +285,10 @@ class PrensaEscrita(LoggerMixin):
     def __str__(self):
         return self.nombre
 
+    @property
+    def get_email(self):
+        return self.email or None
+
 
 class Email(LoggerMixin):
     email = models.EmailField(max_length=255, verbose_name="Correo Electrónico",
@@ -293,6 +305,10 @@ class Email(LoggerMixin):
     def __str__(self):
         return self.email
 
+    @property
+    def get_email(self):
+        return self.email or None
+
 
 class Telefono(LoggerMixin):
     numero = models.CharField(max_length=11, verbose_name="Teléfono",
@@ -308,6 +324,10 @@ class Telefono(LoggerMixin):
 
     def __str__(self):
         return self.numero
+
+    @property
+    def get_email(self):
+        return None
 
 
 class TipoProcedencia(LoggerMixin):
@@ -342,6 +362,10 @@ class RedSocial(LoggerMixin):
         ordering = ["nombre", ]
         unique_together = (('nombre', 'deleted_at'), )
 
+    @property
+    def get_email(self):
+        return None
+
 
 class ProcedenciaWeb(LoggerMixin):
     nombre = models.CharField(verbose_name=_("Nombre"), blank=True, default="", max_length=200,
@@ -360,6 +384,10 @@ class ProcedenciaWeb(LoggerMixin):
         verbose_name_plural = "Redes Sociales"
         ordering = ["nombre", ]
         unique_together = (('perfil', 'email', 'red_social', 'deleted_at'), )
+
+    @property
+    def get_email(self):
+        return self.email or None
 
 
 class Procedencia(LoggerMixin):
@@ -459,6 +487,10 @@ class Anonimo(models.Model):
 
     def __str__(self):
         return 'Anónimo'
+
+    @property
+    def get_email(self):
+        return None
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

@@ -68,6 +68,10 @@ class Queja(LoggerMixin):
         else:
             return None
 
+    @property
+    def get_respuesta(self):
+        return self.respuesta.filter(rechazada__isnull=True).first()
+
 
 class Damnificado(LoggerMixin):
     queja = models.ForeignKey(Queja, on_delete=models.CASCADE, related_name='damnificado')

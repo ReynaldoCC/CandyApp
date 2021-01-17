@@ -31,15 +31,6 @@
                 {% if perms.dpv_quejas.add_queja %}
                     <a href="{% url 'quejas_add' %}" type="button" class="pull-right btn btn-success btn-sm"><i class="fa fa-plus"></i> Agregar Queja</a>
                 {% endif %}
-                {% if perms.dpv_quejas.add_asignaquejadpto %}
-                    <a href="{% url 'quejas_asig_many_dpto' %}" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Asignar Quejas a Depto</a>
-                {% endif %}
-                {% if perms.dpv_quejas.add_asignaquejatecnico %}
-                    <a href="{% url 'quejas_asig_many_tec' %}" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Asignar Quejas a Técnico</a>
-                {% endif %}
-                {% if perms.dpv_quejas.add_quejanotificada %}
-                    <a href="{% url 'quejas_notify_many' %}" style="margin-right: .25rem;" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Notificar Quejas</a>
-                {% endif %}
                 </span>
             </div>
             <div class="card-body">
@@ -153,25 +144,54 @@
                                         {% endif %}
                                     {% endif %}
                                     <!--{% if perms.dpv_quejas.add_quejarechazada %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_deny' queja.id %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
+                                        <a onclick="return abrir_modal('{% url 'quejas_deny' queja.id 1 %}')" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_quejas.add_quejaredirigida %}
                                         <a href="{% url 'quejas_redirct' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
                                     {% endif %}-->
                                     {% if perms.dpv_quejas.add_respuestaqueja %}
-                                        {% if request.user == queja.get_tecnico_asignado.profile.datos_usuario or request.user.is_superuser %}
-                                        <a href="{% url 'quejas_response' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-comment"></i></a>
+                                        {% if request.user == queja.get_tecnico_asignado.profile.datos_usuario and not queja.get_respuesta %}
+                                        <a href="{% url 'quejas_response' queja.id %}"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="{% trans 'Responder queja' %}"
+                                           type="button"
+                                           class="btn btn-sm btn-info"><i class="fa fa-comment"></i></a>
                                         {% endif %}
                                     {% endif %}
-                                    <!--{% if perms.dpv_respuesta.add_apruebajefe %}
-                                        <a href="{% url 'quejas_ajdepto' queja.id %}" type="button" class="btn btn-sm btn-info"><i class="fa fa-caret-square-o-right"></i></a>
+                                    {% if perms.dpv_respuesta.add_apruebajefe and queja.get_respuesta and not queja.get_respuesta.get_aprobacion_jefe %}
+                                        <a href="{% url 'quejas_ajdepto' queja.id %}"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="{% trans 'Aprobar respuesta del Técnico' %}"
+                                           type="button"
+                                           class="btn btn-sm btn-info"><i class="fa fa-thumbs-up"></i></a>
+                                    {% elif perms.dpv_respuesta.add_apruebajefe and queja.get_respuesta %}
+                                        <a href=""
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="{% trans 'Aprobado por' %} {{ queja.get_respuesta.get_aprobacion_jefe.aprobada_por }}"
+                                           type="button"
+                                           class="btn btn-sm btn-outline-info"><i class="fa fa-thumbs-up"></i></a>   
                                     {% endif %}
-                                    {% if perms.dpv_respuesta.add_apruebadtr %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_adtor' queja.id %}')" type="button" class="btn btn-sm btn-info"><i class="fa fa-align-justify"></i></a>
+                                    {% if perms.dpv_respuesta.add_apruebadtr and queja.get_respuesta and queja.get_respuesta.get_aprobacion_jefe and not queja.get_respuesta.get_aprobacion_dtr  %}
+                                        <a href="{% url 'quejas_adtor' queja.id %}"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="{% trans 'Aprobar respuesta del Dpto' %}"
+                                           type="button"
+                                           class="btn btn-sm btn-success"><i class="fa fa-thumbs-up"></i></a>
+                                    {% elif perms.dpv_respuesta.add_apruebadtr and queja.get_respuesta and queja.get_respuesta.get_aprobacion_jefe and queja.get_respuesta.get_aprobacion_dtr  %}
+                                        <a href=""
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="{% trans 'Respuesta Dpto Aprobada por ' %} {{ queja.get_respuesta.get_aprobacion_dtr.aprobada_por }}"
+                                           type="button"
+                                           class="btn btn-sm btn-outline-success"><i class="fa fa-thumbs-up"></i></a>
                                     {% endif %}
-                                    {% if perms.dpv_respuesta.add_quejanotificada %}
-                                        <a onclick="return abrir_modal('{% url 'quejas_notify' queja.id %}')" type="button" class="btn btn-sm btn-success"><i class="fa fa-align-justify"></i></a>
-                                    {% endif %}-->
+                                    {% if perms.dpv_respuesta.add_quejanotificada and queja.get_respuesta and queja.get_respuesta.get_aprobacion_jefe and queja.get_respuesta.get_aprobacion_dtr  %}
+                                        <a onclick="return abrir_modal('{% url 'quejas_notify' queja.id %}')" type="button" class="btn btn-sm btn-success"><i class="fa fa-location-arrow"></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

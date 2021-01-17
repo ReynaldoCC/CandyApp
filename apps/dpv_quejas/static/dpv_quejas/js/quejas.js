@@ -2371,6 +2371,117 @@ var DPVQuejas = function () {
 			},
 		});
     };
+    var _initApruebaForm = function () {
+        let aprobe_form = $("#aprobe_form");
+        let reject_form = $("#reject_form");
+        $(".do-ok").on("click", function (e) {
+            e.preventDefault();
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success ml-1',
+                    cancelButton: 'btn btn-danger mr-1'
+                },
+                buttonsStyling: false
+            })
+            const swalWithArgumentButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success ml-1',
+                    cancelButton: 'btn btn-danger mr-1'
+                },
+                confirmButtonText: 'Aprobar',
+                input: 'textarea',
+                inputAttributes: {
+                    autocapitalize: 'off',
+                    col: '2',
+                    placeholder: 'Argumente ...',
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Está seguro?',
+                text: "Desea aprobar esta respuesta",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Si, Aprobarla!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+                }).then((result) => {
+                if (result) {
+                    swalWithArgumentButtons.fire(
+                        'Bien!',
+                        'Si desea puede argumentar su aprobación.',
+                        'warning'
+                    ).then((result) => {
+                        console.log(result);
+                        if (!result.dismiss){
+                            $('#id_observacion_jefe').val(result.value);
+                            aprobe_form.submit();
+                        }
+                    })
+                }
+            })
+        });
+        $(".do-reject").on("click", function (e) {
+            e.preventDefault();
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-danger ml-1',
+                    cancelButton: 'btn btn-secondary mr-1'
+                },
+                buttonsStyling: false
+            })
+            const swalWithArgumentButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-danger ml-1',
+                    cancelButton: 'btn btn-secondary mr-1'
+                },
+                confirmButtonText: 'Rechazar',
+                input: 'textarea',
+                // validationMessage: {
+                //     required: 'Este campo es obligatorio',
+                // },
+                inputValidator: (value) => {
+                    return !value && 'El argumento es obligatorio!'
+                },
+                inputAttributes: {
+                    autocapitalize: 'off',
+                    col: '2',
+                    required: 'required',
+                    placeholder: 'Argumente ...',
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Está seguro?',
+                text: "Desea rechazar esta respuesta",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Si, Rechazarla!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+                }).then((result) => {
+                if (result) {
+                    swalWithArgumentButtons.fire(
+                        'Bien!',
+                        'Para poder rechazar la respuesta tiene que argumentar la razón.',
+                        'error'
+                    ).then((result) => {
+                        console.log(result);
+                        if (!result.dismiss){
+                            $('#id_argumento').val(result.value);
+                            reject_form.submit();
+                        }
+                    }).catch(error => {
+                        Swal.showValidationMessage(
+                            `Request failed: ${error}`
+                        )
+                    })
+                }
+            })
+        })
+    };
 
     return {
         init: function () {
@@ -2389,6 +2500,9 @@ var DPVQuejas = function () {
             response_form = $("#response_form");
             _initResponse();
             _initResponseForm();
+        },
+        initAprueba: function () {
+            _initApruebaForm();
         },
     };
 }();

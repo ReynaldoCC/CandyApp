@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 from django.urls import reverse_lazy
+from django.contrib import messages
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -119,6 +120,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+MESSAGE_TAGS = {
+    messages.INFO: 'alert-primary',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-error',
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -158,9 +165,11 @@ CHARGE_DATA_DEFAULT = False
 
 UPDATING_LOCALS = 0
 
-CELERY_BROKER_URL = 'amqp://guest@localhost//'
-# CELERY_RESULT_BACKEND = 'pyamqp://guest@localhost//'
-CELERY_RESULT_PERSISTENT = False
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # Email configuration to do
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -171,3 +180,4 @@ EMAIL_HOST_USER = "developer"
 EMAIL_PORT = "6500"
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
+EMAIL_FROM_USER = "sistema.candyapp@oc.dpvhab.cu"

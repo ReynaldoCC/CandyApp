@@ -34,6 +34,10 @@ class Persona(LoggerMixin):
     def __str__(self):
         return self.nombre
 
+    @property
+    def get_email(self):
+        return self.email_address or None
+
 
 class PersonaNatural(Persona):
     nombre = models.CharField(max_length=30, validators=[MaxLengthValidator(30), only_letters])

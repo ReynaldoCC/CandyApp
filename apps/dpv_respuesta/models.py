@@ -24,10 +24,22 @@ class Respuesta(LoggerMixin):
         verbose_name = _("Respuesta")
         verbose_name_plural = _("Respuestas")
 
+    @property
+    def get_aprobacion_jefe(self):
+        if self.rechazada is None and not self.respuestarechazada_set.exists():
+            return self.apruebajefe_set.first() or None
+        return None
+
+    @property
+    def get_aprobacion_dtr(self):
+        if self.rechazada is None and not self.respuestarechazada_set.exists():
+            return self.apruebadtr_set.first() or None
+        return None
+
 
 class ApruebaJefe(LoggerMixin):
     observacion_jefe = models.TextField(max_length=1000, default='', blank=True, verbose_name=_('Observaciones'))
-    fecha_jefe = models.DateTimeField(blank=True, default='', verbose_name=_('Fecha Aprobación Jefe'), null=True)
+    fecha_jefe = models.DateTimeField(blank=True, auto_now_add=True, verbose_name=_('Fecha Aprobación Jefe'), null=True)
     respuesta = models.ForeignKey(Respuesta, verbose_name=_('Respuesta Dada'), on_delete=models.CASCADE, blank=True, null=True, default='')
     aprobada_por = models.ForeignKey(Perfil, on_delete=models.CASCADE)
 

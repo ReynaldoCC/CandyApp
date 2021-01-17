@@ -7,9 +7,12 @@ from django.contrib import messages
 from django.db.models.functions import Concat
 from django.core import serializers
 from django.forms.models import model_to_dict
-from apps.dpv_respuesta.views import *
+
+from apps.dpv_respuesta.forms import ApruebaDtrForm, ApruebaJefeForm, RespuestaRechazadaForm
+
 from .forms import *
 from .models import *
+from .tasks import notify_queja
 
 
 @permission_required('dpv_quejas.view_queja', raise_exception=True)
@@ -49,7 +52,7 @@ def index(request):
                                                                         default=False,
                                                                         output_field=BooleanField()),
                                                       ) \
-                    .distinct()
+                    .distinct("id")
             else:
                 quejas = Queja.objects.filter(dir_municipio=ct.municipio,
                                               radicado_por__perfil_usuario__centro_trabajo__municipio=ct.municipio) \
@@ -78,11 +81,11 @@ def index(request):
                                                 default=False,
                                                 output_field=BooleanField()),
                               ) \
-                    .distinct()
+                    .distinct("id")
         except:
-            print("no tiene centro de trabajo asociado")
+            messages.warning(request, "No se mostraran las quejas ya que el usuario no tiene centro de trabajo asociado, si cree que es un error contacte con la administración del sistema")
     except:
-        print("no tiene perfil asociado")
+        messages.warning(request, "No se mostraran las quejas ya que el usuario no tiene perfil asociado, si cree que es un error contacte con la administración del sistema")
     return render(request, 'dpv_quejas/list.html', {'quejas': quejas})
 
 
@@ -100,7 +103,6 @@ def agregar_queja(request):
     person_list = None
     if request.method == "POST":
         form = QuejaForm(request.POST, prefix='queja')
-        print('POST Method', request.POST)
         pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', empty_permitted=True,
                                      use_required_attribute=False)
         procedence_form = QAnonimoForm()
@@ -306,6 +308,7 @@ def asignar_queja_tecnico(request, id_queja):
     return render(request, 'dpv_quejas/asignar_tecnico.html', {'form': form, 'queja': id_queja, 'tecs': tecs})
 
 
+# @permission_required('dpv_quejas.', raise_exception=True)
 def responder_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     if request.user and queja.get_tecnico_asignado:
@@ -331,35 +334,77 @@ def responder_queja(request, id_queja):
 
 
 def aprobar_respuesta_tecnico(request, id_queja):
-    return render(request, 'dpv_quejas/jefe_aprueba.html')
+    queja = get_object_or_404(Queja, id=id_queja)
+    form = ApruebaJefeForm()
+    reject_form = RespuestaRechazadaForm()
+    if request.method == 'POST':
+        form = ApruebaJefeForm(request.POST)
+        if form.is_valid():
+            aprobado = form.save(commit=False)
+            aprobado.fecha_jefe = timezone.now()
+            aprobado.respuesta = queja.get_respuesta
+            aprobado.aprobada_por = request.user.perfil_usuario
+            aprobado.save_and_log(request=request, af=0)
+            messages.success(request, "Respuesta a queja aprobada satisfactoriamente")
+            return redirect(reverse_lazy("quejas_list"))
+        else:
+            messages.error(request, "existen errores en el formulario")
+    return render(request, 'dpv_quejas/jefe_aprueba.html', {"queja": queja,
+                                                            "form": form,
+                                                            "reject_form": reject_form})
 
 
 def aprobar_respuesta_depto(request, id_queja):
-    return render(request, 'dpv_quejas/director_aprueba.html')
+    queja = get_object_or_404(Queja, id=id_queja)
+    form = ApruebaDtrForm()
+    reject_form = RespuestaRechazadaForm()
+    if request.method == "POST":
+        form = ApruebaDtrForm(request.POST)
+        if form.is_valid():
+            aprobadr = form.save(commit=False)
+            aprobadr.fecha_dtr = timezone.now()
+            aprobadr.aprobada_por = request.user.perfil_usuario
+            aprobadr.respuesta = queja.get_respuesta
+            aprobadr.save_and_log(request=request, af=0)
+            messages.success(request, "Respuesta a queja aprobada satisfactoriamente")
+            return redirect(reverse_lazy("quejas_list"))
+        else:
+            messages.error(request, "exiten errores en el formulario")
+    return render(request, 'dpv_quejas/director_aprueba.html', {"queja": queja, 
+                                                                "form": form,
+                                                                "reject_form": reject_form})
 
 
 def notificar_respuesta_queja(request, id_queja):
+    queja = get_object_or_404(Queja, id=id_queja)
+    notify_queja.delay(queja.id)
     return render(request, 'dpv_quejas/notificacion.html')
 
 
-def rechazar_queja(request, id_queja):
-    return render(request, 'dpv_quejas/rechazada.html')
+def rechazar_queja(request, id_queja, level):
+    queja = get_object_or_404(Queja, id=id_queja)
+    form = ApruebaJefeForm()
+    reject_form = RespuestaRechazadaForm()
+    if request.method == "POST":
+        reject_form = RespuestaRechazadaForm(request.POST)
+        if reject_form.is_valid():
+            rechazada = reject_form.save(commit=False)
+            rechazada.respuesta = queja.get_respuesta
+            rechazada.rechazador = request.user
+            rechazada.nivel = int(level)
+            rechazada.save()
+            if rechazada:
+                respuesta = queja.get_respuesta
+                respuesta.rechazada = rechazada.created_at
+                respuesta.save_and_log(request=request, af=1)
+                messages.info(request, "Respuesta a queja ha sido rechazada")
+            return redirect(reverse_lazy("quejas_list"))
+
+    return render(request, 'dpv_quejas/rechazada.html', {"reject_form": reject_form,
+                                                         "form": form,
+                                                         "queja": queja})
 
 
 def redirigir_queja(request, id_queja):
+    queja = get_object_or_404(Queja, id=id_queja)
     return render(request, 'dpv_quejas/redirigida.html')
-
-
-class AprobadaRespuestaQuejaDtorView(AprobadaRespuestaDtorView):
-    success_url = reverse_lazy('quejas_list')
-
-    def get_context_data(self, **kwargs):
-        context = super(AprobadaRespuestaQuejaDtorView, self).get_context_data(**kwargs)
-        print(kwargs)
-        # context['']
-
-        return context
-
-
-class AprobadaRespuestaQuejaJefeView(AprobadaRespuestaJefeView):
-    success_url = reverse_lazy('quejas_list')

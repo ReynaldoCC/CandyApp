@@ -1,0 +1,236 @@
+{% extends 'dpv_quejas/list.html' %}
+{% block page_title %} | Aprobar Respuesta a Queja {% endblock page_title %}
+{% load static i18n %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Aprobar Respuesta {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/quejas/jdepto/' in request.path %}
+    <li class="active">Aprobar respuesta a queja {{ queja }}</li>
+    {% else %}
+    <li>
+        <a href="{% url 'quejas_ajdepto' queja.id %}">
+            Aprobar respuesta a queja {{ queja }}
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="col-md-12 overrided-width">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Aprobar respuesta a queja</strong>
+                <span class="pull-right">
+                {% comment %}{% if perms.dpv_quejas.add_quejanotificada %}
+                    <a href="{% url 'quejas_notify_many' %}" style="margin-right: .25rem;" type="button" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Notificar Quejas</a>
+                {% endif %}{% endcomment %}
+                </span>
+            </div>
+            <div class="card-body">
+                                {% if not queja or not queja.procedencia and not queja.get_quejoso and not queja.asunto_texto %}
+                <div class="col-md-12">
+                    <div class="card border border-danger">
+                        <div class="card-header border border-danger">
+                            <strong class="card-title">{% trans "Sin Datos" %}</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                {% blocktrans %}
+                                <p class="mb-0 text-danger">
+                                Esta queja no tienes datos, será un error por favor si cree que es así contacte con la administracin del sistema.
+                                </p>
+                                {% endblocktrans %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-md-12">
+                    <span class="pull-right mb-3">
+                        <a href="" type="button" class="do-ok btn btn-primary btn-sm">
+                            <i class="fa fa-check"></i> {% trans  "Aprobar" %}
+                        </a>
+                        <a href="" type="button" class="do-reject btn btn-danger btn-sm">
+                            <i class="fa fa-close"></i> {% trans  "Rechazar" %}
+                        </a>
+                    </span>
+                </div>
+                <div class="col-md-12">
+                    <div class="card border border-dark">
+                        <div class="card-header border border-dark">
+                            <strong class="card-title text-dark">{% trans "Procedencia" %}</strong>
+                        </div>
+                        <div class="card-body">
+                        {% if queja.procedencia %}
+                            <p class="card-text"><strong>{% trans "Procedencia" %}:</strong>{{ queja.procedencia.tipo }}</p>
+                            {% if queja.procedencia.tipo.id == 2 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.procedencia.objecto_contenido.nombre }}</p>
+                            <p class="card-text"><strong>{% trans "Siglas" %}: </strong>{{ queja.procedencia.objecto_contenido.siglas }}</p>
+                            {% elif queja.procedencia.tipo.id == 3 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.procedencia.objecto_contenido.nombre }} {{ queja.procedencia.objecto_contenido.apellidos }}</p>
+                            <p class="card-text"><strong>{% trans "CI" %}: </strong>{{ queja.procedencia.objecto_contenido.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{% trans "Sexo" %}:</strong>{{ queja.procedencia.objecto_contenido.genero }}</p>
+                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.procedencia.objecto_contenido.email_address !=  "" %}{{ queja.procedencia.objecto_contenido.email_address }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if queja.procedencia.objecto_contenido.telefono !=  "" %}{{ queja.procedencia.objecto_contenido.telefono }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.procedencia.objecto_contenido.movil !=  "" %}{{ queja.procedencia.objecto_contenido.movil }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                {% if queja.procedencia.objecto_contenido.direccion_calle !=  "" %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.procedencia.objecto_contenido.direccion_calle }} #{{ queja.procedencia.objecto_contenido.direccion_numero }} entre {{ queja.procedencia.objecto_contenido.direccion_entrecalle1 }} y {{ queja.procedencia.objecto_contenido.direccion_entrecalle2 }}, en el{% if queja.procedencia.objecto_contenido.cpopular != "" %} consejo popular {{ queja.procedencia.objecto_contenido.cpopular }} del{% endif %} municipio {{ queja.procedencia.objecto_contenido.municipio }}.</p>
+                                {% else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                            {% elif queja.procedencia.tipo.id == 3 %}
+                            <p class="card-text"><strong>{% trans "Número" %}: </strong>{{ queja.procedencia.objecto_contenido.numero }}</p>
+                            {% elif queja.procedencia.tipo.id == 5 %}
+                            <p class="card-text"><strong>{% trans "Correo Electónico" %}: </strong>{{ queja.procedencia.objecto_contenido.email }}</p>
+                            {% elif queja.procedencia.tipo.id == 6 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.procedencia.objecto_contenido.nombre }} ({{ queja.procedencia.objecto_contenido.sigla }})</p>
+                            <p class="card-text"><strong>{% trans "Teléfono:" %} </strong>{% if queja.procedencia.objecto_contenido.telefono != "" %}{{ queja.procedencia.objecto_contenido.telefono}}{% else %}{% trans "No especificada" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.procedencia.objecto_contenido.movil != "" %}{{queja.procedencia.objecto_contenido.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.procedencia.objecto_contenido.email_address != "" %}{{ queja.procedencia.objecto_contenido.email_address }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Nombre Persona Contacto" %}: </strong>{% if  queja.procedencia.objecto_contenido.nombre_contacto != "" %}{{ queja.procedencia.objecto_contenido.nombre_contacto }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Código NiT" %}: </strong>{{ queja.procedencia.objecto_contenido.codigo_nit }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{% trans "Código ReUUP" %}: </strong>{{ queja.procedencia.objecto_contenido.codigo_reuup }}</p>
+                                {% if queja.procedencia.objecto_contenido.direccion_calle != "" %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.procedencia.objecto_contenido.direccion_calle }} #{{ queja.procedencia.objecto_contenido.direccion_numero }} entre {{ queja.procedencia.objecto_contenido.direccion_entrecalle1 }} y {{ queja.procedencia.objecto_contenido.direccion_entrecalle2 }} en el{% if queja.procedencia.objecto_contenido.cpopular != "" %} consejo popular {{ queja.procedencia.objecto_contenido.cpopular }} del{% endif %} municipio de {{ queja.procedencia.objecto_contenido.municipio }}</p>
+                                {%  else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                            {% elif queja.procedencia.tipo.id == 7 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}:</strong>{{ queja.procedencia.objecto_contenido.nombre }}</p>
+                            {% elif queja.procedencia.tipo.id == 8 %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}:</strong>{{ queja.procedencia.objecto_contenido.nombre }}</p>
+                            {% endif %}
+                        {% else %}
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                <p class="mb-0">{% blocktrans %}No hay datos de procedencia de la queja puede deberse a un error pero revise cuidadosamente.{% endblocktrans %}</p>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card border border-primary">
+                        <div class="card-header border border-primary">
+                            <strong class="card-title text-primary">{% trans "Aquejado" %}</strong>
+                        </div>
+                        <div class="card-body">
+                        {% if not queja.get_quejoso or not queja.get_quejoso.ci %}
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                <p class="mb-0">{% blocktrans %}No hay datos sobre la persona que se queja esto debe ser un error, si así lo cree por favor contacte con la administración del sistema{% endblocktrans %}</p>
+                            </div>
+                        {% else %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.get_quejoso.nombre }} {{ queja.get_quejoso.apellidos }}</p>
+                            <p class="card-text"><strong>{% trans "CI" %}: </strong>{{ queja.get_quejoso.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Sexo:</strong>{{ queja.get_quejoso.genero }}</p>
+                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.get_quejoso.email_address %}{{ queja.get_quejoso.email_address}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if queja.get_quejoso.telefono %}{{ queja.get_quejoso.telefono}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.get_quejoso.movil %}{{ queja.get_quejoso.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                {% if queja.get_quejoso.direccion_calle %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.get_quejoso.direccion_calle }} #{{ queja.get_quejosodireccion_numero }} entre {{ queja.get_quejoso.direccion_entrecalle1 }} y {{ queja.get_quejoso.direccion_entrecalle2 }}, en el consejo popular {{ queja.get_quejoso.cpopular}} del municipio {{ queja.get_quejoso.municipio }}.</p>
+                                {% else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card border border-info">
+                        <div class="card-header border border-info">
+                            <strong class="card-title text-info">{% trans "Queja" %}</strong>
+                        </div>
+                        <div class="card-body">
+                            {% if queja.texto and queja.asunto_texto %}
+                            <p class="card-text"><strong>{% trans "No. Procedencia" %}: </strong>{{ queja.no_procendencia }}</p>
+                            <p class="card-text"><strong>{% trans "Referencia" %}: </strong>{{ queja.referencia }}</p>
+                                {% if queja.dir_calle %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.dir_calle }} #{{ queja.dir_num }} entre {{ queja.dir_entrecalle1 }} y {{ queja.dir_entrecalle2 }}, en el consejo popular {{ queja.dir_cpopular }} del municipio {{ queja.dir_municipio }}.</p>
+                                {% else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                            <p class="card-text"><strong>{% trans "Tipo" %}: </strong>{{ queja.tipo }}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Código Asunto: </strong>{{ queja.asunto }} </p>
+                            <p class="card-text"><strong>{% trans "Asunto" %}: </strong>{{ queja.asunto_texto }}</p>
+                            <p class="card-text"><strong>{% trans "Cuerpo de la Queja" %}: </strong>{{ queja.texto }}</p>
+                            {% else %}
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                <p class="mb-0">{% blocktrans %}No hay texto ni en el asunto ni en el cuerpo de la queja esto debe ser un error, si así lo cree por favor contacte con la administración del sistema{% endblocktrans %}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card border border-success">
+                        <div class="card-header border border-success">
+                            <strong class="card-title text-success">{% trans "Respuesta" %}</strong>
+                        </div>
+                        <div class="card-body">
+                            {% if queja.get_respuesta %}
+                            <p class="card-text"><strong>{% trans "Respuesta dada por" %}: </strong>{{ queja.get_respuesta.responde }}</p>
+                            <p class="card-text"><strong>{% trans "Gestión" %}: </strong>{{ queja.get_respuesta.gestion }}.</p>
+                            <p class="card-text"><strong>{% trans "Respuesta" %}: </strong>{{  queja.get_respuesta.texto }}.</p>
+                            <p class="card-text"><strong>{% trans "Fecha de respuesta" %}: </strong>{{ queja.get_respuesta.fecha_respuesta }}</p>
+                            {% else %}
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">{% trans "Alerta" %}</h4>
+                                <hr>
+                                <p class="mb-0">{% blocktrans %}No hay una respuesta dada, si cree que esto debe ser un error, contacte con la administración del sistema{% endblocktrans %}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <span class="pull-right mb-3">
+                        <a href="" type="button" class="do-ok btn btn-primary btn-sm">
+                            <i class="fa fa-check"></i> {% trans  "Aprobar" %}
+                        </a>
+                        <a href="" type="button" class="do-reject btn btn-danger btn-sm">
+                            <i class="fa fa-close"></i> {% trans  "Rechazar" %}
+                        </a>
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <form action="{% url 'quejas_ajdepto' queja.id %}" method="post" id="aprobe_form" class="no-show">
+        {% csrf_token %}
+        {% for field in form %}
+        {{ field }}
+        {% endfor %}
+    </form>
+    <form action="{% url 'quejas_deny' queja.id 1 %}" method="post" id="reject_form" class="no-show">
+        {% csrf_token %}
+        {% for field in reject_form %}
+        {{ field }}
+        {% endfor %}
+    </form>
+    <div class="modal fade modal-show" id="popup" role="dialog">
+
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/vendor/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            DPVQuejas.initAprueba();
+        });
+    </script>
+{% endblock extra_scripts %}
+{% block init_jquery %} {% endblock init_jquery %}

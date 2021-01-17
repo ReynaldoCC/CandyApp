@@ -32,11 +32,13 @@ class Perfil(LoggerMixin):
         verbose_name_plural = "Perfiles"
 
     def __str__(self):
-        if self.datos_usuario:
+        if self.datos_personales:
+            return "{}".format(self.datos_personales)
+        elif self.datos_usuario:
             if self.datos_usuario.first_name:
                 return "{} {}".format(self.datos_usuario.first_name, self.datos_usuario.last_name)
             else:
-               return "{}".format(self.datos_usuario.username)
+                return "{}".format(self.datos_usuario.username)
         else:
             return "Perfil sin usuario"
 
