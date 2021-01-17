@@ -1,5 +1,5 @@
 {% extends 'dpv_nomencladores/list.html' %}
-{% block page_title %} | Red Social {% endblock page_title %}
+{% block page_title %} | Lugar {% endblock page_title %}
 {% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
@@ -7,15 +7,15 @@
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_persona/css/style1.css' %}">
 {% endblock extra_style %}
-{% block breadcrumb_title %} Gestión de Redes Sociales {% endblock breadcrumb_title %}
+{% block breadcrumb_title %} Gestión de Lugares {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% if '/nomenclador/rsocial/' == request.path %}
-        <li class="active">Redes Sociales</li>
+    {% if '/nomenclador/lugar/' == request.path %}
+        <li class="active">Lugares</li>
     {% else %}
     <li>
-        <a href="{% url 'nomenclador_redsocial' %}">
-            Redes Sociales
+        <a href="{% url 'nomenclador_lugar' %}">
+            Lugares
         </a>
     </li>
     {% endif %}
@@ -24,38 +24,34 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <strong class="card-title">Redes Sociales</strong>
-                {% if perms.dpv_nomencladores.add_redsocial %}
-                   <button onclick="return abrir_modal('{% url 'redsocial_new' %}')" class="pull-right btn btn-success btn-sm">
-                        <i class="fa fa-plus"></i>Agregar Red Social</button>
+                <strong class="card-title">Lugares</strong>
+                {% if perms.dpv_nomencladores.add_lugar %}
+                   <button onclick="return abrir_modal('{% url 'lugar_new' %}')" class="pull-right btn btn-success btn-sm">
+                        <i class="fa fa-plus"></i>Agregar Lugar</button>
                 {% endif %}
             </div>
             <div class="card-body">
-                {% if redes_sociales %}
+                {% if lugares %}
                 <div class="table-responsive">
-                    <table id="rsocial-table" class="table table-striped table-bordered">
+                    <table id="lugar-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Número</th>
-                                <th>Logo</th>
                                 <th>Nombre</th>
-                                <th>Dominio</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for redsoc in redes_sociales %}
+                        {% for lugar in lugares %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><img height="30" src="/media/{{ redsoc.logo }}" alt="logo {{ redsoc.nombre }}"></td>
-                                <td>{{ redsoc.nombre }}</td>
-                                <td>{{ redsoc.url }}</td>
+                                <td>{{ lugar.nombre }}</td>
                                 <td>
-                                    {% if perms.dpv_nomencladores.change_redsocial %}
-                                    <a onclick="return abrir_modal('{% url 'redsocial_edit' redsoc.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
+                                    {% if perms.dpv_nomencladores.change_lugar %}
+                                    <a onclick="return abrir_modal('{% url 'lugar_edit' lugar.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
                                     {% endif %}
-                                    {% if perms.dpv_nomencladores.delete_redsocial %}
-                                    <a onclick="return abrir_modal('{% url 'redsocial_delete' redsoc.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                                    {% if perms.dpv_nomencladores.delete_lugar %}
+                                    <a onclick="return abrir_modal('{% url 'lugar_delete' lugar.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -65,7 +61,7 @@
                 </div>
                 {% else %}
                 <div class="alert alert-info">
-                    <h2 class="text-center">No hay Redes Sociales registradas que mostrar</h2>
+                    <h2 class="text-center">No hay Lugares registrados que mostrar</h2>
                 </div>
                 {% endif %}
             </div>
@@ -89,28 +85,28 @@
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/redsocial.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/lugar.js' %}"></script>
     <script type="text/javascript">
         const translations_datatables = {
-            "emptyTable": "{% trans 'No hay redes sociales que mostrar' %}",
+            "emptyTable": "{% trans 'No hay lugares que mostrar' %}",
             "info_init": "{% trans 'Mostrando' %}",
-            "info_end": "{% trans 'Redes Sociales' %}",
-            "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Redes Sociales' %}",
+            "info_end": "{% trans 'Lugares' %}",
+            "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Lugares' %}",
             "infoFiltered_init": "{% trans 'Filtrado de' %}",
-            "infoFiltered_end": "{% trans 'total redes sociales' %}",
+            "infoFiltered_end": "{% trans 'total lugares' %}",
             "lengthMenu_init": "{% trans 'Mostrar' %}",
-            "lengthMenu_end": "{% trans 'Redes Sociales' %}",
+            "lengthMenu_end": "{% trans 'Lugares' %}",
             "loadingRecords": "{% trans 'Cargando...' %}",
             "processing": "{% trans 'Procesando...' %}",
             "search": "{% trans 'Buscar:' %}",
-            "zeroRecords": "{% trans 'Sin redes sociales coincidentes encontrados' %}",
+            "zeroRecords": "{% trans 'Sin lugares coincidentes encontrados' %}",
             "first": "{% trans 'Primero' %}",
             "last": "{% trans 'Ultimo' %}",
             "next": "{% trans 'Siguiente' %}",
             "previous": "{% trans 'Anterior' %}"
         };
         $(document).ready(function() {
-            DPVRedSocialNom.init(translations_datatables);
+            DPVLugarNom.init(translations_datatables);
         });
     </script>
 {% endblock extra_scripts %}

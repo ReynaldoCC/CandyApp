@@ -1,4 +1,5 @@
 {% extends 'layouts/dashboard.html' %}
+{% load static i18n %}
 {% block page_title %} | Nomencladores {% endblock page_title %}
 {% block breadcrumb_title %} Nomencladores {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -16,7 +17,7 @@
 {% block content_page %}
     {% if perms.dpv_nomencladores.view_provincia %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-0 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_provincia' %}" class="text-light icon-container text-center">
@@ -33,7 +34,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_municipio %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-1 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-1 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_municipio' %}" class="text-light icon-container text-center">
@@ -50,7 +51,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_consejopopular %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-2 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-2 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_consejopopular' %}" class="text-light icon-container text-center">
@@ -67,7 +68,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_concepto %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-3 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-3 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_concepto' %}" class="text-light icon-container text-center">
@@ -84,7 +85,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_destino %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-4 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-4 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_destino' %}" class="text-light icon-container text-center">
@@ -101,7 +102,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_organismo %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-5 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-5 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_organismo' %}" class="text-light icon-container text-center">
@@ -118,7 +119,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_genero %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-6 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-6 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_genero' %}" class="text-light icon-container text-center">
@@ -135,7 +136,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_piso %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-7 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-7 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_piso' %}" class="text-light icon-container text-center">
@@ -152,7 +153,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_calle %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-8 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-8 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_calle' %}" class="text-light icon-container text-center">
@@ -169,7 +170,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_centrotrabajo %}
         <div class="col-sm-6 col-md-4">
-            <div class="card text-white bg-flat-color-9 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-9 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_centrab' %}" class="text-light icon-container text-center">
@@ -186,7 +187,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_areatrabajo %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-0 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_areatrab' %}" class="text-light icon-container text-center">
@@ -203,7 +204,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_codificadorasunto %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-5 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_codificadorasunto' %}" class="text-light icon-container text-center">
@@ -220,7 +221,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_tipoqueja %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-4 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_tipoqueja' %}" class="text-light icon-container text-center">
@@ -237,7 +238,7 @@
     {% endif %}
     {% if perms.dpv_nomencladores.view_procedencia %}
         <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="card text-white bg-flat-color-0 el-rounded dashwidget">
+            <div class="card text-white bg-flat-color-3 el-rounded dashwidget overrided">
                 <div class="card-body pb-0">
                     <div class="float-right float-middle">
                         <a href="{% url 'nomenclador_procedencia' %}" class="text-light icon-container text-center">
@@ -252,4 +253,46 @@
             </div>
         </div>
     {% endif %}
+    {% if perms.dpv_nomencladores.view_redsocial %}
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-2 el-rounded dashwidget overrided">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_redsocial' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{redsocial}}</span>
+                    </h1>
+                    <h3 class="text-light">Redes Sociales Registradas</h3>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if perms.dpv_nomencladores.view_lugar %}
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-1 el-rounded dashwidget overrided">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_lugar' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{lugar}}</span>
+                    </h1>
+                    <h3 class="text-light">Lugares Registrados</h3>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            NOmmenclatorList.init();
+        } );
+    </script>
+{% endblock extra_scripts %}

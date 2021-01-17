@@ -145,6 +145,18 @@ urlpatterns = [
 
     path('responder/add/json', create_reponder_a_json, name="resp_new_json"),
 
+    path('lugar/', index_lugar, name='nomenclador_lugar'),
+    path('nuevo_lugar/', add_lugar, name='lugar_new'),
+    path('verify_lugar/', verify_lugar, name='lugar_verify'),
+    path('editar_lugar/<int:id_lugar>', update_lugar, name='lugar_edit'),
+    path('eliminar_lugar/<int:id_lugar>', delete_lugar, name='lugar_delete'),
+
+    path('rsocial/', index_redsocial, name='nomenclador_redsocial'),
+    path('nuevo_rsocial/', add_redsocial, name='redsocial_new'),
+    path('verify_rsocial/', verify_redsocial, name='redsocial_verify'),
+    path('editar_rsocial/<int:id_redsoc>', update_redsocial, name='redsocial_edit'),
+    path('eliminar_rsocial/<int:id_redsoc>', delete_redsocial, name='redsocial_delete'),
+
     path('pweb/', index_procedenciaweb, name='nomenclador_pweb'),
     path('nuevo_pweb/', add_procedenciaweb, name='pweb_new'),
     path('verify_pweb/', verify_procedenciaweb, name='pweb_verify'),

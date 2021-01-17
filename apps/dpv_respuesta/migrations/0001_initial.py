@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('observacion_jefe', models.TextField(blank=True, default='', max_length=1000, verbose_name='Observaciones')),
-                ('fecha_jefe', models.DateTimeField(blank=True, default='', null=True, verbose_name='Fecha Aprobación Jefe')),
+                ('fecha_jefe', models.DateTimeField(auto_now_add=True, null=True, verbose_name='Fecha Aprobación Jefe')),
                 ('aprobada_por', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='dpv_perfil.Perfil')),
                 ('respuesta', models.ForeignKey(blank=True, default='', null=True, on_delete=django.db.models.deletion.CASCADE, to='dpv_respuesta.Respuesta', verbose_name='Respuesta Dada')),
             ],

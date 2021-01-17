@@ -1,9 +1,9 @@
 <div class="modal-dialog modal-sm">
     <div class="modal-content">
-        {% if red_social %}
-        <form enctype="multipart/form-data" role="form" action="{% url 'redsocial_edit' red_social.id %}" method="post" id="form_rsocial">
+        {% if lugar %}
+        <form role="form" action="{% url 'lugar_edit' lugar.id %}" method="post" id="form_lugar">
         {% else %}
-        <form enctype="multipart/form-data" role="form" action="{% url 'redsocial_new' %}" method="post" id="form_rsocial">
+        <form role="form" action="{% url 'lugar_new' %}" method="post" id="form_lugar">
         {% endif %}
             <div class="modal-header" >
                 <h4 class="modal-title">Red Social</h4>
@@ -30,12 +30,12 @@
 </div>
 
 <script>
-    {% if red_social %}
-        var redsoc_id = "{{ red_social.id }}";
+    {% if lugar %}
+        var lugar_id = "{{ lugar.id }}";
     {% else %}
-        var redsoc_id = "0";
+        var lugar_id = "0";
     {% endif %}
     $(document).ready(function(){
-        DPVRedSocialNom.initForm();
+        DPVLugarNom.initForm();
     });
 </script>

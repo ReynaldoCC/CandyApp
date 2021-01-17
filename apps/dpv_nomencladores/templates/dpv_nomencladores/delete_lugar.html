@@ -7,9 +7,9 @@
             </div>
        </div>
         <div class="modal-body">
-            <form class="row" role="form" method="post" action="{% url 'redsocial_delete' red_social.id %}"> {% csrf_token %}
+            <form class="row" role="form" method="post" action="{% url 'lugar_delete' lugar.id %}"> {% csrf_token %}
                 <div class="col-sm-10">
-                        <h5>¿Seguro desea borrar la red social {{ red_social }}?</h5>
+                        <h5>¿Seguro desea borrar el lugar {{ lugar }}?</h5>
                     </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>

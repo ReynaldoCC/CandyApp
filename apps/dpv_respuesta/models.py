@@ -39,7 +39,7 @@ class Respuesta(LoggerMixin):
 
 class ApruebaJefe(LoggerMixin):
     observacion_jefe = models.TextField(max_length=1000, default='', blank=True, verbose_name=_('Observaciones'))
-    fecha_jefe = models.DateTimeField(blank=True, auto_now_add=True, verbose_name=_('Fecha Aprobación Jefe'), null=True)
+    fecha_jefe = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Aprobación Jefe'), null=True)
     respuesta = models.ForeignKey(Respuesta, verbose_name=_('Respuesta Dada'), on_delete=models.CASCADE, blank=True, null=True, default='')
     aprobada_por = models.ForeignKey(Perfil, on_delete=models.CASCADE)
 

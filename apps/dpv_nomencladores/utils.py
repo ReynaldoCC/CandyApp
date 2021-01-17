@@ -7,7 +7,7 @@ import os
 import logging
 
 
-def is_database_synchronized(database):
+def is_database_synchronized(database=DEFAULT_DB_ALIAS):
     connection = connections[database]
     connection.prepare_database()
     executor = MigrationExecutor(connection)

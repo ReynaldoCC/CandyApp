@@ -632,7 +632,6 @@ var DPVProcedenciaNom =  function () {
                 'organism-nombre': {
                     required: true,
                     maxlength: 90,
-                    remote: {},
                     letterswithbasicpuncandspace: true,
                 },
                 'organism-siglas': {

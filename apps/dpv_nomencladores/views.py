@@ -33,9 +33,15 @@ def index(request):
     tpproc = TipoProcedencia.objects.all().count()
     est = Estado.objects.all().count()
     clasresp = ClasificacionRespuesta.objects.all().count()
-    return render(request, 'dpv_nomencladores/list.html', {'municipios': muns, 'provincias': pros, 'consejos': cpps, 'conceptos': cocp, 'destinos': dest, 'organismos': orgs, \
-                                                           'generos': gnes, 'pisos': piso, 'calles': call, 'unidades': cent, 'deptos': artr, 'codifasunto': ca, 'tqueja':tpqueja, \
-                                                           'procedencia': proc, 'tprocedencia':tpproc, 'estado': est, 'clasfrespuesta': clasresp})
+    redsoc = RedSocial.objects.all().count()
+    lugar = Lugar.objects.all().count()
+    return render(request, 'dpv_nomencladores/list.html', {'municipios': muns, 'provincias': pros, 'consejos': cpps,
+                                                           'conceptos': cocp, 'destinos': dest, 'organismos': orgs,
+                                                           'generos': gnes, 'pisos': piso, 'calles': call,
+                                                           'unidades': cent, 'deptos': artr, 'codifasunto': ca,
+                                                           'tqueja':tpqueja, 'procedencia': proc, 'tprocedencia':tpproc,
+                                                           'estado': est, 'clasfrespuesta': clasresp,
+                                                           'redsocial': redsoc, 'lugar':lugar,})
 
 
 # ----------------------------------------- Provincia -----------------------------------------------------------------
@@ -1856,8 +1862,8 @@ def add_redsocial(request):
         form = RedSocialForm(request.POST, request.FILES)
         if form.is_valid():
             model = form.save()
-            model.perform_log(request=request, af=0)
-        return redirect('nomenclador_gobierno')
+            model.save_and_log(request=request, af=0)
+        return redirect('nomenclador_redsocial')
     return render(request, 'dpv_nomencladores/form_rsocial.html', {'form': form})
 
 
@@ -1868,9 +1874,9 @@ def update_redsocial(request, id_redsoc):
     if request.method == 'POST':
         form = RedSocialForm(request.POST, request.FILES, instance=redsoc)
         if form.is_valid():
-            model = form.save()
-            model.perform_log(request=request, af=1)
-        return redirect('nomenclador_gobierno')
+            model = form.save(commit=False)
+            model.save_and_log(request=request, af=1)
+        return redirect('nomenclador_redsocial')
     return render(request, 'dpv_nomencladores/form_rsocial.html', {'form': form, 'red_social': redsoc})
 
 
@@ -1880,7 +1886,7 @@ def delete_redsocial(request, id_redsoc):
     if request.method == 'POST':
         redsoc.perform_log(request=request, af=2)
         redsoc.delete()
-        return redirect('nomenclador_gobierno')
+        return redirect('nomenclador_redsocial')
     return render(request,
                   'dpv_nomencladores/delete_rsocial.html',
                   {'red_social': redsoc})
@@ -1892,8 +1898,8 @@ def verify_redsocial(request):
         nombre = dominio = False
         if request.GET.get('nombre'):
             nombre = request.GET.get('nombre')
-        if request.GET.get('dominio'):
-            dominio = request.GET.get('dominio')
+        if request.GET.get('url'):
+            dominio = request.GET.get('url')
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -1972,12 +1978,79 @@ def verify_procedenciaweb(request):
         if not red_social:
             return JsonResponse("", safe=False, status=200)
         if perfil:
+            print(perfil)
             if not ProcedenciaWeb.objects.filter(perfil__iexact=perfil, red_social_id=red_social).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
         if email:
             if not ProcedenciaWeb.objects.filter(email=email, red_social_id=red_social).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
+# --------------------------------------- Lugar ------------------------------------------------
+@permission_required('dpv_nomencladores.view_lugar', raise_exception=True)
+def index_lugar(request):
+    lugares = Lugar.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_lugar.html',
+                  {'lugares': lugares})
+
+
+@permission_required('dpv_nomencladores.add_lugar')
+def add_lugar(request):
+    if request.method == 'POST':
+        form = LugarForm(request.POST)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_lugar')
+    else:
+        form = LugarForm()
+    return render(request, 'dpv_nomencladores/form_lugar.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_lugar')
+def update_lugar(request, id_lugar):
+    lugar = get_object_or_404(Lugar, id=id_lugar)
+    if request.method == 'POST':
+        form = LugarForm(request.POST, instance=lugar)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_lugar')
+    else:
+        form = LugarForm(instance=lugar)
+    return render(request, 'dpv_nomencladores/form_lugar.html', {'form': form, 'lugar': lugar})
+
+
+@permission_required('dpv_nomencladores.delete_lugar')
+def delete_lugar(request, id_lugar):
+    lugar = get_object_or_404(Lugar, id=id_lugar)
+    if request.method == 'POST':
+        lugar.perform_log(request=request, af=2)
+        lugar.delete()
+        return redirect('nomenclador_lugar')
+    return render(request,
+                  'dpv_nomencladores/delete_lugar.html',
+                  {'lugar': lugar})
+
+
+@login_required()
+def verify_lugar(request):
+    if request.method == 'GET':
+        nombre = False
+        if request.GET.get('nombre'):
+            nombre = request.GET.get('nombre')
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not Lugar.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)

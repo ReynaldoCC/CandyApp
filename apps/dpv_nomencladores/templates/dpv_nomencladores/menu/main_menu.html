@@ -6,6 +6,9 @@
             Nomencladores
         </a>
         <ul class="sub-menu children dropdown-menu">
+            <li class="{% if '/nomenclador/' == request.path %} active {% endif %}">
+                <a href="{% url 'nomenclador_index' %}"><i class="fa fa-align-justify"></i>Ver Todos</a>
+            </li>
             {% if perms.dpv_nomencladores.view_provincia %}
             <li class="{% if '/nomenclador/provincia/' in request.path %} active {% endif %}">
                 <a href="{% url 'nomenclador_provincia' %}"><i class="fa fa-tag"></i>Provincias</a>

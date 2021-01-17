@@ -84,8 +84,7 @@
     <script src="{% static 'dpv_base/js/lib/jquery-validation/js/additional-methods.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/calles.js' %}"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            const translations_datatables = {
+        const translations_datatables = {
                 "emptyTable": "{% trans 'No hay Calles que mostrar' %}",
                 "info_init": "{% trans 'Mostrando' %}",
                 "info_end": "{% trans 'Calles' %}",
@@ -103,6 +102,7 @@
                 "next": "{% trans 'Siguiente' %}",
                 "previous": "{% trans 'Anterior' %}"
             };
+        $(document).ready(function() {
             DPVCalleNom.init(translations_datatables);
         } );
     </script>

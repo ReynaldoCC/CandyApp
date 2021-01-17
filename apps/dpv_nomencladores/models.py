@@ -351,9 +351,9 @@ class RedSocial(LoggerMixin):
     nombre = models.CharField(verbose_name=_("Nombre"), blank=True, default="", max_length=25,
                               validators=[MinLengthValidator(3), MaxLengthValidator(25)],
                               help_text=_("Nombre de la red social"))
-    dominio = models.CharField(verbose_name=_("URL"), blank=True, default="", max_length=254,
-                               validators=[MinLengthValidator(3), MaxLengthValidator(254), URLValidator],
-                               help_text=_("URL del dominio de la red social")),
+    url = models.URLField(verbose_name=_("URL"), blank=True, default="", max_length=254,
+                          validators=[MinLengthValidator(3), MaxLengthValidator(254), URLValidator],
+                          help_text=_("URL del url de la red social"))
     logo = models.ImageField('Logo', upload_to=scramble_upload_logo, blank=True, null=True)
 
     class Meta:
@@ -361,6 +361,9 @@ class RedSocial(LoggerMixin):
         verbose_name_plural = "Redes Sociales"
         ordering = ["nombre", ]
         unique_together = (('nombre', 'deleted_at'), )
+
+    def __str__(self):
+        return self.nombre
 
     @property
     def get_email(self):
@@ -471,6 +474,21 @@ class RespuestaAQueja(LoggerMixin):
     class Meta:
         verbose_name = "Respuesta a"
         verbose_name_plural = "Respuestas a"
+        ordering = ["nombre", ]
+        unique_together = (('nombre', 'deleted_at'), )
+
+    def __str__(self):
+        return self.nombre
+
+
+class Lugar(LoggerMixin):
+    nombre = models.CharField(max_length=100, verbose_name=_("Nombre"),
+                              help_text=_("Nombre del lugar de importancia o referencia."),
+                              validators=[MaxLengthValidator(100), ])
+
+    class Meta:
+        verbose_name = "Lugar"
+        verbose_name_plural = "Lugares"
         ordering = ["nombre", ]
         unique_together = (('nombre', 'deleted_at'), )
 
