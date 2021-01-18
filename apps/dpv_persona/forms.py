@@ -11,16 +11,16 @@ class PersonaNaturalForm(forms.ModelForm):
         fields = ('nombre',
                   'apellidos',
                   'ci',
-                  'email_address',
-                  'telefono',
-                  'movil',
-                  'genero',
                   'municipio',
                   'cpopular',
                   'direccion_calle',
                   'direccion_numero',
                   'direccion_entrecalle1',
-                  'direccion_entrecalle2', )
+                  'direccion_entrecalle2',
+                  'email_address',
+                  'telefono',
+                  'movil',
+                  'genero', )
         widgets = {
             'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
             'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),

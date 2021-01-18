@@ -542,13 +542,15 @@ def configurar_tipo_procedencia(instance):
         elif instance.tipo_contenido.model == "personajuridica":
             instance.tipo = TipoProcedencia.objects.get(id=6)
         elif instance.tipo_contenido.model == "organizacion":
+            instance.tipo = TipoProcedencia.objects.get(id=7)
+        elif instance.tipo_contenido.model == "organismo":
             instance.tipo = TipoProcedencia.objects.get(id=8)
         elif instance.tipo_contenido.model == "prensaescrita":
             instance.tipo = TipoProcedencia.objects.get(id=2)
         elif instance.tipo_contenido.model == "telefono":
             instance.tipo = TipoProcedencia.objects.get(id=4)
-        elif instance.tipo_contenido.model == "gobierno":
-            instance.tipo = TipoProcedencia.objects.get(id=7)
+        elif instance.tipo_contenido.model == "procedenciaweb":
+            instance.tipo = TipoProcedencia.objects.get(id=9)
         elif instance.tipo_contenido.model == "email":
             instance.tipo = TipoProcedencia.objects.get(id=5)
         else:

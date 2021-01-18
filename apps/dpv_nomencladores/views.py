@@ -1821,6 +1821,8 @@ def verify_organizacion(request):
         nombre = False
         if request.GET.get('nombre'):
             nombre = request.GET.get('nombre')
+        elif request.GET.get('organiza-nombre'):
+            nombre = request.GET.get('organiza-nombre')
         id = request.GET.get('id')
         if not id:
             id = 0
@@ -1829,8 +1831,8 @@ def verify_organizacion(request):
                 return JsonResponse("true", safe=False, status=200)
             else:
                 return JsonResponse("", safe=False, status=200)
-        return JsonResponse("", status=400)
-    return JsonResponse("", status=405)
+        return JsonResponse("", safe=False, status=400)
+    return JsonResponse("", safe=False, status=405)
 
 
 @login_required()

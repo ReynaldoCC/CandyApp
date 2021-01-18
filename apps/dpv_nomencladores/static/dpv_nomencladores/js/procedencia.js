@@ -503,9 +503,12 @@ var DPVProcedenciaNom =  function () {
 			ignore: ":hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input",
 
             errorPlacement: function(error, element) {
-                if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
-                    error.insertBefore(element.parent());
-                else
+                if (element[0].hasAttribute('type')) {
+                    if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
+                        error.insertBefore(element.parent());
+                    else
+                        error.insertBefore(element);
+                } else
                     error.insertBefore(element);
             },
 
@@ -768,24 +771,24 @@ var DPVProcedenciaNom =  function () {
                     minlength: 3,
                     maxlength: 200,
                     letterswithbasicpuncandspace: true,
-                    remote: {
-                        url: '/nomenclador/verify_pweb/',
-                        type: 'get',
-                        data: {
-                            red_social: $('#id_web-red_social').val(),
-                        }
-                    },
+                    // remote: {
+                    //     url: '/nomenclador/verify_pweb/',
+                    //     type: 'get',
+                    //     data: {
+                    //         red_social: $("#id_web-red_social").val(),
+                    //     }
+                    // },
                 },
                 'web-email': {
                     required: true,
                     email: true,
-                    remote: {
-                        url: '/nomenclador/verify_pweb/',
-                        type: 'get',
-                        data: {
-                            red_social: $('#id_web-red_social').val(),
-                        }
-                    },
+                    // remote: {
+                    //     url: '/nomenclador/verify_pweb/',
+                    //     type: 'get',
+                    //     data: {
+                    //         red_social: $wp_red_social.val(),
+                    //     }
+                    // },
                 },
                 'web-red_social': {
                     required: true,
@@ -1017,12 +1020,12 @@ var DPVProcedenciaNom =  function () {
                     minlength: "El perfil no puede tener menos de 3 caracteres",
                     maxlength: "El perfil no puede tener más de 200 caracteres",
                     letterswithbasicpuncandspace: "El perfil no puede tener caracteres especiales",
-                    remote: "Ya existe un prefil web igual en la misma red social registrado",
+                    // remote: "Ya existe un prefil web igual en la misma red social registrado",
                 },
                 'web-email': {
                     required: "El correo electrónico no puede quedar en blanco",
                     email: "El correo electrónico tiene que ser un correo electrónico válido",
-                    remote: "Ya existe un perfil web registrado con este email en el misma red social",
+                    // remote: "Ya existe un perfil web registrado con este email en el misma red social",
                 },
                 'web-red_social': {
                     required: "Tiene que seleccionar una red social",

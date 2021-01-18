@@ -73,3 +73,7 @@ ul.errorlist {
     margin-top: -15px;
     margin-left: -8px;
 }
+.modal-dialog.modal-vlg {
+    margin-top: 17rem;
+    max-width: 1000px;
+}
