@@ -69,6 +69,7 @@ class DPVDocumento(LoggerMixin):
                                        on_delete=models.CASCADE, verbose_name=_("Registrado por"))
     archivo_digital = models.FileField(upload_to=scramble_upload_doc, verbose_name=_("Copia en Digital"),
                                        blank=True, help_text=_("Solo puede subir archivos PDF o imagen del documento"))
+    observation = models.TextField(verbose_name=_("Observación"), null=True, blank=True, help_text=_("Observaciones relacionadas con el documento"))
 
     class Meta:
         verbose_name = _("Documento")
