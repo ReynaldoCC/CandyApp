@@ -172,7 +172,7 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        $pj_procedencia = $("#id_procedencia").selectize({
+        var $pj_procedencia = $("#id_procedencia").selectize({
             placeholder: "Seleccione ...",
             allowEmptyOption: false,
             selectOnTab: true,
@@ -184,8 +184,9 @@ var DPVDocumentos = function () {
                 $.ajax({
                     url: '/docs/procedencia/valid_procedencia_in_personal/' + value + '/',
                     success: function(results) {
-                        var display = results.display;
-                        if (display){
+                        var display_direccion = results.display_direccion;
+                        var display_lugar = results.display_lugar;
+                        if(display_direccion){
                             $("#id_municipio").parent().parent().attr("style", "");
                             $("#id_municipio").rules( "add", {
                                 required: true,
@@ -199,9 +200,23 @@ var DPVDocumentos = function () {
                                 required: false,
                             });
                         }
-
+                        if(display_lugar){
+                            $("#id_lugar").parent().parent().attr("style", "");
+                            $("#id_lugar").rules( "add", {
+                                required: true,
+                                messages: {
+                                    required: "Este campo es requerido.",
+                                }
+                            });
+                        }else{
+                            $("#id_lugar").parent().parent().attr("style", "display:none;");
+                            $("#id_lugar").rules( "add", {
+                                required: false,
+                            });
+                        }
                     }
                 });
+
             },
         });
         var $pj_destino = $("#id_destino").selectize({
@@ -265,14 +280,20 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
+        var $pj_lugar = $("#id_lugar").selectize({
+            placeholder: "Seleccione un lugar",
+            allowEmptyOption: false,
+            create: false,
+        });
 
-        $("#id_municipio").parent().parent().attr("style", "display:none;");
-        $("#id_dir_cpopular").parent().parent().attr("style","display:none");
-        $("#id_dir_calle").parent().parent().attr("style","display:none");
+        $pj_lugar.parent().parent().attr("style", "display:none;");
+        $pj_municipio.parent().parent().attr("style", "display:none;");
+        $pj_cpopular.parent().parent().attr("style","display:none");
+        $pj_direccion_calle.parent().parent().attr("style","display:none");
         $("#id_dir_numero").parent().parent().attr("style","display:none");
-        $("#id_dir_entrecalle1").parent().parent().attr("style","display:none");
-        $("#id_dir_entrecalle2").parent().parent().attr("style","display:none");
-        $("#id_respuesta_a").parent().parent().attr("style","display:none");
+        $pj_direccion_entrecalle1.parent().parent().attr("style","display:none");
+        $pj_direccion_entrecalle2.parent().parent().attr("style","display:none");
+        $pj_respuesta_a.parent().parent().attr("style","display:none");
 
     };
 

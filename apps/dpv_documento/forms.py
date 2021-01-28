@@ -21,6 +21,7 @@ class DPVDocumentoForm(forms.ModelForm):
                   "dir_entrecalle1",
                   "dir_entrecalle2",
                   "respuesta_a",
+                  "lugar",
                   "archivo_digital",
                   "observation", ]
         widgets = {
@@ -39,6 +40,7 @@ class DPVDocumentoForm(forms.ModelForm):
             "respuesta_a": forms.Select(attrs={"class": "form-control"}),
             "archivo_digital": forms.FileInput(attrs={"class": "form-control", "accept": "image/*,application/pdf"}),
             "observation": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
+            "lugar": forms.Select(attrs={"class": "form-control"}),
         }
 
 
