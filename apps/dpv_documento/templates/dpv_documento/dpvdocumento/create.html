@@ -60,7 +60,7 @@
                                 {% endif %}
                                 {% if 'procedencia' in field.name %}
                                     {% if perms.dpv_nomencladores.add_procedencia %}
-                                        <button onclick="return abrir_modal('{% url 'create_procedencia' %}')" class="pull-right btn btn-link">
+                                        <button onclick="return abrir_modal('{% url 'procedencia_new' %}')" class="pull-right btn btn-link">
                                             <i class="fa fa-plus text-success"></i>
                                         </button>
                                     {% endif %}
@@ -107,6 +107,9 @@
     <script src="{% static 'dpv_documento/js/dpvdocumento/agree_calle.js' %}"></script>
     <script src="{% static 'dpv_documento/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_documento/js/validation.functions.js' %}"></script>
-    <script src="{% static 'dpv_documento/js/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/procedencia.js' %}"></script>
+    <script>
+        DPVProcedenciaNom.setAjax(true);
+    </script>
 {% endblock extra_scripts %}
 {% block init_jquery %} {% endblock init_jquery %}

@@ -11,6 +11,7 @@ from .views import (
     delete_docs,
     typedoc_filter_con_respuesta,
     create_procedencia,
+    valid_procedencia_in_personal,
 )
 
 urlpatterns = [
@@ -28,5 +29,6 @@ urlpatterns = [
     path('remove/<int:doc_id>/', delete_docs, name='docs_delete'),
     # PROCEDENCIA
     path('procedencia/add/', create_procedencia, name='create_procedencia'),
+    path('procedencia/valid_procedencia_in_personal/<int:procedencia_id>/', valid_procedencia_in_personal, name='valid_procedencia_in_personal'),
 
 ]

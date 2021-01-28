@@ -242,3 +242,14 @@ def create_procedencia(request):
             'aqform': aqform
         }
     )
+
+
+@login_required()
+def valid_procedencia_in_personal(request, procedencia_id):
+
+    try:
+        procedencia = Procedencia.objects.get(pk=procedencia_id)
+    except:
+        return JsonResponse({"error": "Invalid id value"})
+    else:
+        return JsonResponse({'display': True if procedencia.tipo.nombre in ("Personal") else False}, safe=False, status=200)
