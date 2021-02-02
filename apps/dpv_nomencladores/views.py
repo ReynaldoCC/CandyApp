@@ -2059,3 +2059,154 @@ def verify_lugar(request):
         return JsonResponse("", status=400)
     return JsonResponse("", status=405)
 
+
+# --------------------------------------- Nivelsolucion Views ------------------------------------------------
+@permission_required('dpv_nomencladores.view_nivelsolucion', raise_exception=True)
+def index_nivelsolucion(request):
+    nivelsolucion = NivelSolucion.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_nivelsolucion.html',
+                  {'nivelsoluciones': nivelsolucion})
+
+
+@permission_required('dpv_nomencladores.add_nivelsolucion')
+def add_nivelsolucion(request):
+    if request.method == 'POST':
+        form = NivelSolucionForm(request.POST)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_nivelsolucion')
+    else:
+        form = ClasificacionRespuestaForm()
+    return render(request, 'dpv_nomencladores/form_nivelsolucion.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_nivelsolucion')
+def update_nivelsolucion(request, id_nivelsolucion):
+    nivelsolucion = NivelSolucion.objects.get(id=id_nivelsolucion)
+    if request.method == 'POST':
+        form = NivelSolucionForm(request.POST, instance=nivelsolucion)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_nivelsolucion')
+    else:
+        form = ClasificacionRespuestaForm(instance=nivelsolucion)
+    return render(request, 'dpv_nomencladores/form_nivelsolucion.html',
+                  {'form': form, 'nivelsolucion': nivelsolucion})
+
+
+@permission_required('dpv_nomencladores.delete_nivelsolucion')
+def delete_nivelsolucion(request, id_nivelsolucion):
+    nivelsolucion = NivelSolucion.objects.get(id=id_nivelsolucion)
+    if request.method == 'POST':
+        nivelsolucion.perform_log(request=request, af=2)
+        nivelsolucion.delete()
+        return redirect('nomenclador_nivelsolucion')
+    return render(request,
+                  'dpv_nomencladores/delete_nivelsolucion.html',
+                  {'nivelsolucion': nivelsolucion})
+
+
+@permission_required('dpv_nomencladores.view_nivelsolucion')
+def verify_nivelsolucion(request):
+    if request.method == 'GET':
+        nombre = codigo = False
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'nombre' in k:
+                nombre = k
+            if 'codigo' in k:
+                codigo = k
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not NivelSolucion.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if codigo:
+            if not NivelSolucion.objects.filter(codigo__iexact=codigo).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
+
+
+# --------------------------------------- ConclusionCaso Views ------------------------------------------------
+@permission_required('dpv_nomencladores.view_conclusioncaso', raise_exception=True)
+def index_conclusioncaso(request):
+    conclusioncasos = ConclusionCaso.objects.all()
+    return render(request,
+                  'dpv_nomencladores/list_conclusioncaso.html',
+                  {'conclusioncasos': conclusioncasos})
+
+
+@permission_required('dpv_nomencladores.add_conclusioncaso')
+def add_conclusioncaso(request):
+    if request.method == 'POST':
+        form = ConclusionCasoForm(request.POST)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=0)
+        return redirect('nomenclador_conclusioncaso')
+    else:
+        form = ConclusionCasoForm()
+    return render(request, 'dpv_nomencladores/form_conclusioncaso.html', {'form': form})
+
+
+@permission_required('dpv_nomencladores.change_conclusioncaso')
+def update_conclusioncaso(request, id_conclusioncaso):
+    conclusioncaso = ConclusionCaso.objects.get(id=id_conclusioncaso)
+    if request.method == 'POST':
+        form = ConclusionCasoForm(request.POST, instance=conclusioncaso)
+        if form.is_valid():
+            model = form.save()
+            model.perform_log(request=request, af=1)
+        return redirect('nomenclador_conclusioncaso')
+    else:
+        form = ConclusionCasoForm(instance=conclusioncaso)
+    return render(request, 'dpv_nomencladores/form_conclusioncaso.html',
+                  {'form': form, 'conclusioncaso': conclusioncaso})
+
+
+@permission_required('dpv_nomencladores.delete_conclusioncaso')
+def delete_conclusioncaso(request, id_conclusioncaso):
+    conclusioncaso = ConclusionCaso.objects.get(id=id_conclusioncaso)
+    if request.method == 'POST':
+        conclusioncaso.perform_log(request=request, af=2)
+        conclusioncaso.delete()
+        return redirect('nomenclador_conclusioncaso')
+    return render(request,
+                  'dpv_nomencladores/delete_conclusioncaso.html',
+                  {'conclusioncaso': conclusioncaso})
+
+
+@permission_required('dpv_nomencladores.view_conclusioncaso')
+def verify_conclusioncaso(request):
+    if request.method == 'GET':
+        nombre = codigo = False
+        get_request = dict(request.GET)
+        for k in get_request:
+            if 'nombre' in k:
+                nombre = k
+            if 'codigo' in k:
+                codigo = k
+        id = request.GET.get('id')
+        if not id:
+            id = 0
+        if nombre:
+            if not ConclusionCaso.objects.filter(nombre__iexact=nombre).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        if codigo:
+            if not ConclusionCaso.objects.filter(codigo__iexact=codigo).exclude(id=id).exists():
+                return JsonResponse("true", safe=False, status=200)
+            else:
+                return JsonResponse("", safe=False, status=200)
+        return JsonResponse("", status=400)
+    return JsonResponse("", status=405)
