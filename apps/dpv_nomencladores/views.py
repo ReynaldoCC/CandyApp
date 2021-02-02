@@ -35,13 +35,17 @@ def index(request):
     clasresp = ClasificacionRespuesta.objects.all().count()
     redsoc = RedSocial.objects.all().count()
     lugar = Lugar.objects.all().count()
+    nivelsolucion = NivelSolucion.objects.all().count()
+    conclusioncaso = ConclusionCaso.objects.all().count()
     return render(request, 'dpv_nomencladores/list.html', {'municipios': muns, 'provincias': pros, 'consejos': cpps,
                                                            'conceptos': cocp, 'destinos': dest, 'organismos': orgs,
                                                            'generos': gnes, 'pisos': piso, 'calles': call,
                                                            'unidades': cent, 'deptos': artr, 'codifasunto': ca,
                                                            'tqueja':tpqueja, 'procedencia': proc, 'tprocedencia':tpproc,
                                                            'estado': est, 'clasfrespuesta': clasresp,
-                                                           'redsocial': redsoc, 'lugar':lugar,})
+                                                           'redsocial': redsoc, 'lugar':lugar,
+                                                           'nivelsolucion': nivelsolucion,
+                                                           'conclusioncaso': conclusioncaso, })
 
 
 # ----------------------------------------- Provincia -----------------------------------------------------------------
