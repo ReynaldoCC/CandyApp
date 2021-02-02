@@ -89,6 +89,7 @@ class Damnificado(LoggerMixin):
 
 
 class AsignaQuejaDpto(LoggerMixin):
+    asignador = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None)
     quejadpto = models.ForeignKey(Queja, related_name='quejadpto', on_delete=models.CASCADE,
                                   blank=True, null=True, default='')
     dpto = models.ForeignKey(AreaTrabajo, related_name='dpto', on_delete=models.CASCADE,
@@ -103,6 +104,7 @@ class AsignaQuejaDpto(LoggerMixin):
 
 
 class AsignaQuejaTecnico(LoggerMixin):
+    asignador = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None)
     quejatecnico = models.ForeignKey(Queja, related_name='quejatecnico', on_delete=models.CASCADE,
                                      blank=True, null=True, default='')
     tecnico = models.ForeignKey(Tecnico, related_name='tecnico', on_delete=models.CASCADE,
@@ -147,6 +149,10 @@ class RespuestaQueja(Respuesta):
                                blank=True,
                                default="",
                                help_text=_("Gestion realizada por parte del tecnico para dar respuesta a la queja"))
+    nivel_solucion = models.ForeignKey(NivelSolucion, verbose_name=_("Nivel de la Solución"), on_delete=models.CASCADE,
+                                       default=None, null=True)
+    conclusion_caso = models.ForeignKey(ConclusionCaso, verbose_name=_("Conclusión del Caso"), on_delete=models.CASCADE,
+                                        default=None, null=True)
 
     class Meta:
         verbose_name = _("Respuesta a Queja")
@@ -184,7 +190,7 @@ def configurar_numero_queja(instancia=None, sender=None):
                     consecutivo = str(int(ultima_queja.numero[10:])+1).zfill(4)
                 except:
                     consecutivo = '0001'
-                # revisar a partir de que pardete del codigo falla
+                # revisar a partir de que parte del codigo falla
         elif len(ultimo_numero) < 14:
             consecutivo = str(int(ultimo_numero[10:])+1).zfill(4)
         else:
