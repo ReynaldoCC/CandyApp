@@ -217,8 +217,11 @@ class QRespuestaForm(forms.ModelForm):
 
     class Meta:
         model = RespuestaQueja
-        fields = ["gestion", "texto", ]
+        fields = ["gestion", "nivel_solucion", "conclusion_caso", "clasificacion", "texto", ]
         widgets = {
             "gestion": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
             "texto": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
+            "nivel_solucion": forms.Select(attrs={"class": "form-control"}),
+            "conclusion_caso": forms.Select(attrs={"class": "form-control"}),
+            "clasificacion": forms.Select(attrs={"class": "form-control"}),
         }
