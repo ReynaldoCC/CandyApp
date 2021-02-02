@@ -411,3 +411,25 @@ class ProcedenciaWebForm(forms.ModelForm):
             "email": forms.EmailInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
             "red_social": forms.Select(attrs={'placeholder': 'Seleccione una Red Social', 'class': 'form-control'}),
         }
+
+
+class NivelSolucionForm(forms.ModelForm):
+
+    class Meta:
+        model = NivelSolucion
+        fields = ["nombre", "codigo", ]
+        widgets = {
+            "nombre": forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
+            "codigo": forms.TextInput(attrs={'placeholder': 'Código', 'class': 'form-control'}),
+        }
+
+
+class ConclusionCasoForm(forms.ModelForm):
+
+    class Meta:
+        model = ConclusionCaso
+        fields = ["nombre", "codigo", ]
+        widgets = {
+            "nombre": forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
+            "codigo": forms.TextInput(attrs={'placeholder': 'Código', 'class': 'form-control'}),
+        }
