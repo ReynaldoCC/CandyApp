@@ -466,6 +466,21 @@ class ConclusionCaso(LoggerMixin):
         return self.codigo
 
 
+class NivelSolucion(LoggerMixin):
+    nombre = models.CharField(max_length=90, verbose_name="Nivel de Solución",
+                              validators=[MaxLengthValidator(90), not_special_char])
+    codigo = models.CharField(max_length=3, verbose_name="Código", validators=[only_letters])
+
+    class Meta:
+        verbose_name = "Nivel de Solución"
+        verbose_name_plural = "Niveles de Solución"
+        ordering = ["nombre", ]
+        unique_together = (('nombre', 'deleted_at'), ('codigo', 'deleted_at'))
+
+    def __str__(self):
+        return self.codigo
+
+
 class RespuestaAQueja(LoggerMixin):
     nombre = models.CharField(max_length=100, verbose_name=_("Respuesta a"),
                               help_text=_("A quien se le debe enviar o notificar la respuesta."),
