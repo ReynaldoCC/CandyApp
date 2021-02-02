@@ -463,7 +463,7 @@ class ConclusionCaso(LoggerMixin):
         unique_together = (('nombre', 'deleted_at'), ('codigo', 'deleted_at'))
 
     def __str__(self):
-        return self.codigo
+        return self.codigo.upper()
 
 
 class NivelSolucion(LoggerMixin):
@@ -478,7 +478,7 @@ class NivelSolucion(LoggerMixin):
         unique_together = (('nombre', 'deleted_at'), ('codigo', 'deleted_at'))
 
     def __str__(self):
-        return self.codigo
+        return self.codigo.upper()
 
 
 class RespuestaAQueja(LoggerMixin):
