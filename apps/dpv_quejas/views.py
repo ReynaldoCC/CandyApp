@@ -281,8 +281,9 @@ def asignar_queja_depto(request, id_queja):
     if request.method == 'POST':
         form = AsignaQuejaDptoForm(request.POST, instance=depto)
         if form.is_valid():
-            model = form.save()
-            model.perform_log(request=request, af=0)
+            model = form.save(commit=False)
+            model.asignador = request.user
+            model.save_and_log(request=request, af=0)
             return redirect(reverse_lazy('quejas_list'))
         else:
             return render(request, 'dpv_quejas/asignar_depto.html', {'form': form})
@@ -298,8 +299,9 @@ def asignar_queja_tecnico(request, id_queja):
     if request.method == 'POST':
         form = AsignaQuejaTecnicoForm(request.POST, instance=tecnico)
         if form.is_valid():
-            model = form.save()
-            model.perform_log(request=request, af=0)
+            model = form.save(commit=False)
+            model.asignador = request.user
+            model.save_and_log(request=request, af=0)
             return redirect(reverse_lazy('quejas_list'))
         else:
             return render(request, 'dpv_quejas/asignar_tecnico.html', {'form': form})
