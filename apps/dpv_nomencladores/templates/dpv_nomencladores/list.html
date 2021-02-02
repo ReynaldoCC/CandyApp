@@ -287,6 +287,40 @@
             </div>
         </div>
     {% endif %}
+    {% if perms.dpv_nomencladores.view_nivelsolucion %}
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-9 el-rounded dashwidget overrided">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_nivelsolucion' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{nivelsolucion}}</span>
+                    </h1>
+                    <h3 class="text-light">Niveles de Solución Registrados</h3>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if perms.dpv_nomencladores.view_conclusioncaso %}
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card text-white bg-flat-color-8 el-rounded dashwidget overrided">
+                <div class="card-body pb-0">
+                    <div class="float-right float-middle">
+                        <a href="{% url 'nomenclador_conclusioncaso' %}" class="text-light icon-container text-center">
+                            <span class="ti-arrow-circle-right text-light"></span>
+                        </a>
+                    </div>
+                    <h1 class="mb-0">
+                        <span class="count">{{conclusioncaso}}</span>
+                    </h1>
+                    <h3 class="text-light">Conclusiones de Casos Registrados</h3>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock content_page %}
 {% block extra_scripts %}
     <script src="{% static 'dpv_nomencladores/js/nomencladores.js' %}"></script>
