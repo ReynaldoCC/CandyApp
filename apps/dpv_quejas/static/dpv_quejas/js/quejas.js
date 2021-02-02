@@ -2326,6 +2326,21 @@ var DPVQuejas = function () {
             $("#show_detail_div").removeClass("my-hidden");
             $('button[type="submit"]').addClass("disabled");
         });
+        var $nivel_solucion = $("#id_nivel_solucion").selectize({
+            create: false,
+            placeholder: "Selecione un nivel",
+            allowEmptyOption: false,
+        });
+        var $clasificacion = $("#id_clasificacion").selectize({
+            create: false,
+            placeholder: "Selecione una clasificación",
+            allowEmptyOption: false,
+        });
+        var $conclusion_caso = $("#id_conclusion_caso").selectize({
+            create: false,
+            placeholder: "Selecione una conclusión",
+            allowEmptyOption: false,
+        });
     };
     var _initResponseForm = function () {
         $.validator.setDefaults({
