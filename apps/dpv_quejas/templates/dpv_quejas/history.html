@@ -1,0 +1,385 @@
+{% extends 'dpv_quejas/list.html' %}
+{% block page_title %} | Vida de la queja {{ queja }} {% endblock page_title %}
+{% load static i18n %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/timeline.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Gestión de Quejas {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/quejas/history/' in request.path %}
+    <li class="active">Vida de la Queja {{ queja }}</li>
+    {% else %}
+    <li>
+        <a href="{% url 'quejas_live' queja.id %}">
+            Vida de la Queja {{ queja }}
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="col-md-12 overrided-width">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Vida de la queja {{ queja }}</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="timeline">
+                            {% for item in items %}
+                                {% if item.tipo == "queja" %}
+                            <li class="timeline-grey{% if forloop.last %} timeline-noline{% endif %}">
+                                <div class="timeline-time">
+                                <span class="date">
+                                    {{ item.fecha | date:"j \d\e M \d\e\l Y" }} </span>
+                                <span class="time">
+                                    {{ item.fecha | date:"f" }} {{ item.fecha | date:"A" }} </span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-align-justify"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+                                        <strong>{% trans "Queja" %} {{ item.objeto }}</strong>
+                                        <small class="very-small pull-right"><strong>Introducida por:</strong> {{ item.objeto.radicado_por.get_full_name }}</small>
+                                    </h2>
+                                    <div class="timeline-content">
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Procedencia" %}
+                                                    <small>
+                                                        <span class="badge
+                                                                     {% if "pendiente" in item.objeto.estado.name.lower %}
+                                                                     badge-warning
+                                                                     {% elif "rechazada" in item.objeto.estado.name.lower %}
+                                                                     badge-danger
+                                                                     {% elif "estado" in item.objeto.estado.name.lower %}
+                                                                     badge-secondary
+                                                                     {% elif "concluida" in item.objeto.estado.name.lower %}
+                                                                     badge-success
+                                                                     {% else %}
+                                                                     badge-primary
+                                                                     {% endif %}
+                                                                     float-right mr-3 mt-1">{{ item.objeto.estado }}</span>
+                                                    </small>
+                                                </strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row col-12">
+                                            {% if item.objeto.procedencia %}
+                                                <p class="card-text fw"><strong>{% trans "Procedencia" %}:</strong>{{ item.objeto.procedencia.tipo }}</p>
+                                                {% if item.objeto.procedencia.tipo.id == 2 %}
+                                                <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.nombre }}</p>
+                                                <p class="card-text"><strong>{% trans "Siglas" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.siglas }}</p>
+                                                {% elif item.objeto.procedencia.tipo.id == 3 %}
+                                                <p class="card-text fw"><strong>{% trans "Nombre" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.nombre }} {{ item.objeto.procedencia.objecto_contenido.apellidos }}</p>
+                                                <p class="card-text"><strong>{% trans "CI" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{% trans "Sexo" %}:</strong>{{ item.objeto.procedencia.objecto_contenido.genero }}</p>
+                                                <p class="card-text fw"><strong>{% trans "Email" %}: </strong>{% if item.objeto.procedencia.objecto_contenido.email_address !=  "" %}{{ item.objeto.procedencia.objecto_contenido.email_address }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                                <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if item.objeto.procedencia.objecto_contenido.telefono !=  "" %}{{ item.objeto.procedencia.objecto_contenido.telefono }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                                <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if item.objeto.procedencia.objecto_contenido.movil !=  "" %}{{ item.objeto.procedencia.objecto_contenido.movil }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                                    {% if item.objeto.procedencia.objecto_contenido.direccion_calle !=  "" %}
+                                                <p class="card-text fw"><strong>{% trans "Dirección" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.direccion_calle }} #{{ item.objeto.procedencia.objecto_contenido.direccion_numero }} entre {{ item.objeto.procedencia.objecto_contenido.direccion_entrecalle1 }} y {{ item.objeto.procedencia.objecto_contenido.direccion_entrecalle2 }}, en el{% if item.objeto.procedencia.objecto_contenido.cpopular != "" %} consejo popular {{ item.objeto.procedencia.objecto_contenido.cpopular }} del{% endif %} municipio {{ item.objeto.procedencia.objecto_contenido.municipio }}.</p>
+                                                    {% else %}
+                                                <p class="card-text fw"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                                    {% endif %}
+                                                {% elif item.objeto.procedencia.tipo.id == 3 %}
+                                                <p class="card-text"><strong>{% trans "Número" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.numero }}</p>
+                                                {% elif item.objeto.procedencia.tipo.id == 5 %}
+                                                <p class="card-text"><strong>{% trans "Correo Electónico" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.email }}</p>
+                                                {% elif item.objeto.procedencia.tipo.id == 6 %}
+                                                <p class="card-text fw"><strong>{% trans "Nombre" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.nombre }} ({{ item.objeto.procedencia.objecto_contenido.sigla }})</p>
+                                                <p class="card-text"><strong>{% trans "Teléfono:" %} </strong>{% if item.objeto.procedencia.objecto_contenido.telefono != "" %}{{ item.objeto.procedencia.objecto_contenido.telefono}}{% else %}{% trans "No especificada" %}{% endif %}</p>
+                                                <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if item.objeto.procedencia.objecto_contenido.movil != "" %}{{item.objeto.procedencia.objecto_contenido.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                                <p class="card-text fw"><strong>{% trans "Email" %}: </strong>{% if item.objeto.procedencia.objecto_contenido.email_address != "" %}{{ item.objeto.procedencia.objecto_contenido.email_address }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                                <p class="card-text fw"><strong>{% trans "Nombre Persona Contacto" %}: </strong>{% if  item.objeto.procedencia.objecto_contenido.nombre_contacto != "" %}{{ item.objeto.procedencia.objecto_contenido.nombre_contacto }}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                                <p class="card-text"><strong>{% trans "Código NiT" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.codigo_nit }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{% trans "Código ReUUP" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.codigo_reuup }}</p>
+                                                    {% if item.objeto.procedencia.objecto_contenido.direccion_calle != "" %}
+                                                <p class="card-text fw"><strong>{% trans "Dirección" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.direccion_calle }} #{{ item.objeto.procedencia.objecto_contenido.direccion_numero }} entre {{ item.objeto.procedencia.objecto_contenido.direccion_entrecalle1 }} y {{ item.objeto.procedencia.objecto_contenido.direccion_entrecalle2 }} en el{% if item.objeto.procedencia.objecto_contenido.cpopular != "" %} consejo popular {{ item.objeto.procedencia.objecto_contenido.cpopular }} del{% endif %} municipio de {{ item.objeto.procedencia.objecto_contenido.municipio }}</p>
+                                                    {%  else %}
+                                                <p class="card-text fw"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                                    {% endif %}
+                                                {% elif item.objeto.procedencia.tipo.id == 7 %}
+                                                <p class="card-text"><strong>{% trans "Nombre" %}:</strong>{{ item.objeto.procedencia.objecto_contenido.nombre }}</p>
+                                                {% elif item.objeto.procedencia.tipo.id == 8 %}
+                                                <p class="card-text"><strong>{% trans "Nombre" %}:</strong>{{ item.objeto.procedencia.objecto_contenido.nombre }}</p>
+                                                {% endif %}
+                                            {% endif %}
+                                            <hr/>
+                                        </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Datos del aquejado o afectado" %}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row col-12">
+                                                    <p class="card-text fw"><strong>{% trans "Nombre" %}: </strong>{{ queja.get_quejoso.nombre | capfirst }} {{ queja.get_quejoso.apellidos | capfirst }}</p>
+                                                    <p class="card-text"><strong>{% trans "CI" %}: </strong>{{ queja.get_quejoso.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Sexo: </strong>{{ queja.get_quejoso.genero }}</p>
+                                                    <p class="card-text fw"><strong>{% trans "Email" %}: </strong>{% if queja.get_quejoso.email_address %}{{ queja.get_quejoso.email_address}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                                    <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if queja.get_quejoso.telefono %}{{ queja.get_quejoso.telefono}}{% else %}{% trans "No especificado" %}{% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                    <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.get_quejoso.movil %}{{ queja.get_quejoso.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                                        {% if queja.get_quejoso.direccion_calle %}
+                                                    <p class="card-text fw"><strong>{% trans "Dirección" %}: </strong>{{ queja.get_quejoso.direccion_calle }} #{{ queja.get_quejosodireccion_numero }} entre {{ queja.get_quejoso.direccion_entrecalle1 }} y {{ queja.get_quejoso.direccion_entrecalle2 }}, en el consejo popular {{ queja.get_quejoso.cpopular}} del municipio {{ queja.get_quejoso.municipio }}.</p>
+                                                        {% else %}
+                                                    <p class="card-text fw"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                                        {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Datos de la queja" %}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row col-12">
+                                                    <p class="card-text"><strong>{% trans "No. Procedencia" %}: </strong>{{ queja.no_procendencia }}</p>
+                                                    <p class="card-text"><strong>{% trans "Referencia" %}: </strong>{{ queja.referencia }}</p>
+                                                        {% if queja.dir_calle %}
+                                                    <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.dir_calle }} #{{ queja.dir_num }} entre {{ queja.dir_entrecalle1 }} y {{ queja.dir_entrecalle2 }}, en el consejo popular {{ queja.dir_cpopular }} del municipio {{ queja.dir_municipio }}.</p>
+                                                        {% else %}
+                                                    <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                                        {% endif %}
+                                                    <p class="card-text"><strong>{% trans "Tipo" %}: </strong>{{ queja.tipo }}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Código Asunto: </strong>{{ queja.asunto }} </p>
+                                                    <p class="card-text"><strong>{% trans "Asunto" %}: </strong>{{ queja.asunto_texto }}</p>
+                                                    <p class="card-text"><strong>{% trans "Cuerpo de la Queja" %}: </strong>{{ queja.texto }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-footer">
+                                        <small class="very-small pull-right"><strong>{% trans "Fecha en sistema" %}:</strong> {{ item.fecha | date:"d \d\e M \d\e\l Y f A" }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                                {% elif item.tipo == "asignadepto" %}
+                            <li class="timeline-yellow{% if forloop.last %} timeline-noline{% endif %}">
+                                <div class="timeline-time">
+                                <span class="date">
+                                    {{ item.fecha | date:"j \d\e M \d\e\l Y" }} </span>
+                                <span class="time">
+                                    {{ item.fecha | date:"f" }} {{ item.fecha | date:"A" }} </span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-hand-o-right"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+                                        {% trans "Asignación al dpto." %}
+                                    </h2>
+                                    <div class="timeline-content">
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Asignada a" %}  {{ item.objeto.dpto | capfirst }}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                {% if item.obeto.observaciones != "" and item.obeto.observaciones is not None %}
+                                                <p class="card-text fw"><strong>{% trans "Anotaciones" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.nombre }} {{ item.objeto.procedencia.objecto_contenido.apellidos }}</p>
+                                                {% endif %}
+                                                {% if item.objeto.aignador is not None %}
+                                                <p class="card-text fw"><strong>{% trans "Asignada por" %}: </strong>{{ item.objeto.aisgnador.get_full_name | capfirst }}</p>
+                                                {% else %}
+                                                <p class="card-text fw"><strong>{% trans "Asignada por" %}: </strong>{% trans "Sistema" %}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-footer">
+                                        <small class="very-small pull-right"><strong>{% trans "Fecha en sistema" %}:</strong> {{ item.fecha | date:"d \d\e M \d\e\l Y f A" }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                                {% elif item.tipo == "asignatecnico" %}
+                            <li class="timeline-green{% if forloop.last %} timeline-noline{% endif %}">
+                                <div class="timeline-time">
+                                <span class="date">
+                                    {{ item.fecha | date:"j \d\e M \d\e\l Y" }} </span>
+                                <span class="time">
+                                    {{ item.fecha | date:"f" }} {{ item.fecha | date:"A" }} </span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-hand-o-right"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+                                         {% trans "Asignación al técnico" %}
+                                    </h2>
+                                    <div class="timeline-content">
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Asignada al técnico" %}  {{ item.objeto.tecnico.profile | capfirst }}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                {% if item.obeto.observaciones != "" and item.obeto.observaciones is not None %}
+                                                <p class="card-text fw"><strong>{% trans "Anotaciones" %}: </strong>{{ item.objeto.procedencia.objecto_contenido.nombre }} {{ item.objeto.procedencia.objecto_contenido.apellidos }}</p>
+                                                {% endif %}
+                                                {% if item.objeto.asignador is not None %}
+                                                <p class="card-text fw"><strong>{% trans "Asignada por" %}: </strong>{{ item.objeto.aisgnador.get_full_name | capfirst }}</p>
+                                                {% else %}
+                                                <p class="card-text fw"><strong>{% trans "Asignada por" %}: </strong>{% trans "Sistema" %}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-footer">
+                                        <small class="very-small pull-right"><strong>{% trans "Fecha en sistema" %}:</strong> {{ item.fecha | date:"d \d\e M \d\e\l Y f A" }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                                {% elif item.tipo == "respuesta" %}
+                            <li class="timeline-blue{% if forloop.last %} timeline-noline{% endif %}">
+                                <div class="timeline-time">
+                                <span class="date">
+                                    {{ item.fecha | date:"j \d\e M \d\e\l Y" }} </span>
+                                <span class="time">
+                                    {{ item.fecha | date:"f" }} {{ item.fecha | date:"A" }} </span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-tag"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+                                        {% trans "Respuesta dada a la queja" %}
+                                    </h2>
+                                    <div class="timeline-content">
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Respuesta" %}  {{ item.objeto }}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-footer">
+                                        <small class="very-small pull-right"><strong>{% trans "Fecha en sistema" %}:</strong> {{ item.fecha | date:"d \d\e M \d\e\l Y f A" }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                                {% elif item.tipo == "apruebajefe" %}
+                            <li class="timeline-green{% if forloop.last %} timeline-noline{% endif %}">
+                                <div class="timeline-time">
+                                <span class="date">
+                                    {{ item.fecha | date:"j \d\e M \d\e\l Y" }} </span>
+                                <span class="time">
+                                    {{ item.fecha | date:"f" }} {{ item.fecha | date:"A" }} </span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-thumbs-o-up"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+
+                                    </h2>
+                                    <div class="timeline-content">
+                                        <b>ecomercio@avc.vin.tur.cu</b> <br>
+                                    </div>
+                                    <div class="timeline-footer"></div>
+                                </div>
+                            </li>
+                                {% elif item.tipo == "apruebadtr" %}
+                            <li class="timeline-blue{% if forloop.last %} timeline-noline{% endif %}">
+                                <div class="timeline-time">
+                                <span class="date">
+                                    {{ item.fecha | date:"j \d\e M \d\e\l Y" }} </span>
+                                <span class="time">
+                                    {{ item.fecha | date:"f" }} {{ item.fecha | date:"A" }} </span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-thumbs-o-up"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+
+                                    </h2>
+                                    <div class="timeline-content">
+                                        <b>ecomercio@avc.vin.tur.cu</b> <br>
+                                    </div>
+                                    <div class="timeline-footer"></div>
+                                </div>
+                            </li>
+                                {% elif item.tipo == "respuestarechazada" %}
+                            <li class="timeline-red{% if forloop.last %} timeline-noline{% endif %}">
+                                <div class="timeline-time">
+                                <span class="date">
+                                    {{ item.fecha | date:"j \d\e M \d\e\l Y" }} </span>
+                                <span class="time">
+                                    {{ item.fecha | date:"f" }} {{ item.fecha | date:"A" }} </span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-thumbs-o-down"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+
+                                    </h2>
+                                    <div class="timeline-content">
+                                        <b>ecomercio@avc.vin.tur.cu</b> <br>
+                                    </div>
+                                    <div class="timeline-footer"></div>
+                                </div>
+                            </li>
+                                {% elif item.tipo == "quejanotificada" %}
+                            <li class="timeline-purple{% if forloop.last %} timeline-noline{% endif %}">
+                                <div class="timeline-time">
+                                <span class="date">
+                                    {{ item.fecha | date:"j \d\e M \d\e\l Y" }} </span>
+                                <span class="time">
+                                    {{ item.fecha | date:"f" }} {{ item.fecha | date:"A" }} </span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-send-o"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+
+                                    </h2>
+                                    <div class="timeline-content">
+                                        <b>ecomercio@avc.vin.tur.cu</b> <br>
+                                    </div>
+                                    <div class="timeline-footer"></div>
+                                </div>
+                            </li>
+                                {% endif %}
+                            {% empty %}
+                            <li class="timeline-red">
+                                <div class="timeline-time"></div>
+                                <div class="timeline-icon">
+                                    <i class="fa icon-envelope-letter"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <h2>
+                                        {% trans "No hay datos ?!" %}
+                                    </h2>
+                                    <div class="timeline-content">
+                                        {% trans "Esto debe ser un error pues si exite la queja debe tener datos, vida, historia" %}
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade modal-show" id="popup" role="dialog">
+
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/validation.functions.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+        });
+    </script>
+{% endblock extra_scripts %}
+{% block init_jquery %} {% endblock init_jquery %}
