@@ -1,19 +1,19 @@
 {% extends 'dpv_nomencladores/list.html' %}
-{% block page_title %} | Conceptos {% endblock page_title %}
+{% block page_title %} | Conclusión de Caso {% endblock page_title %}
 {% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_nomencladores/css/nomencladores.css' %}">
 {% endblock extra_style %}
-{% block breadcrumb_title %} Gestión de Conceptos de Propiedad {% endblock breadcrumb_title %}
+{% block breadcrumb_title %} Gestión de Conclusión de Casos {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% if '/nomenclador/concepto/' == request.path %}
-        <li class="active">Conceptos de Propiedad</li>
+    {% if '/nomenclador/conclusioncaso/' == request.path %}
+        <li class="active">Conclusión de Casos</li>
     {% else %}
     <li>
-        <a href="{% url 'nomenclador_concepto' %}">
-            Conceptos de Propiedad
+        <a href="{% url 'nomenclador_conclusioncaso' %}">
+            Conclusión de Casos
         </a>
     </li>
     {% endif %}
@@ -22,32 +22,34 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <strong class="card-title">Conceptos de Propiedad</strong>
-                {% if perms.dpv_nomencladores.add_concepto %}
-                <button onclick="return abrir_modal('{% url 'concepto_new' %}')" class="pull-right btn btn-success btn-sm">
-                <i class="fa fa-plus"></i> Agregar Concepto</button>
+                <strong class="card-title">Conclusión de Casos</strong>
+                {% if perms.dpv_nomencladores.add_conclusioncaso %}
+                <button onclick="return abrir_modal('{% url 'conclusioncaso_new' %}')" class="pull-right btn btn-success btn-sm">
+                <i class="fa fa-plus"></i> Agregar Conclusión de Caso</button>
                 {% endif %}
             </div>
             <div class="card-body">
-                {% if conceptos %}
+                {% if conclusioncasos %}
                 <div class="table-responsive">
                     <table id="concepto-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
+                                <th>Código</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for concepto in conceptos %}
+                        {% for conclusioncaso in conclusioncasos %}
                             <tr>
-                                <td>{{concepto.nombre | capfirst}}</td>
+                                <td>{{conclusioncaso.nombre | capfirst}}</td>
+                                <td>{{conclusioncaso.codigo | upper}}</td>
                                 <td>
-                                     {% if perms.dpv_nomencladores.change_concepto %}
-                                    <a onclick="return abrir_modal('{% url 'concepto_edit' concepto.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
+                                     {% if perms.dpv_nomencladores.change_conclusioncaso %}
+                                    <a onclick="return abrir_modal('{% url 'conclusioncaso_edit' conclusioncaso.id %}')" class="btn btn-sm btn-warning" role="button" data-toggle="modal"><i class="fa fa-edit"></i></a>
                                     {% endif %}
-                                    {% if perms.dpv_nomencladores.delete_concepto %}
-                                    <a onclick="return abrir_modal('{% url 'concepto_delete' concepto.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                                    {% if perms.dpv_nomencladores.delete_conclusioncaso %}
+                                    <a onclick="return abrir_modal('{% url 'conclusioncaso_delete' conclusioncaso.id %}')" class="btn btn-sm btn-danger" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -57,7 +59,7 @@
                 </div>
                 {% else %}
                 <div class="alert alert-info">
-                    <h2 class="text-center">No hay Conceptos registrados que mostrar</h2>
+                    <h2 class="text-center">No hay Conclusiones de Casos registrados que mostrar</h2>
                 </div>
                 {% endif %}
             </div>
@@ -82,26 +84,27 @@
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/conceptos.js' %}"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            const translations_datatables = {
-                "emptyTable": "{% trans 'No hay Conceptos de Propiedad que mostrar' %}",
+        const translations_datatables = {
+                "emptyTable": "{% trans 'No hay Conclusiones de Casos que mostrar' %}",
                 "info_init": "{% trans 'Mostrando' %}",
-                "info_end": "{% trans 'Conceptos de Propiedad' %}",
-                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Conceptos de Propiedad' %}",
+                "info_end": "{% trans 'Conclusion de Caso' %}",
+                "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Conclusiones de Casos' %}",
                 "infoFiltered_init": "{% trans 'Filtrado de' %}",
-                "infoFiltered_end": "{% trans 'total conceptos de propiedad' %}",
+                "infoFiltered_end": "{% trans 'total conclusiones de casos' %}",
                 "lengthMenu_init": "{% trans 'Mostrar' %}",
-                "lengthMenu_end": "{% trans 'Conceptos de Propiedad' %}",
+                "lengthMenu_end": "{% trans 'Conclusiones de Casos' %}",
                 "loadingRecords": "{% trans 'Cargando...' %}",
                 "processing": "{% trans 'Procesando...' %}",
                 "search": "{% trans 'Buscar:' %}",
-                "zeroRecords": "{% trans 'Sin conceptos de propiedad coincidentes encontrados' %}",
+                "zeroRecords": "{% trans 'Sin conclusiones de casos coincidentes encontrados' %}",
                 "first": "{% trans 'Primero' %}",
                 "last": "{% trans 'Ultimo' %}",
                 "next": "{% trans 'Siguiente' %}",
                 "previous": "{% trans 'Anterior' %}"
             };
-            DPVConceptoNom.init(translations_datatables);
+        const verify_url = "{% url 'conclusioncaso_verify' %}";
+        $(document).ready(function() {
+            DPVConclusionCasoNom.init(translations_datatables);
         } );
     </script>
 {% endblock extra_scripts %}

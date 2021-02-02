@@ -1,0 +1,40 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if nivelsolucion %}
+        <form role="form" action="{% url 'nivelsolucion_edit' nivelsolucion.id %}" method="post" id="form_nivelsolucion">
+        {% else %}
+        <form role="form" action="{% url 'nivelsolucion_new' %}" method="post" id="form_nivelsolucion">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Nivel de Solución</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-control-sm">
+                    {{ field.errors }}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    {% if nivelsolucion %}
+     var nivelsolucion_id = "{{nivelsolucion.id}}";
+    {% else %}
+     var nivelsolucion_id = "0";
+    {% endif %}
+    $(document).ready(function() {
+        DPVNivelSolucionNom.initForm();
+    });
+</script>

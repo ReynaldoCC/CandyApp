@@ -1,0 +1,40 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        {% if conclusioncaso %}
+        <form role="form" action="{% url 'conclusioncaso_edit' conclusioncaso.id %}" method="post" id="form_conclusioncaso">
+        {% else %}
+        <form role="form" action="{% url 'conclusioncaso_new' %}" method="post" id="form_conclusioncaso">
+        {% endif %}
+            <div class="modal-header" >
+                <h4 class="modal-title">Conclución de Caso</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+             </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-control-sm">
+                    {{ field.errors }}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    {% if conclusioncaso %}
+     const conclusioncaso_id = "{{conclusioncaso.id}}";
+    {% else %}
+     const conclusioncaso_id = "0";
+    {% endif %}
+    $(document).ready(function() {
+        DPVConclusionCasoNom.initForm();
+    });
+</script>
