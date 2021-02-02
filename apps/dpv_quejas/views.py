@@ -410,3 +410,24 @@ def rechazar_queja(request, id_queja, level):
 def redirigir_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     return render(request, 'dpv_quejas/redirigida.html')
+
+
+def historia_queja(request, id_queja):
+    queja = get_object_or_404(Queja, id=id_queja)
+    items = [{"tipo": "queja", "fecha": queja.created_at, "objeto": queja}]
+    for item in queja.quejadpto.all():
+        items.append({"tipo": "asignadepto", "fecha": item.fecha_asignacion, "objeto": item})
+    for item in queja.quejatecnico.all():
+        items.append({"tipo": "asignatecnico", "fecha": item.fecha_asignacion, "objeto": item})
+    for item in queja.respuesta.all():
+        items.append({"tipo": "respuesta", "fecha": item.fecha, "objeto": item})
+        for subitem in item.apruebajefe.all():
+            items.append({"tipo": "apruebajefe", "fecha": subitem.fecha_jefe, "objeto": subitem})
+        for subitem in item.apruebadtr.all():
+            items.append({"tipo": "apruebadtr", "fecha": subitem.fecha_dtr, "objeto": subitem})
+        for subitem in item.respuestarechazada.all():
+            items.append({"tipo": "respuestarechazada", "fecha": subitem.fecha_rechazada, "objeto": subitem})
+    for item in queja.notificada.all():
+        items.append({"tipo": "quejanotificada", "fecha": item.fecha, "objeto": item})
+    items.sort(key=lambda u: u["fecha"])
+    return render(request, 'dpv_quejas/history.html', {"items": items, "queja": queja})
