@@ -163,4 +163,20 @@ urlpatterns = [
     path('editar_pweb/<int:id_pweb>', update_procedenciaweb, name='pweb_edit'),
     path('eliminar_pweb/<int:id_pweb>', delete_procedenciaweb, name='pweb_delete'),
 
+    path('conclusioncaso/', index_conclusioncaso, name='nomenclador_conclusioncaso'),
+    path('nuevo_conclusioncaso/', add_conclusioncaso, name='conclusioncaso_new'),
+    path('verify_conclusioncaso/', verify_conclusioncaso, name='conclusioncaso_verify'),
+    path('editar_conclusioncaso/<int:id_conclusioncaso>', update_conclusioncaso,
+         name='conclusioncaso_edit'),
+    path('eliminar_conclusioncaso/<int:id_conclusioncaso>', delete_conclusioncaso,
+         name='conclusioncaso_delete'),
+
+    path('nivelsolucion/', index_nivelsolucion, name='nomenclador_nivelsolucion'),
+    path('nuevo_nivelsolucion/', add_nivelsolucion, name='nivelsolucion_new'),
+    path('verify_nivelsolucion/', verify_nivelsolucion, name='nivelsolucion_verify'),
+    path('editar_nivelsolucion/<int:id_nivelsolucion>', update_nivelsolucion,
+         name='nivelsolucion_edit'),
+    path('eliminar_nivelsolucion/<int:id_nivelsolucion>', delete_nivelsolucion,
+         name='nivelsolucion_delete'),
+
 ]
