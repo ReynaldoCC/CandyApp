@@ -1,0 +1,21 @@
+.notify-nav-icon {
+    position: absolute;
+    right: 40px;
+    z-index: 3;
+}
+.notify-nav-icon i {
+    color: red;
+    animation-duration: .5s;
+    animation-name: vibrate;
+    animation-iteration-count: infinite;
+    animation-direction: initial;
+}
+
+@keyframes vibrate {
+    from {
+    }
+
+    to {
+        font-size: 1.2rem;
+    }
+}
