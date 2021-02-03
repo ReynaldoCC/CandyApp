@@ -753,7 +753,7 @@ ul.errorlist {
     visibility: hidden !important;
 }
 a > i.fa {
-    color: white !important;
+    color: white;
 }
 a.btn {
     border-color: black;
@@ -911,6 +911,8 @@ div.table-container {
     border-top-left-radius: 8px;
     padding: .8rem;
     box-shadow: 1px 1px 1px gray;
+    max-width: 200px !important;
+    width: 200px;
 }
 .user-menu.dropdown-menu.show .nav-link i {
     margin-right: .7rem;
