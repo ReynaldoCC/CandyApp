@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="{% static 'dpv_base/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/scss/style.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/lib/bootstrap-datepicker/css/datepicker.css' %}">
-    <link rel="stylesheet" href="{% static 'dpv_base/js/lib/select2/select2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_notificaciones/css/notify.css' %}">
     <link href="{% static 'dpv_base/css/lib/vector-map/jqvmap.min.css' %}" rel="stylesheet">
     <link href="{% static 'dpv_base/js/lib/toastr/toastr.min.css' %}" rel="stylesheet">
     {% endblock main_style %}
@@ -82,7 +82,9 @@
                 </div>
 
                 <div class="col-sm-5">
+                    <a href="/notifies" class="notify-nav-icon"><i class="fa fa-bell text-success"></i></a>
                     <div class="user-area dropdown float-right">
+
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% if request.user.perfil_usuario.avatar %}
                             <img class="user-avatar rounded-circle" height="32px" src="/media/{{ request.user.perfil_usuario.avatar }}" alt="User Avatar">
@@ -93,6 +95,7 @@
 
                         <div class="user-menu dropdown-menu">
                                 <a class="nav-link" href="{% url 'perfil_detail' %}"> <i class="ti-user"></i>  Mi Perfil</a>
+                                <a class="nav-link" href="{% url 'perfil_detail' %}"> <i class="ti-bell"></i>  Mis Noticicaciones</a>
                                 <a class="nav-link"  data-toggle="modal" href="#logoutModal">
                                     <i class="ti-power-off"></i>
                                     Salir
@@ -104,7 +107,7 @@
                 </div>
             </div>
 
-        </header><!-- /header -->
+        </header><!-- /header --
         {% endblock header %}
         <!-- Header-->
         
@@ -216,6 +219,7 @@
     <script src="{% static 'dpv_base/js/lib/bootstrap-maxlength/bootstrap-maxlength.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/select2/select2.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/toastr/toastr.min.js' %}"></script>
+    <script src="{% static 'dpv_notificaciones/js/notify.js' %}"></script>
     {% endblock main_cripts %}
     
     {% block extra_scripts %}{% endblock extra_scripts %}
