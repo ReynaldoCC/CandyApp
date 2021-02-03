@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'apps.dpv_quejas',
     'apps.email_sender',
     'apps.dpv_documento',
+    'apps.dpv_notificaciones',
 ]
 
 MIDDLEWARE = [
