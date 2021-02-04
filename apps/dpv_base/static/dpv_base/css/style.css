@@ -926,3 +926,6 @@ div.table-container {
 .modal.fade.modal-show {
   background-color: rgba(104, 102, 102, 0.48);
 }
+.navbar .navbar-nav li > a .menu-icon {
+  color: white !important;
+}
