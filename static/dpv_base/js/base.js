@@ -1,15 +1,15 @@
 function abrir_modal(url)
 {
-        $('#popup').load(url, function()
+        jQuery('#popup').load(url, function()
         {
-                $(this).modal('show');
+            jQuery(this).modal('show');
         });
         return false;
 }
 
 function cerrar_modal()
 {
-        $('#popup').modal('hide');
+        jQuery('#popup').modal('hide');
         return false;
 }
 
