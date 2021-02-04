@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="col-sm-5">
-                    <a href="/notifies" class="notify-nav-icon"><i class="fa fa-bell text-success"></i></a>
+                    <a href="{% url 'notifies' %}" class="notify-nav-icon hide"><i class="fa fa-bell text-success"></i></a>
                     <div class="user-area dropdown float-right">
 
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -95,7 +95,7 @@
 
                         <div class="user-menu dropdown-menu">
                                 <a class="nav-link" href="{% url 'perfil_detail' %}"> <i class="ti-user"></i>  Mi Perfil</a>
-                                <a class="nav-link" href="{% url 'perfil_detail' %}"> <i class="ti-bell"></i>  Mis Noticicaciones</a>
+                                <a class="nav-link" href="{% url 'notifies' %}"> <i class="ti-bell"></i>  Mis Noticicaciones</a>
                                 <a class="nav-link"  data-toggle="modal" href="#logoutModal">
                                     <i class="ti-power-off"></i>
                                     Salir
@@ -220,6 +220,12 @@
     <script src="{% static 'dpv_base/js/lib/select2/select2.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/toastr/toastr.min.js' %}"></script>
     <script src="{% static 'dpv_notificaciones/js/notify.js' %}"></script>
+    <script>
+        let url_news = "{% url 'notifies_news' %}";
+        jQuery(document).ready(function() {
+            Notifies.init(url_news);
+        });
+    </script>
     {% endblock main_cripts %}
     
     {% block extra_scripts %}{% endblock extra_scripts %}
