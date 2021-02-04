@@ -182,3 +182,5 @@ EMAIL_PORT = "6500"
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 EMAIL_FROM_USER = "sistema.candyapp@oc.dpvhab.cu"
+
+DEFAULT_FROM_EMAIL = EMAIL_FROM_USER
