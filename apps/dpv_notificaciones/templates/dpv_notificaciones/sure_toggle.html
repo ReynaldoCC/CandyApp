@@ -1,0 +1,28 @@
+{% load static i18n %}
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">
+                {% if notify.readed %}
+                {% trans 'Marcar como no leida' %}
+                {% else %}
+                {% trans 'Marcar como leida' %}
+                {% endif %}
+            </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form role="form" method="post" action="{% url 'notififes_togg' notify.id %}"> {% csrf_token %}
+            <div class="modal-body">
+                {% if notify.readed %}
+                <h5 class="text-center">{% trans '¿Seguro marcará esta notificación como no leida?' %}</h5>
+                {% else %}
+                <h5 class="text-center">{% trans '¿Seguro marcará esta notificación como leida?' %}</h5>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">{% trans 'Cancelar' %}</button>
+                <button type="submit" class="btn btn-primary">{% trans 'Marcar' %}</button>
+            </div>
+        </form>
+    </div>
+</div>

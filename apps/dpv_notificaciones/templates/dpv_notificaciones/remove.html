@@ -1,0 +1,18 @@
+{% load static i18n %}
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">{% trans 'Eliminar Notificación' %}</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form role="form" method="post" action="{% url 'notifies_del' notify.id %}"> {% csrf_token %}
+            <div class="modal-body">
+                <h5 class="text-center">{% trans '¿Seguro desea eliminar esta notificación?' %}</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">{% trans 'Cancelar' %}</button>
+                <button type="submit" class="btn btn-danger">{% trans 'Eliminar' %}</button>
+            </div>
+        </form>
+    </div>
+</div>

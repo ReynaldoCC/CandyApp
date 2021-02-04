@@ -1,0 +1,95 @@
+{% extends 'layouts/dashboard.html' %}
+{% load i18n %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_notificaciones/css/notify.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Mis Notificaciones {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/notifies/' == request.path %}
+    <li class="active">Mis Notificaciones</li>
+    {% else %}
+    <li>
+        <a href="{% url 'notifies' %}">
+            Mis Notificaciones
+        </a>
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="content mt-3">
+        {% if notifies %}
+        <div class="table-responsive">
+        <table id="notify-table" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th nowrap="">Texto</th>
+                    <th>Visto</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for notify in notifies %}
+                <tr>
+                    <td>{{ notify.date_time | date:"d \d\e M \d\e\l Y \a \l\a\s f A"}}</td>
+                    <td nowrap="">
+                        <a class="lnk" onclick="return abrir_modal('{% url 'notifies_detail' notify.id %}')">
+                            {{ notify }}
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a class="lnk" onclick="return abrir_modal('{% url 'notififes_togg' notify.id %}')">
+                        {% if notify.readed %}
+                            <i class="fa fa-eye text-success"></i>
+                        {% else %}
+                            <i class="fa fa-eye-slash text-secondary"></i>
+                        {% endif %}
+                        </a>
+                    </td>
+                    <td nowrap="">
+                        <a onclick="return abrir_modal('{% url 'notifies_del' notify.id %}')" type="button" class="btn btn-primary btn-sm"><i class="fa fa-trash-o"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+            {% if notifies.has_other_pages %}
+            <div class="row col-12">
+                <ul class="pagination">
+                    {% if notifies.has_previous %}
+                        <li><a class="btn btn-outline-primary" href="?page={{ notifies.previous_page_number }}">{% trans "Inicio" %} &laquo; </a></li>
+                    {% else %}
+                        <li class="disabled"><span class="btn btn-outline-secondary">{% trans "Inicio" %} &laquo; </span></li>
+                    {% endif %}
+                    {% for i in notifies.paginator.page_range %}
+                        {% if notifies.number == i %}
+                        <li class="active"><span  class="btn btn-primary">{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                        <li><a  class="btn btn-outline-primary" href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if notifies.has_next %}
+                        <li><a class="btn btn-outline-primary" href="?page={{ notifies.next_page_number }}">&raquo; {% trans "Final" %}</a></li>
+                    {% else %}
+                        <li class="disabled"><span class="btn btn-outline-secondary">&raquo; {% trans "Final" %}</span></li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        {% else %}
+        <div class="alert alert-info">
+            <h2 class="text-center">No hay notificaciones que mostrar</h2>
+        </div>
+        {% endif %}
+    </div>
+    <div class="modal fade modal-show" id="popup" role="dialog">
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/base.js' %}"></script>
+
+{% endblock extra_scripts %}
