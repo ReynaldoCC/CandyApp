@@ -1,0 +1,17 @@
+{% load static i18n %}
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">{% trans 'Eliminar Notificación' %}</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+            <h5 class="text-center">{% trans 'Notificación generada por CandyApp' %}</h5>
+            <h6><small>{{ notify.date_time | date:"d \d\e M \d\e\l Y \a \l\a\s f A" }}</small></h6>
+            <p>{{ notify.main_text | capfirst }}</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">{% trans 'Cerrar' %}</button>
+        </div>
+    </div>
+</div>
