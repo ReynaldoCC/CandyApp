@@ -3,6 +3,9 @@
     right: 40px;
     z-index: 3;
 }
+.notify-nav-icon.hide {
+    display: none !important;
+}
 .notify-nav-icon i {
     color: red;
     animation-duration: .5s;
@@ -18,4 +21,7 @@
     to {
         font-size: 1.2rem;
     }
+}
+.td a.lnk {
+    cursor: pointer;
 }
