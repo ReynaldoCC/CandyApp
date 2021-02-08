@@ -9,7 +9,7 @@ class Tecnico (LoggerMixin):
     profile = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='tecnico')
 
     def __str__(self):
-        return '{}'.format(self.profile.datos_personales.nombre + ' ' + self.profile.datos_personales.apellidos)
+        return '{}'.format(self.profile.datos_personales.nombre.capitalize() + ' ' + self.profile.datos_personales.apellidos.capitalize())
 
 
 class Respuesta(LoggerMixin):
@@ -47,6 +47,9 @@ class ApruebaJefe(LoggerMixin):
         verbose_name = _("Respuesta Aprobada por Jefe")
         verbose_name_plural = _("Respuestas Aprobadas por Jefe")
 
+    def __str__(self):
+        return "RA1-{}".format(self.respuesta.codigo)
+
 
 class ApruebaDtr(LoggerMixin):
     observacion_dtr = models.TextField(max_length=1000, default='', blank=True, verbose_name=_('Observaciones'))
@@ -57,6 +60,9 @@ class ApruebaDtr(LoggerMixin):
     class Meta:
         verbose_name = _("Respuesta Aprobada por Director")
         verbose_name_plural = _("Respuestas Aprobadas por Director")
+
+    def __str__(self):
+        return "RA2-{}".format(self.respuesta.codigo)
 
 
 class RespuestaRechazada(LoggerMixin):

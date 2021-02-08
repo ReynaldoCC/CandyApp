@@ -4,6 +4,8 @@ from django.utils.translation import gettext as _
 from apps.dpv_persona.forms import PersonaNaturalForm, PersonaJuridicaForm
 from apps.dpv_nomencladores.forms import TelefonoForm, EmailForm, OrganismoForm, OrganizationForm, PrensaEscritaForm, \
     AnonimoForm
+from apps.dpv_nomencladores.utils import is_database_synchronized
+
 from .models import *
 
 
@@ -13,14 +15,6 @@ class QuejaForm(forms.ModelForm):
                                            label=_("Persona que sufre el daño"),
                                            required=False,
                                            help_text=_("Listado de personas existentes ya en la Base de Datos"),)
-    tipo_procedencia = forms.ModelChoiceField(queryset=TipoProcedencia.objects.all(),
-                                              label=_("Procedencia generica"),
-                                              help_text=_("Aquí se expresa si la queja proviene de una Empresa, Persona, Organismo, Anónimo, etc.."),
-                                              widget=forms.Select(attrs={"class": "form-control"}))
-    damnificado_not_indb = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-check-input switch-input"}),
-                                              required=False,
-                                              label=_("El damnificado no está en la lista"),
-                                              help_text=_("Marque aquí si la persona que busca no está en la lista y se le mostrará un formulario para ingresar sus datos"))
     same_address = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-check-input switch-input"}),
                                       required=False,
                                       label=_("Usar la misma dirección del dmanificado"),
@@ -28,31 +22,31 @@ class QuejaForm(forms.ModelForm):
 
     class Meta:
         model = Queja
-        fields = ('asunto',
-                  'asunto_texto',
-                  'no_procendencia',
-                  'no_radicacion',
-                  'tipo',
+        fields = (
+                  'procedencia',
+                  'personas_list',
+                  'same_address',
+                  'dir_municipio',
+                  'dir_cpopular',
                   'dir_calle',
                   'dir_num',
                   'dir_entrecalle1',
                   'dir_entrecalle2',
-                  'dir_municipio',
-                  'dir_cpopular',
-                  'procedencia',
                   'referencia',
-                  'responder_a',
-                  'tipo_procedencia',
-                  'damnificado_not_indb',
+                  'no_procendencia',
+                  'no_radicacion',
+                  'tipo',
+                  'asunto',
+                  'asunto_texto',
                   'texto',
-                  'personas_list',
-                  'same_address',)
+                  'document',
+        )
         widgets = {
             'dir_num': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
             'dir_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
             'dir_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
             'dir_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
-            'procedencia': forms.Select(attrs={"placeholder": "Seleccione una Procedencia.", "class": "no-show form-control"}),
+            'procedencia': forms.Select(attrs={"placeholder": "Seleccione una Procedencia.", "class": "form-control"}),
             'dir_municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.", "class": "form-control"}),
             'dir_cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control"}),
             'referencia': forms.TextInput(attrs={"placeholder": "No. referencia", "class": "form-control"}),
@@ -62,7 +56,6 @@ class QuejaForm(forms.ModelForm):
             'asunto_texto': forms.TextInput(attrs={"placeholder": "Asunto", "class": "form-control"}),
             'no_procendencia': forms.TextInput(attrs={"placeholder": "No. de procedencia", "class": "form-control"}),
             'no_radicacion': forms.TextInput(attrs={"placeholder": "No. de radicación", "class": "form-control"}),
-            'responder_a': forms.Select(attrs={"placeholder": "Seleccione a quien responder.", "class": "form-control"}),
         }
 
     def clean(self):
@@ -224,4 +217,45 @@ class QRespuestaForm(forms.ModelForm):
             "nivel_solucion": forms.Select(attrs={"class": "form-control"}),
             "conclusion_caso": forms.Select(attrs={"class": "form-control"}),
             "clasificacion": forms.Select(attrs={"class": "form-control"}),
+        }
+
+
+class DamnificadoForm(forms.ModelForm):
+
+    class Meta:
+        model = Damnificado
+        fields = "__all__"
+
+
+if is_database_synchronized():
+    person_queryset = PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True)\
+        .exclude(id__in=Procedencia.objects.filter(
+        tipo_contenido=ContentType.objects.get_for_model(PersonaNatural)).values_list('id_objecto'))
+    entity_queryset = PersonaJuridica.objects.exclude(id__in=Procedencia.objects.filter(
+        tipo_contenido=ContentType.objects.get_for_model(PersonaJuridica)).values_list('id_objecto'))
+else:
+    person_queryset = None
+    entity_queryset = None
+
+
+class DamnificadoAddForm(forms.ModelForm):
+    personas = forms.ModelChoiceField(queryset=person_queryset,
+                                      label=_('Personas'),
+                                      required=False,
+                                      widget=forms.Select(attrs={'placeholder': 'Seleccionar una persona',
+                                                                 'class': 'form-control'}))
+    empresas = forms.ModelChoiceField(queryset=entity_queryset,
+                                      label=_('Entidades'),
+                                      required=False,
+                                      widget=forms.Select(attrs={'placeholder': 'Seleccionar una entidad',
+                                                                 'class': 'form-control'}))
+
+    class Meta:
+        model = Damnificado
+        fields = [
+                  'tipo_contenido',
+                  'empresas',
+                  'personas', ]
+        widgets = {
+            'tipo_contenido': forms.Select(attrs={'placeholder': 'Seleccione', 'class': 'form-control'}),
         }

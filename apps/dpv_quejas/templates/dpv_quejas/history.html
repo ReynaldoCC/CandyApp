@@ -250,6 +250,16 @@
                                                 <strong class="card-title">{% trans "Respuesta" %}  {{ item.objeto }}</strong>
                                             </div>
                                             <div class="card-body">
+                                                <p class="card-text"><strong>{% trans "Responde" %}:</strong>  {{ item.objeto.responde }}</p>
+                                                <p class="card-text"><strong>{% trans "Gestión realizada" %}:</strong>  {{ item.objeto.gestion | capfirst }}</p>
+                                                <p class="card-text"><strong>{% trans "Nivel solución" %}:</strong>  {{ item.objeto.nivel_solucion }}</p>
+                                                <p class="card-text"><strong>{% trans "Conclusión del caso" %}:</strong>  {{ item.objeto.nivel_solucion }}</p>
+                                                <p class="card-text"><strong>{% trans "Clasificación" %}:</strong>  {{ item.objeto.clasificacion }}</p>
+                                                <p class="card-text"><strong>{% trans "Respuesta" %}:</strong>  {{ item.objeto.texto | capfirst }}</p>
+                                                {% if item.objeto.rechazada is not None %}
+                                                    <hr/>
+                                                    <p class="card-text text-danger"><small>{% trans "Esta respuesta ha sido rechada" %}</small></p>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -271,12 +281,25 @@
                                 </div>
                                 <div class="timeline-body">
                                     <h2>
-
+                                        {% trans "Aprobacion de la Respuesta por el Jefe de Dpto." %}
                                     </h2>
                                     <div class="timeline-content">
-                                        <b>ecomercio@avc.vin.tur.cu</b> <br>
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Aprobación por Jefe Dpto." %}  {{ item.objeto }}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text"><strong>{% trans "Respuesta aprobada" %}:</strong>{{ item.objeto.respuesta }}</p>
+                                                <p class="card-text"><strong>{% trans "Respuesta dada por" %}:</strong>{{ item.objeto.respuesta.responde }}</p>
+                                                {% if item.objeto.observacion_jefe and item.objeto.observacion_jefe != "" %}
+                                                    <p class="card-text"><strong>{% trans "Observaciones" %}:</strong>{{ item.objeto.observacion_jefe | capfirst }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="timeline-footer"></div>
+                                    <div class="timeline-footer">
+                                        <small class="very-small pull-right"><strong>{% trans "Fecha en sistema" %}:</strong> {{ item.fecha | date:"d \d\e M \d\e\l Y f A" }}</small>
+                                    </div>
                                 </div>
                             </li>
                                 {% elif item.tipo == "apruebadtr" %}
@@ -292,12 +315,25 @@
                                 </div>
                                 <div class="timeline-body">
                                     <h2>
-
+                                        {% trans "Aprobacion de la Respuesta por el Director." %}
                                     </h2>
                                     <div class="timeline-content">
-                                        <b>ecomercio@avc.vin.tur.cu</b> <br>
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Aprobación por Director." %}  {{ item.objeto }}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text"><strong>{% trans "Respuesta aprobada" %}:</strong>{{ item.objeto.respuesta }}</p>
+                                                <p class="card-text"><strong>{% trans "Respuesta dada por" %}:</strong>{{ item.objeto.respuesta.responde }}</p>
+                                                {% if item.objeto.observacion_dtr and item.objeto.observacion_dtr != "" %}
+                                                    <p class="card-text"><strong>{% trans "Observaciones" %}:</strong>{{ item.objeto.observacion_dtr | capfirst }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="timeline-footer"></div>
+                                    <div class="timeline-footer">
+                                        <small class="very-small pull-right"><strong>{% trans "Fecha en sistema" %}:</strong> {{ item.fecha | date:"d \d\e M \d\e\l Y f A" }}</small>
+                                    </div>
                                 </div>
                             </li>
                                 {% elif item.tipo == "respuestarechazada" %}
@@ -313,12 +349,26 @@
                                 </div>
                                 <div class="timeline-body">
                                     <h2>
-
+                                        {% trans "Respuesta rechazada." %}
                                     </h2>
                                     <div class="timeline-content">
-                                        <b>ecomercio@avc.vin.tur.cu</b> <br>
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Rechazada por " %}  {{ item.objeto.get_nivel_display }}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text"><strong>{% trans "Respuesta aprobada" %}:</strong>{{ item.objeto.respuesta }}</p>
+                                                <p class="card-text"><strong>{% trans "Respuesta dada por" %}:</strong>{{ item.objeto.respuesta.responde }}</p>
+                                                <hr/>
+                                                <p class="card-text"><strong>{% trans "Respuesta rechazada por" %}:</strong>{{ item.objeto.rechazador.get_full_name | capfirst }}</p>
+                                                <p class="card-text"><strong>{% trans "Revisión" %}:</strong>{{ item.object.get_nivel_display }}</p>
+                                                <p class="card-text"><strong>{% trans "Argumento" %}:</strong>{{ item.object.argumento | capfirst }}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="timeline-footer"></div>
+                                    <div class="timeline-footer">
+                                        <small class="very-small pull-right"><strong>{% trans "Fecha en sistema" %}:</strong> {{ item.fecha | date:"d \d\e M \d\e\l Y f A" }}</small>
+                                    </div>
                                 </div>
                             </li>
                                 {% elif item.tipo == "quejanotificada" %}
@@ -334,12 +384,20 @@
                                 </div>
                                 <div class="timeline-body">
                                     <h2>
-
+                                        {% trans "Respuesta Notificada." %}
                                     </h2>
                                     <div class="timeline-content">
-                                        <b>ecomercio@avc.vin.tur.cu</b> <br>
+                                        <div class="timeline-card">
+                                            <div class="card-header">
+                                                <strong class="card-title">{% trans "Notificada la respuesta" %}  {{ item.objeto }}</strong>
+                                            </div>
+                                            <div class="card-body">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="timeline-footer"></div>
+                                    <div class="timeline-footer">
+                                        <small class="very-small pull-right"><strong>{% trans "Fecha en sistema" %}:</strong> {{ item.fecha | date:"d \d\e M \d\e\l Y f A" }}</small>
+                                    </div>
                                 </div>
                             </li>
                                 {% endif %}

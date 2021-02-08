@@ -12,6 +12,13 @@ from apps.dpv_base.mixins import LoggerMixin
 from django.utils import timezone
 import datetime
 
+import uuid
+
+
+def scramble_upload_document(instance, filename, subdiretory='quejas'):
+    ext = filename.split('.')[-1]
+    return subdiretory+'/{}.{}'.format(uuid.uuid4(), ext)
+
 
 class Queja(LoggerMixin):
     dir_num = models.CharField(max_length=15, verbose_name=_('Dirección Número'))
@@ -49,6 +56,8 @@ class Queja(LoggerMixin):
     texto = models.TextField(max_length=3000, verbose_name='Cuerpo de la queja')
     tiempo = models.PositiveSmallIntegerField(verbose_name=_("Tiempo en proceso"), default=0,
                                               help_text=_("Tiempo en días que tiene de radicada la queja"))
+    document = models.FileField(verbose_name=_("Copia digital"), upload_to=scramble_upload_document,
+                                null=True, blank=True, default=None)
 
     class Meta:
         verbose_name = _("Queja")
@@ -74,7 +83,9 @@ class Queja(LoggerMixin):
 
 
 class Damnificado(LoggerMixin):
-    queja = models.ForeignKey(Queja, on_delete=models.CASCADE, related_name='damnificado')
+    queja = models.ForeignKey(Queja, on_delete=models.CASCADE,
+                              default=None,
+                              related_name='damnificado', null=True)
     limit = models.Q(app_label='dpv_persona', model='personanatural') | \
         models.Q(app_label='dpv_persona', model='personajuridica')
     tipo_contenido = models.ForeignKey(ContentType, verbose_name=_('Damnificado de la queja'),

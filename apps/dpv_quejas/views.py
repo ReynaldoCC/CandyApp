@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 from django.db.models import F, Q, When, Case, BooleanField, Value
 from django.http import HttpResponseForbidden
 from django.contrib import messages
@@ -13,17 +13,28 @@ from apps.dpv_respuesta.forms import ApruebaDtrForm, ApruebaJefeForm, RespuestaR
 from .forms import *
 from .models import *
 from .tasks import notify_queja
+from .decorators import some_permission_required
 
 
-@permission_required('dpv_quejas.view_queja', raise_exception=True)
+@some_permission_required(('dpv_quejas.view_queja',
+                           'dpv_quejas.view_asignaquejatecnico',
+                           'dpv_quejas.view_respuestaqueja', ), raise_exception=True)
 def index(request):
     quejas = Queja.objects.none()
     try:
         perfil = request.user.perfil_usuario
         try:
             ct = perfil.centro_trabajo
+            ver_quejas_query = Q(id__isnull=False)
+            if request.user.has_perm('dpv_quejas.view_respuestaqueja'):
+                ver_quejas_query = Q(quejatecnico__tecnico__profile__datos_usuario__id=request.user.id)
+            if request.user.has_perm('dpv_quejas.view_asignaquejatecnico'):
+                ver_quejas_query = Q(quejadpto__dpto__id=request.user.perfil_usuario.depto_trabajo.id)
+            if request.user.has_perm('dpv_quejas.view_queja'):
+                ver_quejas_query = Q(id__isnull=False)
             if ct.oc:
-                quejas = Queja.objects.all().annotate(radicada=Case(When(id__gt=0, then=True),
+                quejas = Queja.objects.filter(ver_quejas_query)\
+                                            .annotate(radicada=Case(When(id__gt=0, then=True),
                                                                     default=False,
                                                                     output_field=BooleanField()),
                                                       asignada_depto=Case(When(
@@ -56,6 +67,7 @@ def index(request):
             else:
                 quejas = Queja.objects.filter(dir_municipio=ct.municipio,
                                               radicado_por__perfil_usuario__centro_trabajo__municipio=ct.municipio) \
+                    .filter(ver_quejas_query)\
                     .annotate(radicada=Case(When(id__gt=0, then=True),
                                             default=False,
                                             output_field=BooleanField()),
@@ -420,12 +432,12 @@ def historia_queja(request, id_queja):
     for item in queja.quejatecnico.all():
         items.append({"tipo": "asignatecnico", "fecha": item.fecha_asignacion, "objeto": item})
     for item in queja.respuesta.all():
-        items.append({"tipo": "respuesta", "fecha": item.fecha, "objeto": item})
-        for subitem in item.apruebajefe.all():
+        items.append({"tipo": "respuesta", "fecha": item.fecha_respuesta, "objeto": item})
+        for subitem in item.apruebajefe_set.all():
             items.append({"tipo": "apruebajefe", "fecha": subitem.fecha_jefe, "objeto": subitem})
-        for subitem in item.apruebadtr.all():
+        for subitem in item.apruebadtr_set.all():
             items.append({"tipo": "apruebadtr", "fecha": subitem.fecha_dtr, "objeto": subitem})
-        for subitem in item.respuestarechazada.all():
+        for subitem in item.respuestarechazada_set.all():
             items.append({"tipo": "respuestarechazada", "fecha": subitem.fecha_rechazada, "objeto": subitem})
     for item in queja.notificada.all():
         items.append({"tipo": "quejanotificada", "fecha": item.fecha, "objeto": item})

@@ -26,6 +26,9 @@
                     </div>
                 </div>
                 {% else %}
+                <div class="pull-right col-12">
+                    <a href="{% url 'quejas_live' queja.id %}" type="button" class="btn btn-primary">Ver historial de la queja</a>
+                </div>
                 <div class="col-md-12">
                     <div class="card border border-dark">
                         <div class="card-header border border-dark">
@@ -136,6 +139,7 @@
                 {% endif %}
             </div>
             <div class="modal-footer">
+                <a href="{% url 'quejas_live' queja.id %}" type="button" class="btn btn-primary" data-dismiss="modal">Ver historial de la queja</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cerrar</button>
             </div>
     </div>

@@ -6,15 +6,6 @@ const Notifies = function () {
     let alert_notify = false;
     let alert_error_notifies = false;
 
-    let _make_alert = function (type, text) {
-        Swal.fire({
-            position: 'top-end',
-            icon: type || 'success',
-            title: text || 'Your work has been saved',
-            showConfirmButton: false,
-            timer: 2500
-        })
-    }
     let _init = function (url) {
         notify_item = jQuery(".notify-nav-icon");
 
@@ -23,18 +14,17 @@ const Notifies = function () {
                 notify_item.removeClass("hide");
                 if (!alert_notify) {
                     alert_notify = true;
-                    _make_alert("success", "Tiene nuevas notificaciones sin ver");
+                    alert("Tiene nuevas notificaciones sin leer");
                 }
             } else {
                 notify_item.addClass("hide");
-                alert_notify = false;
             }
         };
         let _error_notifies = function (xhr,errmsg,err) {
             console.log("Ocurrio error al intentar obtener las notificaciones", xhr,errmsg,err);
             if (!alert_error_notifies){
                 alert_error_notifies = true;
-                _make_alert("error", "No se pudieron obetner al notificaciones por un error");
+                alert("No se pudieron obetner al notificaciones por un error");
             }
             notify_item.addClass("hide");
         };

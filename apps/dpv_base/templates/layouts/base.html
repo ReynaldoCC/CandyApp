@@ -23,10 +23,10 @@
     <link rel="stylesheet" href="{% static 'dpv_base/css/themify-icons.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/scss/style.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/lib/bootstrap-datepicker/css/datepicker.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_notificaciones/css/notify.css' %}">
     <link href="{% static 'dpv_base/css/lib/vector-map/jqvmap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dpv_base/js/lib/toastr/toastr.min.css' %}" rel="stylesheet">
     {% endblock main_style %}
     {% block extra_style %}{% endblock extra_style %}
     {% block main_fonts %}
@@ -94,12 +94,12 @@
                         </a>
 
                         <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="{% url 'perfil_detail' %}"> <i class="ti-user"></i>  Mi Perfil</a>
-                                <a class="nav-link" href="{% url 'notifies' %}"> <i class="ti-bell"></i>  Mis Noticicaciones</a>
-                                <a class="nav-link"  data-toggle="modal" href="#logoutModal">
-                                    <i class="ti-power-off"></i>
-                                    Salir
-                                </a>
+                            <a class="nav-link" href="{% url 'perfil_detail' %}"> <i class="ti-user"></i>  Mi Perfil</a>
+                            <a class="nav-link" href="{% url 'notifies' %}"> <i class="ti-bell"></i>  Mis Noticicaciones</a>
+                            <a class="nav-link"  data-toggle="modal" href="#logoutModal">
+                                <i class="ti-power-off"></i>
+                                Salir
+                            </a>
                         </div>
                     </div>
 
@@ -107,9 +107,8 @@
                 </div>
             </div>
 
-        </header><!-- /header --
+        </header>
         {% endblock header %}
-        <!-- Header-->
         
 
         <div class="breadcrumbs">
@@ -218,7 +217,7 @@
     <script src="{% static 'dpv_base/js/lib/bootstrap-datepicker/js/bootstrap-datepicker.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/bootstrap-maxlength/bootstrap-maxlength.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/select2/select2.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/toastr/toastr.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
     <script src="{% static 'dpv_notificaciones/js/notify.js' %}"></script>
     <script>
         let url_news = "{% url 'notifies_news' %}";
