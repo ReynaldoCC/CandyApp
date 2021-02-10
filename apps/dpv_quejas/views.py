@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import permission_required
-from django.db.models import F, Q, When, Case, BooleanField, Value
-from django.http import HttpResponseForbidden
+from django.db.models import Q, When, Case, BooleanField
+from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib import messages
-from django.db.models.functions import Concat
-from django.core import serializers
 from django.forms.models import model_to_dict
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.utils.translation import ugettext_lazy as _
 
 from apps.dpv_respuesta.forms import ApruebaDtrForm, ApruebaJefeForm, RespuestaRechazadaForm
 
@@ -14,6 +14,8 @@ from .forms import *
 from .models import *
 from .tasks import notify_queja
 from .decorators import some_permission_required
+
+DEFAULT_SHOW_ITEMS = 20
 
 
 @some_permission_required(('dpv_quejas.view_queja',
@@ -443,3 +445,96 @@ def historia_queja(request, id_queja):
         items.append({"tipo": "quejanotificada", "fecha": item.fecha, "objeto": item})
     items.sort(key=lambda u: u["fecha"])
     return render(request, 'dpv_quejas/history.html', {"items": items, "queja": queja})
+
+
+def list_damnificado(request):
+    """
+    View function to show the the list of damnificados of quejas paginated
+    :param request: Request object
+    :return: A View
+    """
+    notify_list = Damnificado.objects.all()
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(notify_list, DEFAULT_SHOW_ITEMS)
+    try:
+        notifies = paginator.page(page)
+    except PageNotAnInteger:
+        notifies = paginator.page(1)
+    except EmptyPage:
+        notifies = paginator.page(paginator.num_pages)
+
+    return render(request, 'dpv_quejas/damnificado/list.html', {'notifies': notifies})
+
+
+def add_damnificado(request):
+    """
+    View function to add new damnificado to the list of damnificados, this function take three forms to evaluate they
+    and save a new instance of damnificado
+    :param request: Request object
+    :return: [A View, Redierct, JsonResponse]A VIew or Redirect if request is POST or JsonResponse if request is Ajax
+    """
+    damn_form = DamnificadoAddForm()
+    pnform = PersonaNaturalForm(prefix='pn', empty_permitted=True, use_required_attribute=False)
+    pjform = PersonaJuridicaForm(prefix='pj', empty_permitted=True, use_required_attribute=False)
+    if request.method == "POST":
+        data = dict()
+        damn_form = DamnificadoAddForm(request.POST)
+        if damn_form.is_valid():
+            objeto_contenido = None
+            damn = damn_form.save(commit=False)
+            if damn.tipo_contenido.model.lower() == "personanatural":
+                if damn_form.cleaned_data.get('personas'):
+                    objeto_contenido = damn_form.cleaned_data.get('personas')
+                else:
+                    pnform = PersonaNaturalForm(request.POST,
+                                                prefix='pn',
+                                                empty_permitted=True,
+                                                use_required_attribute=False)
+                    if pnform.is_valid():
+                        objeto_contenido = pnform.save()
+            elif damn.tipo_contenido.model.lower() == "personajuridica":
+                if damn_form.cleaned_data.get('empresas'):
+                    objeto_contenido = damn_form.cleaned_data.get('empresas')
+                else:
+                    pjform = PersonaJuridicaForm(request.POST,
+                                                           prefix='pj',
+                                                           empty_permitted=True,
+                                                           use_required_attribute=False)
+                    if pjform.is_valid():
+                        objeto_contenido = pjform.save()
+            else:
+               objeto_contenido = None
+            if objeto_contenido is not None and damn.tipo_contenido is not None:
+                damn.objecto_contenido = objeto_contenido
+                damn.id_objecto = objeto_contenido.id
+                damn.save()
+                if request.is_ajax():
+                    data = model_to_dict(damn)
+                    data["message"] = _("Damnificado agregado satisfactoriamente")
+                    return JsonResponse(data=data, status=201)
+                else:
+                    messages.success(request, _("Damnificado agregado satisfactoriamente"))
+                    return redirect(reverse_lazy("quejas_damnificados"))
+            else:
+                if request.is_ajax():
+                    data["message"] = _("No es ha podido agregar el damnificado porque no es del tipo correcto")
+                    return JsonResponse(data=data, status=400)
+                else:
+                    messages.success(request,
+                                     _("No es ha podido agregar el damnificado porque no es del tipo correcto"))
+                    return redirect(reverse_lazy("quejas_damnificados"))
+        else:
+            if request.is_ajax():
+                data['errors'] = dict(dict(damn_form.errors),
+                                      **dict(pnform.errors),
+                                      **dict(pjform.errors))
+                status = 400
+                return JsonResponse(data=data, status=status)
+            else:
+                messages.success(request,
+                                 _("Errores en el formualrio"))
+                return redirect(reverse_lazy("quejas_damnificados"))
+    return render(request, 'dpv_quejas/damnificado/add_form.html', {"damn_form": damn_form,
+                                                                    "pnform": pnform,
+                                                                    "pjform": pjform})
