@@ -20,4 +20,6 @@ urlpatterns = [
    path('notify_many/', notify_queja, name='quejas_notify_many'),
    path('deny/<int:id_queja>/<int:level>', rechazar_queja, name='quejas_deny'),
    path('redirect/<int:id_queja>', index, name='quejas_redirct'),
+   path('damnificados', list_damnificado, name='quejas_damnificados'),
+   path('damnificados/add', add_damnificado, name='quejas_damnadd'),
 ]
