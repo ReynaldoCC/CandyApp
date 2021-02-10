@@ -11,6 +11,11 @@
                 <a href="{% url 'quejas_list' %}"><i class="fa fa-comment"></i>Quejas </a>
             </li>
             {% endif %}
+            {% if perms.dpv_quejas.view_damnificado %}
+            <li class="{% if '/quejas/damnificados' == request.path %} active {% endif %}">
+                <a href="{% url 'quejas_damnificados' %}"><i class="fa fa-user-times"></i>Damnificados </a>
+            </li>
+            {% endif %}
         </ul>
     </li>
 {% endif %}
