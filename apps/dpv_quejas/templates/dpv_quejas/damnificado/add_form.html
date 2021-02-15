@@ -1,0 +1,112 @@
+{% load static i18n %}
+<div class="modal-dialog modal-vlg">
+    <form action="{% url 'quejas_damnadd' %}" method="post" id="formodal_damnificado">{% csrf_token %}
+        <div class="modal-content">
+            <div class="modal-header" >
+                <h4 class="modal-title">{% trans "Agregar Damnificado" %}</h4>
+                <div class="actions">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                </div>
+            </div>
+            <div class="modal-body" style="min-height: 300px">
+                <div class="row pl-4">
+                    <div class="row col-lg-12 max-h-6">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{damn_form.tipo_contenido.label_tag}}</div>
+                            <div class="col-12 col-md-9">
+                                {{ damn_form.tipo_contenido.errors }}
+                                {{ damn_form.tipo_contenido }}
+                                <small class="form-text text-muted">{{ damn_form.tipo_contenido.help_text }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-lg-12 no-show procedent" id="persona_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ damn_form.personas.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ damn_form.personas.errors }}
+                                {{ damn_form.personas }}
+                                <small class="form-text text-muted">{{ damn_form.personas.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_persona.add_personanatural %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="persona-new-form" class="no-show">
+                            {%  for field in pnform %}
+                            <div class="row form-group {% if field.name == "email_address" %}col-12{% else %}col-md-6{% endif %}">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                                {% if "id_pn-ci" == field.id_for_label or "entrecalle2" in field.name %}
+                                <div class="col-11">
+                                    <hr>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row col-lg-12 no-show procedent" id="empresa_block">
+                        <div class="row form-group col-lg-12">
+                            <div class="col col-md-3">{{ damn_form.empresas.label_tag }}</div>
+                            <div class="col-12 col-md-8">
+                                {{ damn_form.empresas.errors }}
+                                {{ damn_form.empresas }}
+                                <small class="form-text text-muted">{{ damn_form.empresas.help_text }}</small>
+                            </div>
+                            {% if perms.dpv_persona.add_personajuridica %}
+                                <button class="pull-right btn btn-link add-item" type="button">
+                                    <i class="fa fa-plus text-success"></i>
+                                </button>
+                            {% endif %}
+                                <button class="pull-right btn btn-link close-form no-show" type="button">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                        </div>
+                        <div id="empresa-new-form" class="no-show">
+                            {%  for field in pjform %}
+                            <div class="row form-group col-md-6">
+                                <div class="col col-md-3">{{ field.label_tag }}</div>
+                                <div class="col-12 col-md-9">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            </div>
+                                {% if "codigo_reuup" in field.name or "entrecalle2" in field.name %}
+                                <div class="col-11">
+                                    <hr>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="close_md" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" onclick="return ">Guardar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    {% if anon %}
+        var anon = true;
+    {% else %}
+        var anon = false;
+    {% endif %}
+    jQuery(document).ready(function() {
+        DPVDAmnificado.initForm();
+    });
+</script>
