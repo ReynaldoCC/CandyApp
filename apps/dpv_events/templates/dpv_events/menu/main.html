@@ -4,7 +4,7 @@
         <i class="menu-icon fa fa-coffee"></i>
         <span class="title">{% with name="Consejos y Reuniones" %}{{ name|truncatechars:20 }}{% endwith %}</span>
     </a>
-    <ul class="sub-menu children dropdown-menu">
+    <ul class="sub-menu children dropdown-menu{% if '/dpv_events/' in request.path %} show {% endif %}">
         {% if perms.dpv_events.view_frecuencia %}
         <li class="{% if '/dpv_events/frecuencia/' in request.path %}active{% endif %}">
             <a href="{% url 'dpv_events:frecuencia' %}"><i class="fa fa-calendar"></i>Frecuencias de Eventos</a>
