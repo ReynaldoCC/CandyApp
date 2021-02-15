@@ -453,18 +453,23 @@ def list_damnificado(request):
     :param request: Request object
     :return: A View
     """
-    notify_list = Damnificado.objects.all()
     page = request.GET.get('page', 1)
+    search = request.GET.get('search', "")
+    if search is not None and search != "":
+        # TODO make query to search over nombre, apellidos and other fields of damnificado
+        damnificado_list = Damnificado.objects.all()
+    else:
+        damnificado_list = Damnificado.objects.all()
 
-    paginator = Paginator(notify_list, DEFAULT_SHOW_ITEMS)
+    paginator = Paginator(damnificado_list, DEFAULT_SHOW_ITEMS)
     try:
-        notifies = paginator.page(page)
+        damnificados = paginator.page(page)
     except PageNotAnInteger:
-        notifies = paginator.page(1)
+        damnificados = paginator.page(1)
     except EmptyPage:
-        notifies = paginator.page(paginator.num_pages)
+        damnificados = paginator.page(paginator.num_pages)
 
-    return render(request, 'dpv_quejas/damnificado/list.html', {'notifies': notifies})
+    return render(request, 'dpv_quejas/damnificado/list.html', {'damnificados': damnificados})
 
 
 def add_damnificado(request):
