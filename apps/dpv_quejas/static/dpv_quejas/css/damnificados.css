@@ -1,0 +1,14 @@
+.selectize-control.form-control {
+    padding: 0 !important;
+    border: 0 solid white;
+}
+.selectize-input.invalid {
+    border-color: #dc3545;
+}
+.modal-dialog.modal-vlg {
+    margin-top: 17rem;
+    max-width: 1000px;
+}
+.selectize-control.form-control.single {
+    max-height: 38px;
+}
