@@ -25,3 +25,8 @@
 .td a.lnk {
     cursor: pointer;
 }
+@media screen and (max-width: 992px) {
+.notify-nav-icon {
+    right: 20px;
+}
+}
