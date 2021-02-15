@@ -5,7 +5,7 @@
             <i class="menu-icon fa fa-building-o"></i>
             Locales
         </a>
-        <ul class="sub-menu children dropdown-menu">
+        <ul class="sub-menu children dropdown-menu{% if '/local/' in request.path %} show {% endif %}">
             {% if perms.dpv_viviendas.view_local %}
             <li class="{% if '/local/' == request.path %} active {% endif %}">
                 <a href="{% url 'locales_list' %}"><i class="fa fa-building-o"></i>Locales </a>

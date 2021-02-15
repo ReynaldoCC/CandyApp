@@ -5,7 +5,7 @@
             <i class="menu-icon fa fa-files-o"></i>
             Documentos
         </a>
-        <ul class="sub-menu children dropdown-menu">
+        <ul class="sub-menu children dropdown-menu{% if '/docs/' in request.path %} show {% endif %} ">
             {% if perms.dpv_documento.view_tipodpvdocumento %}
             <li class="{% if '/docs/' in request.path %} active {% endif %}">
                 <a href="{% url 'list_typedocs' %}"><i class="fa fa-file-text-o"></i>Tipo de Documentos</a>

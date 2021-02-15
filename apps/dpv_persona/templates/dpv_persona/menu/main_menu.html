@@ -5,7 +5,7 @@
             <i class="menu-icon fa fa-user"></i>
             Personas
         </a>
-        <ul class="sub-menu children dropdown-menu">
+        <ul class="sub-menu children dropdown-menu{% if '/persona/' in request.path %} show {% endif %}">
             {% if perms.dpv_persona.view_personanatural %}
             <li class="{% if '/persona/personanatural/' in request.path %} active {% endif %}">
                 <a href="{% url 'persona_natural' %}"><i class="fa fa-users"></i>Personas</a>

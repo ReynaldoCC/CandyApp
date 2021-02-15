@@ -12,7 +12,7 @@
         <i class="menu-icon fa fa-laptop"></i>
         Administración
     </a>
-    <ul class="sub-menu children dropdown-menu">
+    <ul class="sub-menu children dropdown-menu{% if '/admin/' in request.path %} show {% endif %} ">
         {% if perms.auth.view_user %}
         <li class="{% if '/admin/users/' in request.path %} active {% endif %}">
             <a href="{% url 'admin_user' %}"><i class="fa fa-user"></i>Usuarios</a>

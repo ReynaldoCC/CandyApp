@@ -5,7 +5,7 @@
             <i class="menu-icon fa fa-comment"></i>
             Quejas
         </a>
-        <ul class="sub-menu children dropdown-menu">
+        <ul class="sub-menu children dropdown-menu{% if '/quejas/' in request.path %} show {% endif %}">
             {% if perms.dpv_quejas.view_queja or perms.dpv_quejas.view_asignaquejatecnico or perms.dpv_quejas.view_respuestaqueja %}
             <li class="{% if '/quejas/' == request.path %} active {% endif %}">
                 <a href="{% url 'quejas_list' %}"><i class="fa fa-comment"></i>Quejas </a>

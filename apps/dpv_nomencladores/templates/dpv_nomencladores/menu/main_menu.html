@@ -5,7 +5,7 @@
             <i class="menu-icon fa fa-tasks"></i>
             Nomencladores
         </a>
-        <ul class="sub-menu children dropdown-menu">
+        <ul class="sub-menu children dropdown-menu{% if '/nomenclador/' in request.path %} show {% endif %}">
             <li class="{% if '/nomenclador/' == request.path %} active {% endif %}">
                 <a href="{% url 'nomenclador_index' %}"><i class="fa fa-align-justify"></i>Ver Todos</a>
             </li>
