@@ -10,6 +10,7 @@ class PersonaNaturalForm(forms.ModelForm):
         model = PersonaNatural
         fields = ('nombre',
                   'apellidos',
+                  'genero',
                   'ci',
                   'municipio',
                   'cpopular',
@@ -17,10 +18,9 @@ class PersonaNaturalForm(forms.ModelForm):
                   'direccion_numero',
                   'direccion_entrecalle1',
                   'direccion_entrecalle2',
-                  'email_address',
                   'telefono',
                   'movil',
-                  'genero', )
+                  'email_address',)
         widgets = {
             'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
             'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
@@ -59,13 +59,13 @@ class PersonaNaturalMForm(forms.ModelForm):
         fields = ('ci',
                   'telefono',
                   'movil',
+                  'genero',
                   'municipio',
                   'cpopular',
                   'direccion_calle',
                   'direccion_numero',
                   'direccion_entrecalle1',
-                  'direccion_entrecalle2',
-                  'genero', )
+                  'direccion_entrecalle2', )
         widgets = {
             'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.",
                                                    "class": "form-control"}),
@@ -104,10 +104,6 @@ class PersonaJuridicaForm(forms.ModelForm):
         model = PersonaJuridica
         fields = ('nombre',
                   'sigla',
-                  'telefono',
-                  'movil',
-                  'nombre_contacto',
-                  'email_address',
                   'codigo_nit',
                   'codigo_reuup',
                   'municipio',
@@ -115,7 +111,11 @@ class PersonaJuridicaForm(forms.ModelForm):
                   'direccion_calle',
                   'direccion_numero',
                   'direccion_entrecalle1',
-                  'direccion_entrecalle2', )
+                  'direccion_entrecalle2',
+                  'telefono',
+                  'movil',
+                  'nombre_contacto',
+                  'email_address',)
         widgets = {
             'direccion_calle': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
             'direccion_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control select2"}),
