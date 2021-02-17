@@ -1,0 +1,57 @@
+# General
+# ------------------------------------------------------------------------------
+DJANGO_SECRET_KEY="ZAWuI0O2l5DGz6803JHdRGpFzesgdyjGquqHEdSDgWnt7WIJDEvmi7vFM4UAlc99"
+DJANGO_DEBUG='False'
+CONN_MAX_AGE=60
+
+# Security
+# ------------------------------------------------------------------------------
+DJANGO_SECURE_SSL_REDIRECT='False'
+DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS='True'
+DJANGO_SECURE_HSTS_PRELOAD='True'
+DJANGO_SECURE_CONTENT_TYPE_NOSNIFF='False'
+
+# Admin
+# ------------------------------------------------------------------------------
+DJANGO_ADMIN_URL=''
+
+# Database
+# ------------------------------------------------------------------------------
+DJANGO_DATABASE_NAME='db_name'
+DJANGO_DATABASE_HOST='localhost'
+DJANGO_DATABASE_USER='db_user'
+DJANGO_DATABASE_PASS='db_pass'
+DJANGO_DATABASE_PORT='5432'
+DJANGO_DATABASE_URL=''
+
+# Email
+# ------------------------------------------------------------------------------
+DJANGO_EMAIL_HOST=''
+DJANGO_EMAIL_HOST_PASSWORD=''
+DJANGO_EMAIL_HOST_USER=''
+DJANGO_EMAIL_PORT=''
+DJANGO_EMAIL_USE_TLS=''
+DJANGO_EMAIL_USE_SSL=''
+DJANGO_EMAIL_FROM_USER=''
+DJANGO_EMAIL_URL=''
+DJANGO_DEFAULT_FROM_EMAIL='Candy App <noreply@oc.dpvhab.cu>'
+DJANGO_SERVER_EMAIL=''
+
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
+# Celery
+# ------------------------------------------------------------------------------
+CELERY_BROKER_URL=REDIS_URL
+
+# Flower
+CELERY_FLOWER_USER=gXHTAIFtJAQjqmZgOxeKGFASdef234g5r
+CELERY_FLOWER_PASSWORD=TueAKY2mfUqdDjpfcJH3ROqkM89b0NcVAlIp30KsdfdsWEdfssdfDCS32s
+
+# Sentry
+# ------------------------------------------------------------------------------
+SENTRY_DSN=''
+DJANGO_SENTRY_LOG_LEVEL=''
+SENTRY_ENVIRONMENT='production'
+SENTRY_TRACES_SAMPLE_RATE='0.0'
