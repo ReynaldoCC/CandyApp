@@ -1,7 +1,12 @@
-from main import urls, settings
+from django.conf import settings
+
 from django import urls as dj_urls
+
 from .models import ConfigMail
-import os, sys
+
+from main import urls
+
+import os
 
 
 def store_url_names():
@@ -21,8 +26,8 @@ def get_settings_email_conf():
     conf.usuario = settings.EMAIL_HOST_USER or ''
     conf.servidor = settings.EMAIL_HOST or ''
     conf.puerto = settings.EMAIL_PORT or ''
-    conf.use_tls = settings.EMAIL_USE_TLS or False
-    conf.use_ssl = settings.EMAIL_USE_SSL or False
+    conf.usa_tls = settings.EMAIL_USE_TLS or False
+    conf.usa_ssl = settings.EMAIL_USE_SSL or False
     return conf
 
 
@@ -34,7 +39,9 @@ def get_db_email_conf():
 def comapare_db_settings_conf(confdb, confset):
     if not confdb or not confset or confdb.puerto is None or confset.puerto is None:
         return False
-    return confdb.usuario == confset.usuario and confdb.servidor == confset.servidor and int(confdb.puerto) == int(confset.puerto) and confdb.password == confset.password and confdb.use_tls == confset.use_tls and confdb.use_ssl == confset.use_ssl
+    return confdb.usuario == confset.usuario and confdb.servidor == confset.servidor and \
+        int(confdb.puerto) == int(confset.puerto) and confdb.password == confset.password and \
+        confdb.use_tls == confset.usa_tls and confdb.use_ssl == confset.usa_ssl
 
 
 def set_settings_email_conf(configuration):
@@ -43,14 +50,15 @@ def set_settings_email_conf(configuration):
     if configuration.use_ssl and configuration.use_tls:
         configuration.use_ssl = False
         configuration.use_tls = False
+    lines = []
     try:
-        settingdfile = open(os.path.join(settings.BASE_DIR, 'locales_viv/settings.py'), "r", encoding="utf-8")
+        settingdfile = open(os.path.join(settings.BASE_DIR, 'main/settings.py'), "r", encoding="utf-8")
         lines = settingdfile.readlines()
         settingdfile.close()
     except:
         print("no se pudo abrir el archivo para leerlo")
     try:
-        settingdfile = open(os.path.join(settings.BASE_DIR, 'locales_viv/settings.py'), "w", encoding="utf-8")
+        settingdfile = open(os.path.join(settings.BASE_DIR, 'main/settings.py'), "w", encoding="utf-8")
     except:
         print("no se pudo escribir en el archivo")
     else:
@@ -86,3 +94,5 @@ def main_email_candy_conf(db_config=None):
     same_config = comapare_db_settings_conf(db_config, settings_conf)
     if not same_config:
         set_ok = set_settings_email_conf(db_config)
+        return set_ok
+    return True
