@@ -1,0 +1,7 @@
+-r base.txt
+
+gunicorn==20.0.4
+psycopg2-binary==2.8.6
+sentry-sdk==0.19.5
+
+django-anymail==8.1
