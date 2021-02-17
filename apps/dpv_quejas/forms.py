@@ -1,5 +1,4 @@
 from django import forms
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from apps.dpv_persona.forms import PersonaNaturalForm, PersonaJuridicaForm
 from apps.dpv_nomencladores.forms import TelefonoForm, EmailForm, OrganismoForm, OrganizationForm, PrensaEscritaForm, \
@@ -13,28 +12,29 @@ class QuejaForm(forms.ModelForm):
     same_address = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-check-input switch-input"}),
                                       required=False,
                                       label=_("Usar la misma dirección del dmanificado"),
-                                      help_text=_("Marque aquí para asignarle a la queja la misma dirección del damnificado"))
+                                      help_text=_("Marque aquí si es la misma las direccion de la queja y"
+                                                  " el damnificado"))
 
     class Meta:
         model = Queja
         fields = (
-                  'procedencia',
-                  'damnificado',
-                  'same_address',
-                  'dir_municipio',
-                  'dir_cpopular',
-                  'dir_calle',
-                  'dir_num',
-                  'dir_entrecalle1',
-                  'dir_entrecalle2',
-                  'referencia',
-                  'no_procendencia',
-                  'no_radicacion',
-                  'tipo',
-                  'asunto',
-                  'asunto_texto',
-                  'texto',
-                  'document',
+            'procedencia',
+            'damnificado',
+            'same_address',
+            'dir_municipio',
+            'dir_cpopular',
+            'dir_calle',
+            'dir_num',
+            'dir_entrecalle1',
+            'dir_entrecalle2',
+            'referencia',
+            'no_procendencia',
+            'no_radicacion',
+            'tipo',
+            'asunto',
+            'asunto_texto',
+            'texto',
+            'document',
         )
         widgets = {
             'dir_num': forms.TextInput(attrs={"placeholder": "Número", "class": "form-control"}),
@@ -44,7 +44,8 @@ class QuejaForm(forms.ModelForm):
             'procedencia': forms.Select(attrs={"placeholder": "Seleccione una Procedencia.", "class": "form-control"}),
             'damnificado': forms.Select(attrs={"placeholder": "Seleccione un Damnificado.", "class": "form-control"}),
             'dir_municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.", "class": "form-control"}),
-            'dir_cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control"}),
+            'dir_cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.",
+                                                "class": "form-control"}),
             'referencia': forms.TextInput(attrs={"placeholder": "No. referencia", "class": "form-control"}),
             'texto': forms.Textarea(attrs={"placeholder": "Cuerpo de la Queja", "class": "form-control", "rows": "6"}),
             'asunto': forms.Select(attrs={"placeholder": "Seleccione un Asunto", "class": "form-control"}),
@@ -56,36 +57,34 @@ class QuejaForm(forms.ModelForm):
 
     def clean(self):
         if self.cleaned_data.get('dir_calle') == self.cleaned_data.get('dir_entrecalle1'):
-            raise ValidationError({'dir_entrecalle1': _('La primera entre calle no puede ser igual a la calle de la dirección.')})
+            raise ValidationError({'dir_entrecalle1': _('La primera entre calle no puede ser igual a la calle.')})
         if self.cleaned_data.get('dir_entrecalle2') == self.cleaned_data.get('dir_calle'):
-            raise ValidationError({'dir_entrecalle2': _('La segunda entre calle no puede ser igual a la calle de la dirección.')})
+            raise ValidationError({'dir_entrecalle2': _('La segunda entre calle no puede ser igual a la calle.')})
         if self.cleaned_data.get('dir_entrecalle1') == self.cleaned_data.get('dir_entrecalle2'):
             raise ValidationError({'dir_entrecalle2': _('Ambas entre calles no pueden ser iguales.')})
         return super(QuejaForm, self).clean()
 
 
 class AsignaQuejaDptoForm(forms.ModelForm):
-
     class Meta:
         model = AsignaQuejaDpto
         fields = (
-                  'dpto', 'observaciones',
-                  )
+            'dpto', 'observaciones',
+        )
         widgets = {
             'dpto': forms.Select(attrs={"placeholder": "Seleccione un Departamento.", "class": "form-control select2"}),
-            'observaciones': forms.Textarea(attrs={"placeholder": "Observasiones", "class":"form-control mtext"}),
+            'observaciones': forms.Textarea(attrs={"placeholder": "Observasiones", "class": "form-control mtext"}),
         }
 
 
 class AsignaQuejaTecnicoForm(forms.ModelForm):
-
     class Meta:
         model = AsignaQuejaTecnico
         fields = (
-                  'tecnico', 'observaciones',
-                  )
+            'tecnico', 'observaciones',
+        )
         widgets = {
-            'tecnico': forms.Select(attrs={"placeholder":"Seleccionar Técnico", "class": "form-control select2"}),
+            'tecnico': forms.Select(attrs={"placeholder": "Seleccionar Técnico", "class": "form-control select2"}),
             'observaciones': forms.Textarea(attrs={"placeholder": "Observasiones", "class": "form-control mtext"}),
         }
 
@@ -203,7 +202,6 @@ class QAnonimoForm(AnonimoForm):
 
 
 class QRespuestaForm(forms.ModelForm):
-
     class Meta:
         model = RespuestaQueja
         fields = ["gestion", "nivel_solucion", "conclusion_caso", "clasificacion", "texto", ]
@@ -217,17 +215,16 @@ class QRespuestaForm(forms.ModelForm):
 
 
 class DamnificadoForm(forms.ModelForm):
-
     class Meta:
         model = Damnificado
         fields = "__all__"
 
 
 if is_database_synchronized():
-    person_queryset = PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True)\
-        .exclude(id__in=Procedencia.objects.filter(
-        tipo_contenido=ContentType.objects.get_for_model(PersonaNatural)).values_list('id_objecto'))
-    entity_queryset = PersonaJuridica.objects.exclude(id__in=Procedencia.objects.filter(
+    person_queryset = PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True) \
+        .exclude(id__in=Damnificado.objects.filter(
+            tipo_contenido=ContentType.objects.get_for_model(PersonaNatural)).values_list('id_objecto'))
+    entity_queryset = PersonaJuridica.objects.exclude(id__in=Damnificado.objects.filter(
         tipo_contenido=ContentType.objects.get_for_model(PersonaJuridica)).values_list('id_objecto'))
 else:
     person_queryset = None
@@ -249,9 +246,9 @@ class DamnificadoAddForm(forms.ModelForm):
     class Meta:
         model = Damnificado
         fields = [
-                  'tipo_contenido',
-                  'empresas',
-                  'personas', ]
+            'tipo_contenido',
+            'empresas',
+            'personas', ]
         widgets = {
             'tipo_contenido': forms.Select(attrs={'placeholder': 'Seleccione', 'class': 'form-control'}),
         }
