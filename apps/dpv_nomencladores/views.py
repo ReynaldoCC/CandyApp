@@ -1248,6 +1248,18 @@ def delete_procedencia(request, id_procedencia):
     return render(request, 'dpv_nomencladores/delete_procedencia.html', {'procedencia': procedencia})
 
 
+@login_required
+def get_procedencias_json(request):
+    """
+     View function to get the list of procedencias in json with values of id, and nombre, who nombre is the return of
+    __str__ method, used for selects.
+    :param request:
+    :return:
+    """
+    # TODO Make the query inside db server and not python treatment
+    procendencias = list({"id": proc.id, "nombre": proc.__str__() }for proc in Procedencia.objects.all())
+    return JsonResponse(data=procendencias, safe=False, status=200)
+
 # ------------------------------------------- TipoProcedencia ----------------------------------------------------------
 @permission_required('dpv_nomencladores.view_tipoprocedencia', raise_exception=True)
 def index_tipoprocedencia(request):
