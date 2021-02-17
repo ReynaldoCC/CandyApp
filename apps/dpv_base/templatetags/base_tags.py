@@ -2,7 +2,7 @@ from django import template
 from django.apps import apps as all_apps
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import SafeData, mark_safe
-from locales_viv import settings
+from main import settings
 
 register = template.Library()
 

@@ -1,4 +1,4 @@
-from locales_viv import urls, settings
+from main import urls, settings
 from django import urls as dj_urls
 from .models import ConfigMail
 import os, sys

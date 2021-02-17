@@ -12,20 +12,11 @@ from apps.dpv_quejas import urls as quejas_url
 from apps.dpv_respuesta import urls as respuestas_url
 from apps.dpv_documento import urls as docs_url
 from apps.dpv_notificaciones import urls as notifies_url
-# from django.conf.urls import handler404, handler403, handler500, handler400
-# from apps.dpv_base.views import error400, error403, error404, error500
-# from apps.dpv_base.views import tesview
 from django.conf.urls.static import static
 from django.conf import settings
 
-# handler400 = error400
-# handler403 = error403
-# handler404 = error404
-# handler500 = error500
-
 
 urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
-#     path('1234', tesview),
     path('dj-admin/', admin.site.urls),
     path('', include(base_url)),
     path('nomenclador/', include(nomencladores_url)),

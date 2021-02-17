@@ -1,6 +1,6 @@
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from locales_viv.celery import celery_app
+from main.celery import celery_app
 from celery.schedules import crontab
 import datetime
 

@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.executor import MigrationExecutor
-from locales_viv import settings
+from main import settings
 from .initials import create_initial
 import os
 import logging
