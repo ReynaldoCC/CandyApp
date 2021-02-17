@@ -19,6 +19,7 @@ var DPVProcedenciaNom =  function () {
     let procedencia_form;
     let validator_form;
     let ajax_request = false;
+    let ajax_callback = null;
 
     const _initProcedenciaPane = function (translations) {
         $('#procedencia-table').DataTable({
@@ -375,15 +376,21 @@ var DPVProcedenciaNom =  function () {
         });
 
         $("#id_procedencia-tipo").on('change', function (e) {
-            // console.log($(this).val());
-            // e.stopPropagation();
             _toggleProcedenciaForms();
+        });
+        $(".add-item").on("click", function () {
+           $(this).siblings(".col-12.col-md-8").find(".selectized")[0].selectize.clear();
+           $(this).siblings(".col-12.col-md-8").find(".selectized")[0].selectize.disable();
+        });
+        $(".close-form").on("click", function () {
+           $(this).siblings(".col-12.col-md-8").find(".selectized")[0].selectize.enable();
         });
         $("#prensa_block .add-item").on('click', function () {
             $("#prensa-new-form").removeClass("no-show");
             $("#id_procedencia-prensas").siblings(".selectize-control.form-control").addClass("disabled");
             $(this).siblings('.close-form').removeClass('no-show');
             $(this).addClass('no-show');
+
         });
         $("#prensa_block .close-form").on('click', function () {
             $("#prensa-new-form").addClass("no-show");
@@ -503,9 +510,12 @@ var DPVProcedenciaNom =  function () {
 			ignore: ":hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input",
 
             errorPlacement: function(error, element) {
-                if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
-                    error.insertBefore(element.parent());
-                else
+                if (element[0].hasAttribute('type')) {
+                    if (element[0].attributes['type'].nodeValue === 'select-one' || element[0].attributes['type'].nodeValue === 'select-multiple')
+                        error.insertBefore(element.parent());
+                    else
+                        error.insertBefore(element);
+                } else
                     error.insertBefore(element);
             },
 
@@ -632,7 +642,6 @@ var DPVProcedenciaNom =  function () {
                 'organism-nombre': {
                     required: true,
                     maxlength: 90,
-                    remote: {},
                     letterswithbasicpuncandspace: true,
                 },
                 'organism-siglas': {
@@ -769,24 +778,24 @@ var DPVProcedenciaNom =  function () {
                     minlength: 3,
                     maxlength: 200,
                     letterswithbasicpuncandspace: true,
-                    remote: {
-                        url: '/nomenclador/verify_pweb/',
-                        type: 'get',
-                        data: {
-                            red_social: $('#id_web-red_social').val(),
-                        }
-                    },
+                    // remote: {
+                    //     url: '/nomenclador/verify_pweb/',
+                    //     type: 'get',
+                    //     data: {
+                    //         red_social: $("#id_web-red_social").val(),
+                    //     }
+                    // },
                 },
                 'web-email': {
                     required: true,
                     email: true,
-                    remote: {
-                        url: '/nomenclador/verify_pweb/',
-                        type: 'get',
-                        data: {
-                            red_social: $('#id_web-red_social').val(),
-                        }
-                    },
+                    // remote: {
+                    //     url: '/nomenclador/verify_pweb/',
+                    //     type: 'get',
+                    //     data: {
+                    //         red_social: $wp_red_social.val(),
+                    //     }
+                    // },
                 },
                 'web-red_social': {
                     required: true,
@@ -1018,12 +1027,12 @@ var DPVProcedenciaNom =  function () {
                     minlength: "El perfil no puede tener menos de 3 caracteres",
                     maxlength: "El perfil no puede tener más de 200 caracteres",
                     letterswithbasicpuncandspace: "El perfil no puede tener caracteres especiales",
-                    remote: "Ya existe un prefil web igual en la misma red social registrado",
+                    // remote: "Ya existe un prefil web igual en la misma red social registrado",
                 },
                 'web-email': {
                     required: "El correo electrónico no puede quedar en blanco",
                     email: "El correo electrónico tiene que ser un correo electrónico válido",
-                    remote: "Ya existe un perfil web registrado con este email en el misma red social",
+                    // remote: "Ya existe un perfil web registrado con este email en el misma red social",
                 },
                 'web-red_social': {
                     required: "Tiene que seleccionar una red social",
@@ -1034,7 +1043,13 @@ var DPVProcedenciaNom =  function () {
         procedencia_form.on("submit", function (e) {
             if (ajax_request) {
                 e.preventDefault();
-                $(this).ajaxSubmit();
+                $(this).ajaxSubmit({
+                    type: "POST",
+                    success: function (response) {
+                        if (typeof ajax_callback === "function")
+                            ajax_callback(response);
+                    }
+                });
             }
         });
 
@@ -1246,8 +1261,9 @@ var DPVProcedenciaNom =  function () {
             procedencia_form = $('#formodal_procedencia');
             _initProcedenciaForm();
         },
-        setAjax: function (is_ajax) {
+        setAjax: function (is_ajax, callback = null) {
             ajax_request = !!(is_ajax);
+            ajax_callback = callback
         }
     }
 }();
