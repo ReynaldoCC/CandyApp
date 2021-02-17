@@ -64,16 +64,10 @@ DJANGO_APPS = [
     "django.contrib.humanize",
 ]
 THIRD_PARTY_APPS = [
-    "",
+    "django_redis",
 ]
 
 LOCAL_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
     'apps.dpv_base',
     'apps.dpv_nomencladores',
     'apps.export_do',
@@ -155,10 +149,10 @@ TEMPLATES = [
         "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
-            "loaders": [
-                "django.template.loaders.filesystem.Loader",
-                "django.template.loaders.app_directories.Loader",
-            ],
+            # "loaders": [
+            #     "django.template.loaders.filesystem.Loader",
+            #     "django.template.loaders.app_directories.Loader",
+            # ],
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -173,7 +167,7 @@ TEMPLATES = [
     }
 ]
 
-FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
+# FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 # SECURITY
 # ------------------------------------------------------------------------------
@@ -260,3 +254,9 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+# Fixtures
+# ------------------------------------------------------------------------------
+CHARGE_DATA_DEFAULT = env.bool("DJANGO_CHARGE_DATA_DEFAULT", default=False)
+
+BULK_URLS = []
