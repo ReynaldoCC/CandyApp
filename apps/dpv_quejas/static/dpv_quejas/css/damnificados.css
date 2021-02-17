@@ -6,7 +6,7 @@
     border-color: #dc3545;
 }
 .modal-dialog.modal-vlg {
-    margin-top: 17rem;
+    margin-top: 1rem !important;
     max-width: 1000px;
 }
 .selectize-control.form-control.single {
