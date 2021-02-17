@@ -5,7 +5,7 @@ from .base import env
 # ------------------------------------------------------------------------------
 DEBUG = True
 
-SECRET_KEY = env(
+SECRET_KEY = env.str(
     "DJANGO_SECRET_KEY",
     default="ZAWuI0O2l5DGz6803JHdRGpFzesgdyjGquqHEdSDgWnt7WIJDEvmi7vFM4UAlc99",
 )
