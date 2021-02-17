@@ -19,6 +19,7 @@ var DPVProcedenciaNom =  function () {
     let procedencia_form;
     let validator_form;
     let ajax_request = false;
+    let ajax_callback = null;
 
     const _initProcedenciaPane = function (translations) {
         $('#procedencia-table').DataTable({
@@ -375,15 +376,21 @@ var DPVProcedenciaNom =  function () {
         });
 
         $("#id_procedencia-tipo").on('change', function (e) {
-            // console.log($(this).val());
-            // e.stopPropagation();
             _toggleProcedenciaForms();
+        });
+        $(".add-item").on("click", function () {
+           $(this).siblings(".col-12.col-md-8").find(".selectized")[0].selectize.clear();
+           $(this).siblings(".col-12.col-md-8").find(".selectized")[0].selectize.disable();
+        });
+        $(".close-form").on("click", function () {
+           $(this).siblings(".col-12.col-md-8").find(".selectized")[0].selectize.enable();
         });
         $("#prensa_block .add-item").on('click', function () {
             $("#prensa-new-form").removeClass("no-show");
             $("#id_procedencia-prensas").siblings(".selectize-control.form-control").addClass("disabled");
             $(this).siblings('.close-form').removeClass('no-show');
             $(this).addClass('no-show');
+
         });
         $("#prensa_block .close-form").on('click', function () {
             $("#prensa-new-form").addClass("no-show");
@@ -1036,7 +1043,13 @@ var DPVProcedenciaNom =  function () {
         procedencia_form.on("submit", function (e) {
             if (ajax_request) {
                 e.preventDefault();
-                $(this).ajaxSubmit();
+                $(this).ajaxSubmit({
+                    type: "POST",
+                    success: function (response) {
+                        if (typeof ajax_callback === "function")
+                            ajax_callback(response);
+                    }
+                });
             }
         });
 
@@ -1248,8 +1261,9 @@ var DPVProcedenciaNom =  function () {
             procedencia_form = $('#formodal_procedencia');
             _initProcedenciaForm();
         },
-        setAjax: function (is_ajax) {
+        setAjax: function (is_ajax, callback = null) {
             ajax_request = !!(is_ajax);
+            ajax_callback = callback
         }
     }
 }();
