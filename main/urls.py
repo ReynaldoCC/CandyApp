@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import path, include
 from apps.dpv_base import urls as base_url
 from apps.dpv_nomencladores import urls as nomencladores_url
@@ -17,7 +16,6 @@ from django.conf import settings
 
 
 urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
-    path('dj-admin/', admin.site.urls),
     path('', include(base_url)),
     path('nomenclador/', include(nomencladores_url)),
     path('local/', include(locales_url)),
