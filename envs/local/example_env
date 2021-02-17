@@ -55,3 +55,7 @@ SENTRY_DSN=''
 DJANGO_SENTRY_LOG_LEVEL=''
 SENTRY_ENVIRONMENT='production'
 SENTRY_TRACES_SAMPLE_RATE='0.0'
+
+# Fixtures
+# ------------------------------------------------------------------------------
+DJANGO_CHARGE_DATA_DEFAULT='False'
