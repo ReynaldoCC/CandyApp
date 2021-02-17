@@ -10,4 +10,4 @@ merge_issues.txt
 db.sqlite3
 media/*
 celerybeat-schedule
-
+envs/production/*
