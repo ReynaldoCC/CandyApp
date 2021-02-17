@@ -1,7 +1,6 @@
 from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from apps.email_sender.forms import ConfigureMailForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import views as auth_views
@@ -13,16 +12,19 @@ from django.apps import apps as all_apps
 from django.views.defaults import page_not_found, server_error, bad_request, permission_denied
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-from .forms import LoginForm, RecoverPassForm
-from .forms import GroupForm, UserMForm, UserNPForm, UserPasswordForm, SetPasswordCAForm, PasswordResetCAForm
-from .utils import store_url_names
+
+from apps.email_sender.forms import ConfigureMailForm
 from apps.dpv_persona.models import PersonaNatural
 from apps.dpv_persona.forms import PersonaNaturalMForm
 from apps.dpv_perfil.models import Perfil
 from apps.dpv_perfil.forms import PerfilMForm
 from apps.email_sender.models import EmailConfigurate
 from apps.dpv_base.mixins import perform_log, Log
-from .utils import set_settings_email_conf, comapare_db_settings_conf, get_settings_email_conf
+
+from .forms import LoginForm, RecoverPassForm, GroupForm, UserMForm, UserNPForm, UserPasswordForm, SetPasswordCAForm, \
+    PasswordResetCAForm
+from .utils import store_url_names, set_settings_email_conf, comapare_db_settings_conf, get_settings_email_conf
+
 
 # Create your views here.
 @login_required()
