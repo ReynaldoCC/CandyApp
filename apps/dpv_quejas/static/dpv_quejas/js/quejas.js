@@ -582,7 +582,10 @@ var DPVQuejas = function () {
         });
 		$("#id_queja-same_address").on("click", function () {
 			if (this.checked) {
-				_setValuesAddressQueja();
+				if ($("#id_queja-damnificado").val())
+					_setValuesAddressQueja();
+				else
+					this.checked = false;
 			} else {
 				$dir_calle[0].selectize.setValue('', false);
 				$dir_entrecalle1[0].selectize.setValue('', false);
@@ -592,7 +595,6 @@ var DPVQuejas = function () {
 				$("#id_queja-dir_num").val('');
 			}
 		});
-
 
         var _setValuesAddressQueja = function () {
         	if (persona && persona.objecto_contenido) {
