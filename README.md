@@ -1,4 +1,4 @@
-# app-vivienda
+# CandyApp ![]()
 Aplicacion de la DPV para informatización de las distintas areas
 
 Comando para probar celery en la consola con el log level en debug
