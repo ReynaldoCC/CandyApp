@@ -20,7 +20,7 @@ DEFAULT_SHOW_ITEMS = 20
 
 @some_permission_required(('dpv_quejas.view_queja',
                            'dpv_quejas.view_asignaquejatecnico',
-                           'dpv_quejas.view_respuestaqueja', ), raise_exception=True)
+                           'dpv_quejas.view_respuestaqueja',), raise_exception=True)
 def index(request):
     quejas = Queja.objects.none()
     try:
@@ -35,41 +35,41 @@ def index(request):
             if request.user.has_perm('dpv_quejas.view_queja'):
                 ver_quejas_query = Q(id__isnull=False)
             if ct.oc:
-                quejas = Queja.objects.filter(ver_quejas_query)\
-                                            .annotate(radicada=Case(When(id__gt=0, then=True),
-                                                                    default=False,
-                                                                    output_field=BooleanField()),
-                                                      asignada_depto=Case(When(
-                                                          Q(quejadpto__id__gt=0, quejadpto__rechazada__isnull=True),
-                                                          then=True),
-                                                                          default=False,
-                                                                          output_field=BooleanField()),
-                                                      asignada_tecnico=Case(When(Q(quejatecnico__id__gt=0,
-                                                                                   quejatecnico__rechazada__isnull=True),
-                                                                                 then=True),
-                                                                            default=False,
-                                                                            output_field=BooleanField()),
-                                                      respondida=Case(When(
-                                                          Q(respuesta__id__gt=0, respuesta__rechazada__isnull=True),
-                                                          then=True),
-                                                                      default=False,
-                                                                      output_field=BooleanField()),
-                                                      aprobada_depto=Case(When(Q(respuesta__apruebajefe__id__gt=0,
-                                                                                 respuesta__apruebajefe__isnull=False),
-                                                                               then=True),
-                                                                          default=False,
-                                                                          output_field=BooleanField()),
-                                                      aprobada_dir=Case(When(
-                                                          Q(respuesta__id__gt=0, respuesta__apruebadtr__gt=0,
-                                                            respuesta__apruebadtr__isnull=False), then=True),
-                                                                        default=False,
-                                                                        output_field=BooleanField()),
-                                                      ) \
+                quejas = Queja.objects.filter(ver_quejas_query) \
+                    .annotate(radicada=Case(When(id__gt=0, then=True),
+                                            default=False,
+                                            output_field=BooleanField()),
+                              asignada_depto=Case(When(
+                                  Q(quejadpto__id__gt=0, quejadpto__rechazada__isnull=True),
+                                  then=True),
+                                  default=False,
+                                  output_field=BooleanField()),
+                              asignada_tecnico=Case(When(Q(quejatecnico__id__gt=0,
+                                                           quejatecnico__rechazada__isnull=True),
+                                                         then=True),
+                                                    default=False,
+                                                    output_field=BooleanField()),
+                              respondida=Case(When(
+                                  Q(respuesta__id__gt=0, respuesta__rechazada__isnull=True),
+                                  then=True),
+                                  default=False,
+                                  output_field=BooleanField()),
+                              aprobada_depto=Case(When(Q(respuesta__apruebajefe__id__gt=0,
+                                                         respuesta__apruebajefe__isnull=False),
+                                                       then=True),
+                                                  default=False,
+                                                  output_field=BooleanField()),
+                              aprobada_dir=Case(When(
+                                  Q(respuesta__id__gt=0, respuesta__apruebadtr__gt=0,
+                                    respuesta__apruebadtr__isnull=False), then=True),
+                                  default=False,
+                                  output_field=BooleanField()),
+                              ) \
                     .distinct("id")
             else:
                 quejas = Queja.objects.filter(dir_municipio=ct.municipio,
                                               radicado_por__perfil_usuario__centro_trabajo__municipio=ct.municipio) \
-                    .filter(ver_quejas_query)\
+                    .filter(ver_quejas_query) \
                     .annotate(radicada=Case(When(id__gt=0, then=True),
                                             default=False,
                                             output_field=BooleanField()),
@@ -97,180 +97,29 @@ def index(request):
                               ) \
                     .distinct("id")
         except:
-            messages.warning(request, "No se mostraran las quejas ya que el usuario no tiene centro de trabajo asociado, si cree que es un error contacte con la administración del sistema")
+            messages.warning(request,
+                             "No se mostraran las quejas ya que el usuario no tiene centro de trabajo asociado, si cree que es un error contacte con la administración del sistema")
     except:
-        messages.warning(request, "No se mostraran las quejas ya que el usuario no tiene perfil asociado, si cree que es un error contacte con la administración del sistema")
+        messages.warning(request,
+                         "No se mostraran las quejas ya que el usuario no tiene perfil asociado, si cree que es un error contacte con la administración del sistema")
     return render(request, 'dpv_quejas/list.html', {'quejas': quejas})
 
 
 @permission_required('dpv_quejas.add_queja', raise_exception=True)
 def agregar_queja(request):
     form = QuejaForm(prefix='queja')
-    aqform = AQPersonaNaturalForm(prefix='person_procedence', empty_permitted=True, use_required_attribute=False)
-    pnform = QPersonaNaturalForm(prefix='person_queja', empty_permitted=True, use_required_attribute=False)
-    pjform = QPersonaJuridicaForm(prefix='empresa', empty_permitted=True, use_required_attribute=False)
-    tform = QTelefonoForm(prefix='telefono', empty_permitted=True, use_required_attribute=False)
-    eform = QEmailForm(prefix='email', empty_permitted=True, use_required_attribute=False)
-    orgform = QOrganismoForm(prefix='organismo', empty_permitted=True, use_required_attribute=False)
-    oform = QOrganizationForm(prefix='organiza', empty_permitted=True, use_required_attribute=False)
-    peform = QPrensaEscritaForm(prefix='pe', empty_permitted=True, use_required_attribute=False)
-    person_list = None
     if request.method == "POST":
-        form = QuejaForm(request.POST, prefix='queja')
-        pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', empty_permitted=True,
-                                     use_required_attribute=False)
-        procedence_form = QAnonimoForm()
-        if request.POST.get('pe-nombre'):
-            pe = PrensaEscrita.objects.filter(nombre=request.POST.get('pe-nombre'))
-            if pe:
-                procedence_form = peform = QPrensaEscritaForm(request.POST, prefix='pe', use_required_attribute=False,
-                                                              instance=pe.first(), empty_permitted=True)
-            else:
-                procedence_form = peform = QPrensaEscritaForm(request.POST, prefix='pe',
-                                                              use_required_attribute=False, empty_permitted=True)
-        elif request.POST.get('person_procedence-ci') and request.POST.get('person_procedence-nombre'):
-            pn = PersonaNatural.objects.filter(ci=request.POST.get('person_procedence-ci'))
-            if pn:
-                procedence_form = aqform = AQPersonaNaturalForm(request.POST, prefix='person_procedence',
-                                                                use_required_attribute=False,
-                                                                instance=pn.first(), empty_permitted=True)
-            else:
-                procedence_form = aqform = AQPersonaNaturalForm(request.POST, prefix='person_procedence',
-                                                                use_required_attribute=False, empty_permitted=True)
-        elif request.POST.get('telefono-numero'):
-            tel = Telefono.objects.filter(numero=request.POST.get('telefono-numero'))
-            if tel:
-                procedence_form = tform = QTelefonoForm(request.POST, prefix='telefono', use_required_attribute=False,
-                                                        instance=tel.first(), empty_permitted=True)
-            else:
-                procedence_form = tform = QTelefonoForm(request.POST, prefix='telefono', use_required_attribute=False,
-                                                        empty_permitted=True)
-        elif request.POST.get('email-email'):
-            ema = Email.objects.filter(email=request.POST.get('email-email'))
-            if ema:
-                procedence_form = eform = QEmailForm(request.POST, prefix='email', use_required_attribute=False,
-                                                     instance=ema.first(), empty_permitted=True)
-            else:
-                procedence_form = eform = QEmailForm(request.POST, prefix='email', use_required_attribute=False,
-                                                     empty_permitted=True)
-        elif request.POST.get('empresa-nombre') and request.POST.get('empresa-codigo_nit') and request.POST.get(
-                'empresa-codigo_reuup'):
-            pj = PersonaJuridica.objects.filter(codigo_nit=request.POST.get('empresa-codigo_nit'),
-                                                codigo_reuup=request.POST.get('empresa-codigo_reuup'),
-                                                nombre=request.POST.get('empresa-nombre'))
-            if pj:
-                procedence_form = pjform = QPersonaJuridicaForm(request.POST, prefix='empresa',
-                                                                instance=pj.first(), empty_permitted=True,
-                                                                use_required_attribute=False)
-            else:
-                procedence_form = pjform = QPersonaJuridicaForm(request.POST, prefix='empresa', empty_permitted=True,
-                                                                use_required_attribute=False)
-        elif request.POST.get('organiza-nombre'):
-            org = Organizacion.objects.filter(nombre=request.POST.get('organiza-nombre')[0])
-            if org:
-                procedence_form = oform = QOrganizationForm(request.POST, prefix='organiza',
-                                                            use_required_attribute=False,
-                                                            instance=org.first(), empty_permitted=True)
-            else:
-                procedence_form = oform = QOrganizationForm(request.POST, prefix='organiza',
-                                                            use_required_attribute=False,
-                                                            empty_permitted=True)
-
-        if request.POST.get('personas_list'):
-            persona_list = request.POST.get('personas_list')
-            persona = PersonaNatural.objects.filter(id=persona_list).first()
-            # print(model_to_dict(persona))
-            if persona:
-                pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', instance=persona)
-        else:
-            persona = PersonaNatural.objects.filter(ci=request.POST.get('person_queja-ci'),
-                                                    nombre__iexact=request.POST.get('person_queja-nombre'),
-                                                    apellidos__iexact=request.POST.get(
-                                                        'person_queja-apellidos')).first()
-            if persona:
-                pnform = QPersonaNaturalForm(request.POST, prefix='person_queja', instance=persona)
-
-        if form.is_valid() and procedence_form.is_valid() and pnform.is_valid():
-            procedence = procedence_form.save()
-            if procedence:
-                ct = ContentType.objects.get_for_model(procedence)
-                proc = Procedencia.objects.create(objecto_contenido=procedence, tipo_contenido=ct,
-                                                  id_objecto=procedence.id)
-                proc.save_and_log(request=request, af=0)
-            else:
-                proc, pcreated = Procedencia.objects.get_or_create(nombre="Anónimo",
-                                                                   tipo=TipoProcedencia.objects.filter(id=1).first())
-
-            quejoso, qcreated = pnform.Meta.model.objects.get_or_create(nombre=pnform.instance.nombre,
-                                                                        ci=pnform.instance.ci,
-                                                                        defaults={
-                                                                            'apellidos': pnform.instance.apellidos,
-                                                                            'telefono': pnform.instance.telefono,
-                                                                            'movil': pnform.instance.movil,
-                                                                            'email_address': pnform.instance.email_address,
-                                                                            'genero': pnform.instance.genero,
-                                                                            'direccion_calle': pnform.instance.direccion_calle,
-                                                                            'direccion_numero': pnform.instance.direccion_numero,
-                                                                            'direccion_entrecalle1': pnform.instance.direccion_entrecalle1,
-                                                                            'direccion_entrecalle2': pnform.instance.direccion_entrecalle2,
-                                                                            'municipio': pnform.instance.municipio,
-                                                                            'cpopular': pnform.instance.cpopular,
-                                                                        })
-            if qcreated:
-                quejoso.save_and_log(request=request, af=0)
-            qct = ContentType.objects.get_for_model(quejoso)
+        form = QuejaForm(request.POST, request.FILES, prefix='queja')
+        if form.is_valid():
             queja = form.save(commit=False)
-            queja.procedencia = proc
             queja.radicado_por = request.user
             queja.save_and_log(request=request, af=0)
-            damnificado = Damnificado.objects.create(queja=queja, tipo_contenido=qct,
-                                                     objecto_contenido=quejoso, id_objecto=quejoso.id)
-            damnificado.save_and_log(request=request, af=0)
+            messages.success(request, _("Queja " + queja.__str__() + " agregada satisfactoriamente"))
             return redirect(reverse_lazy('quejas_list'))
         else:
-            if request.POST.get('pe-nombre'):
-                peform = procedence_form
-                peform.initial = model_to_dict(procedence_form.instance)
-            elif request.POST.get('person_procedence-ci') and request.POST.get('person_procedence-nombre'):
-                aqform = procedence_form
-                aqform.initial = model_to_dict(procedence_form.instance)
-            elif request.POST.get('telefono-numero'):
-                tform = procedence_form
-                tform.initial = model_to_dict(procedence_form.instance)
-            elif request.POST.get('email-email'):
-                eform = procedence_form
-                eform.initial = model_to_dict(procedence_form.instance)
-            elif request.POST.get('empresa-nombre') and request.POST.get('empresa-codigo_nit') and request.POST.get(
-                    'empresa-codigo_reuup'):
-                pjform = procedence_form
-                pjform.initial = model_to_dict(procedence_form.instance)
-            elif request.POST.get('organiza-nombre'):
-                oform = procedence_form
-                oform.initial = model_to_dict(procedence_form.instance)
-
-            if request.POST.get('personas_list'):
-                person_list = request.POST.get('personas_list')
-                print(person_list)
-            return render(request, 'dpv_quejas/form.html', {'form': form,
-                                                            'pnform': pnform,
-                                                            'pjform': pjform,
-                                                            'tform': tform,
-                                                            'eform': eform,
-                                                            'orgform': orgform,
-                                                            'oform': oform,
-                                                            'peform': peform,
-                                                            'person_list': person_list,
-                                                            'aqform': aqform})
-    return render(request, 'dpv_quejas/form.html', {'form': form,
-                                                    'pnform': pnform,
-                                                    'pjform': pjform,
-                                                    'tform': tform,
-                                                    'eform': eform,
-                                                    'orgform': orgform,
-                                                    'oform': oform,
-                                                    'peform': peform,
-                                                    'person_list': person_list,
-                                                    'aqform': aqform})
+            messages.error(request, _("No se ha podido agregar la queja"))
+            return render(request, 'dpv_quejas/form.html', {'form': form})
+    return render(request, 'dpv_quejas/form.html', {'form': form})
 
 
 @permission_required('dpv_quejas.view_queja', raise_exception=True)
@@ -345,7 +194,8 @@ def responder_queja(request, id_queja):
                 messages.success(request=request,
                                  message="Existen errores en el fomrulario de respuesta por lo que no se pudo guardar.")
         return render(request, 'dpv_quejas/response_form.html', {"form": form, "queja": queja})
-    messages.warning(request, "Puede existir un error del sistema pero al parecer está intentando responder una queja que no le ha sido asignada")
+    messages.warning(request,
+                     "Puede existir un error del sistema pero al parecer está intentando responder una queja que no le ha sido asignada")
     return redirect(reverse_lazy("quejas_list"))
 
 
@@ -386,7 +236,7 @@ def aprobar_respuesta_depto(request, id_queja):
             return redirect(reverse_lazy("quejas_list"))
         else:
             messages.error(request, "exiten errores en el formulario")
-    return render(request, 'dpv_quejas/director_aprueba.html', {"queja": queja, 
+    return render(request, 'dpv_quejas/director_aprueba.html', {"queja": queja,
                                                                 "form": form,
                                                                 "reject_form": reject_form})
 
@@ -503,19 +353,21 @@ def add_damnificado(request):
                     objeto_contenido = damn_form.cleaned_data.get('empresas')
                 else:
                     pjform = PersonaJuridicaForm(request.POST,
-                                                           prefix='pj',
-                                                           empty_permitted=True,
-                                                           use_required_attribute=False)
+                                                 prefix='pj',
+                                                 empty_permitted=True,
+                                                 use_required_attribute=False)
                     if pjform.is_valid():
                         objeto_contenido = pjform.save()
             else:
-               objeto_contenido = None
+                objeto_contenido = None
             if objeto_contenido is not None and damn.tipo_contenido is not None:
                 damn.objecto_contenido = objeto_contenido
                 damn.id_objecto = objeto_contenido.id
                 damn.save()
                 if request.is_ajax():
                     data = model_to_dict(damn)
+                    data["objecto_contenido"] = model_to_dict(damn.objecto_contenido)
+                    data["nombre"] = damn.__str__()
                     data["message"] = _("Damnificado agregado satisfactoriamente")
                     return JsonResponse(data=data, status=201)
                 else:
@@ -543,3 +395,33 @@ def add_damnificado(request):
     return render(request, 'dpv_quejas/damnificado/add_form.html', {"damn_form": damn_form,
                                                                     "pnform": pnform,
                                                                     "pjform": pjform})
+
+
+def get_damnificado_detail(request, id_damn):
+    """
+    View function to get detail about damnificado object, this function take id of damnificado and return the detail of
+    object founded in json or template depending of request type
+    :param request: Request object
+    :param id_damn: Int PK of damnificado to get details
+    :return: [A View, JsonResponse] A View or JsonResponse if request is ajax.
+    """
+    damn = get_object_or_404(Damnificado, id=id_damn)
+    if request.is_ajax():
+        data_damn = model_to_dict(damn)
+        data_damn["nombre"] = damn.__str__()
+        data_damn["objecto_contenido"] = model_to_dict(damn.objecto_contenido)
+        return JsonResponse(data=data_damn, status=200)
+    else:
+        return render(request, "dpv_quejas/damnificado/detail.html", {"damnificado": damn})
+
+
+def get_damnificados_json(request):
+    """
+    View function to get the list of damnificados in json with values of id, and nombre, who nombre is the return of
+    __str__ method, used for selects.
+    :param request: Request object
+    :return: JsonResponse
+    """
+    # TODO Make the query inside db server and not python treatment
+    damnificados = list({"id": damn.id, "nombre": damn.__str__()} for damn in Damnificado.objects.all())
+    return JsonResponse(data=damnificados, safe=False, status=200)
