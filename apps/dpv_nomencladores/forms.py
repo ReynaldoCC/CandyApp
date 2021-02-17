@@ -207,7 +207,7 @@ if is_database_synchronized():
         tipo_contenido=ContentType.objects.get_for_model(PrensaEscrita)).values_list('id_objecto'))
     person_queryset = PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True)\
         .exclude(id__in=Procedencia.objects.filter(
-        tipo_contenido=ContentType.objects.get_for_model(PersonaNatural)).values_list('id_objecto'))
+                tipo_contenido=ContentType.objects.get_for_model(PersonaNatural)).values_list('id_objecto'))
     entity_queryset = PersonaJuridica.objects.exclude(id__in=Procedencia.objects.filter(
         tipo_contenido=ContentType.objects.get_for_model(PersonaJuridica)).values_list('id_objecto'))
 else:
@@ -305,7 +305,7 @@ class ClasificacionRespuestaForm(forms.ModelForm):
 
     class Meta:
         model = ClasificacionRespuesta
-        fields = ['nombre', 'codigo' ]
+        fields = ['nombre', 'codigo', ]
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
             'codigo': forms.TextInput(attrs={'placeholder': 'Código', 'class': 'form-control'}),
@@ -359,16 +359,6 @@ class OrganizationForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono', 'class': 'form-control'}),
             'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre de Contacto', 'class': 'form-control'}),
-        }
-
-
-class RespuestaAQuejaForm(forms.ModelForm):
-
-    class Meta:
-        model = RespuestaAQueja
-        fields = ['nombre']
-        widgets = {
-            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre', 'class': 'form-control'}),
         }
 
 
