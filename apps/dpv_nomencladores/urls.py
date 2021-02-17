@@ -81,8 +81,10 @@ urlpatterns = [
     path('codificadorasunto/', index_codificadorasunto, name='nomenclador_codificadorasunto'),
     path('nuevo_codificadorasunto/', add_codificadorasunto, name='codificadorasunto_new'),
     path('verify_codificadorasunto/', verify_codificadorasunto, name='codificadorasunto_verify'),
-    path('editar_codificadorasunto/<int:id_codificadorasunto>', update_codificadorasunto, name='codificadorasunto_edit'),
-    path('eliminar_codificadorasunto/<int:id_codificadorasunto>', delete_codificadorasunto, name='codificadorasunto_delete'),
+    path('editar_codificadorasunto/<int:id_codificadorasunto>', update_codificadorasunto,
+         name='codificadorasunto_edit'),
+    path('eliminar_codificadorasunto/<int:id_codificadorasunto>', delete_codificadorasunto,
+         name='codificadorasunto_delete'),
 
     path('tipoqueja/', index_tipoqueja, name='nomenclador_tipoqueja'),
     path('nuevo_tipoqueja/', add_tipoqueja, name='tipoqueja_new'),
@@ -91,6 +93,7 @@ urlpatterns = [
     path('eliminar_tipoqueja/<int:id_tipoqueja>', delete_tipoqueja, name='tipoqueja_delete'),
 
     path('procedencia/', index_procedencia, name='nomenclador_procedencia'),
+    path('procedencia/json', get_procedencias_json, name='nomenclador_procedencia_json'),
     path('nuevo_procedencia/', add_procedencia, name='procedencia_new'),
     path('eliminar_procedencia/<int:id_procedencia>', delete_procedencia, name='procedencia_delete'),
 
@@ -109,8 +112,10 @@ urlpatterns = [
     path('clasificacionrespuesta/', index_clasificacionrespuesta, name='nomenclador_clasificacionrespuesta'),
     path('nuevo_clasificacionrespuesta/', add_clasificacionrespuesta, name='clasificacionrespuesta_new'),
     path('verify_clasificacionrespuesta/', verify_clasificacionrespuesta, name='clasificacionrespuesta_verify'),
-    path('editar_clasificacionrespuesta/<int:id_clasificacionrespuesta>', update_clasificacionrespuesta, name='clasificacionrespuesta_edit'),
-    path('eliminar_clasificacionrespuesta/<int:id_clasificacionrespuesta>', delete_clasificacionrespuesta, name='clasificacionrespuesta_delete'),
+    path('editar_clasificacionrespuesta/<int:id_clasificacionrespuesta>', update_clasificacionrespuesta,
+         name='clasificacionrespuesta_edit'),
+    path('eliminar_clasificacionrespuesta/<int:id_clasificacionrespuesta>', delete_clasificacionrespuesta,
+         name='clasificacionrespuesta_delete'),
 
     path('prensaescrita/', index_prensaescrita, name='nomenclador_prensaescrita'),
     path('nuevo_prensaescrita/', add_prensaescrita, name='prensaescrita_new'),
@@ -178,5 +183,4 @@ urlpatterns = [
          name='nivelsolucion_edit'),
     path('eliminar_nivelsolucion/<int:id_nivelsolucion>', delete_nivelsolucion,
          name='nivelsolucion_delete'),
-
 ]

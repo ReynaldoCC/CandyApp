@@ -21,5 +21,7 @@ urlpatterns = [
    path('deny/<int:id_queja>/<int:level>', rechazar_queja, name='quejas_deny'),
    path('redirect/<int:id_queja>', index, name='quejas_redirct'),
    path('damnificados', list_damnificado, name='quejas_damnificados'),
+   path('damnificados/json', get_damnificados_json, name='quejas_damn_json'),
    path('damnificados/add', add_damnificado, name='quejas_damnadd'),
+   path('damnificados/<int:id_damn>', get_damnificado_detail, name='quejas_damndetail'),
 ]
