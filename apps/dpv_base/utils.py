@@ -51,14 +51,19 @@ def set_settings_email_conf(configuration):
         configuration.use_ssl = False
         configuration.use_tls = False
     lines = []
+    settings_module = os.environ.get("DJANGO_SETTINGS_MODULE")
+
+    settings_realitve_path = settings_module.split('.')
+    settings_realitve_path = os.sep.join(settings_realitve_path)
+    settings_realitve_path += ".py"
     try:
-        settingdfile = open(os.path.join(settings.BASE_DIR, 'main/settings.py'), "r", encoding="utf-8")
+        settingdfile = open(os.path.join(settings.BASE_DIR, settings_realitve_path), "r", encoding="utf-8")
         lines = settingdfile.readlines()
         settingdfile.close()
     except:
         print("no se pudo abrir el archivo para leerlo")
     try:
-        settingdfile = open(os.path.join(settings.BASE_DIR, 'main/settings.py'), "w", encoding="utf-8")
+        settingdfile = open(os.path.join(settings.BASE_DIR, settings_realitve_path), "w", encoding="utf-8")
     except:
         print("no se pudo escribir en el archivo")
     else:
