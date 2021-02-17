@@ -333,7 +333,7 @@ class TelefonoForm(forms.ModelForm):
         fields = ['numero', 'nombre_contacto', ]
         widgets = {
             'numero': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
-            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
+            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre del Contacto', 'class': 'form-control'}),
         }
 
 
@@ -343,8 +343,8 @@ class EmailForm(forms.ModelForm):
         model = Email
         fields = ['email', 'nombre_contacto', ]
         widgets = {
-            'email': forms.EmailInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
-            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Número', 'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
+            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre del Contacto', 'class': 'form-control'}),
         }
 
 
@@ -358,7 +358,7 @@ class OrganizationForm(forms.ModelForm):
             'siglas': forms.TextInput(attrs={'placeholder': 'Siglas', 'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Correo Electrónico', 'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono', 'class': 'form-control'}),
-            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre de contacto', 'class': 'form-control'}),
+            'nombre_contacto': forms.TextInput(attrs={'placeholder': 'Nombre de Contacto', 'class': 'form-control'}),
         }
 
 
