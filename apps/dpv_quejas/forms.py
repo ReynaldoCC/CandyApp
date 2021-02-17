@@ -10,11 +10,6 @@ from .models import *
 
 
 class QuejaForm(forms.ModelForm):
-    personas_list = forms.ModelChoiceField(queryset=PersonaNatural.objects.exclude(perfil_datos__datos_usuario__is_superuser=True),
-                                           widget=forms.Select(attrs={"class": "form-control"}),
-                                           label=_("Persona que sufre el daño"),
-                                           required=False,
-                                           help_text=_("Listado de personas existentes ya en la Base de Datos"),)
     same_address = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-check-input switch-input"}),
                                       required=False,
                                       label=_("Usar la misma dirección del dmanificado"),
@@ -24,7 +19,7 @@ class QuejaForm(forms.ModelForm):
         model = Queja
         fields = (
                   'procedencia',
-                  'personas_list',
+                  'damnificado',
                   'same_address',
                   'dir_municipio',
                   'dir_cpopular',
@@ -47,6 +42,7 @@ class QuejaForm(forms.ModelForm):
             'dir_entrecalle1': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
             'dir_entrecalle2': forms.Select(attrs={"placeholder": "Seleccione una Calle.", "class": "form-control"}),
             'procedencia': forms.Select(attrs={"placeholder": "Seleccione una Procedencia.", "class": "form-control"}),
+            'damnificado': forms.Select(attrs={"placeholder": "Seleccione un Damnificado.", "class": "form-control"}),
             'dir_municipio': forms.Select(attrs={"placeholder": "Seleccione un Municipio.", "class": "form-control"}),
             'dir_cpopular': forms.Select(attrs={"placeholder": "Seleccione un Consejo Popular.", "class": "form-control"}),
             'referencia': forms.TextInput(attrs={"placeholder": "No. referencia", "class": "form-control"}),
