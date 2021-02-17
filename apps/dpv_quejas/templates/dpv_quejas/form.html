@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="{% static 'dpv_base/js/lib/jquery-ui/css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
-    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/awesomplete/awesomplete.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/damnificados.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Crear {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -16,9 +16,9 @@
 {% endblock breadcrumbs %}
 {% block content_page %}
     <div class="col-md-12">
-        <form novalidate method="POST" action="{% url 'quejas_add' %}" id="queja_form">
+        <form novalidate method="POST" action="{% url 'quejas_add' %}" id="queja_form" enctype="multipart/form-data">
             {% csrf_token %}
-            {% if form.errors or pnform.errors or pjform.errors or tform.errors or eform.errors or peform.errors or oform.errors or aqform.errors or gform.errors %}
+            {% if form.errors or pnform.errors or pjform.errors %}
             <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 {% if form.errors|length == 1 %}"Por favor, corrija el error señalado a continuación."{% else %}"Por favor, corrija los errores señalados a continuación."{% endif %} <br>
@@ -106,37 +106,56 @@
                         {% for field in form %}
                         <div class="{% if "texto" in field.name or "same_address" in field.name %}col-md-12{% else %}col-md-6{% endif %}">
                             <div class="form-group {% if field.name == 'municipio' and not request.user.perfil_usuario.centro_trabajo.oc %} disabled {% endif %}" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}" >
-                                {{ field.errors }}
-                                <label class="control-label mb-1">{{ field.label_tag }}</label>
-                                {% if 'calle' in field.name or 'entre' in field.name %}
-                                    {% if perms.dpv_nomencladores.add_calle %}
-                                        <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
-                                            <i class="fa fa-plus text-success"></i>
-                                        </button>
+                                    {{ field.errors }}
+                                {% if 'same_address' in field.name %}
+                                    <label class="switch switch-3d switch-primary mr-3">
+                                        {{ field }}
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                {% else  %}
+                                    <label class="control-label mb-1">{{ field.label_tag }}</label>
+                                    {% if 'calle' in field.name or 'entre' in field.name %}
+                                        {% if perms.dpv_nomencladores.add_calle %}
+                                            <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
+                                                <i class="fa fa-plus text-success"></i>
+                                            </button>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                                {% if 'procedencia' in field.name %}
-                                    {% if perms.dpv_nomencladores.add_procedencia %}
-                                        <button onclick="return abrir_modal('{% url 'create_procedencia' %}')" class="pull-right btn btn-link">
-                                            <i class="fa fa-plus text-success"></i>
-                                        </button>
+                                    {% if 'procedencia' in field.name %}
+                                        {% if perms.dpv_nomencladores.add_procedencia %}
+                                            <button onclick="return abrir_modal('{% url 'procedencia_new' %}')" class="pull-right btn btn-link">
+                                                <i class="fa fa-plus text-success"></i>
+                                            </button>
+                                        {% endif %}
                                     {% endif %}
+                                    {% if 'damnificado' in field.name %}
+                                        {% if perms.dpv_nomencladores.add_procedencia %}
+                                            <button onclick="return abrir_modal('{% url 'quejas_damnadd' %}')" class="pull-right btn btn-link">
+                                                <i class="fa fa-plus text-success"></i>
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+                                    {{ field }}
                                 {% endif %}
-                                {{ field }}
-                                {{ field.required }}
+                                    {{ field.required }}
                                 <small>{{ field.help_text }}</small>
                             </div>
                         </div>
-                        {% if "procedencia" in field.name or "damnificado_not_indb" in field.name %}
+                        {% if "procedencia" in field.name or "damnificado" in field.name %}
                         <hr class="col-11">
                         {% endif %}
                         {% endfor %}
                     </div>
                 </div>
+                <div class="card-footer">
+                    <button id="close_md" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
+                    <button type="submit" class="pull-right btn btn-primary" onclick="return ">Guardar</button>
+                </div>
+            </div>
         </form>
     </div>
     <div class="modal fade modal-show modal-center" id="popup" role="dialog">
-
     </div>
 {% endblock content_page %}
 {% block extra_scripts %}
@@ -147,29 +166,30 @@
         {% else %}
         var person_list = null;
         {% endif %}
-
+        var damn_detail_url = "{% url 'quejas_damndetail' 0 %}";
+        var json_damn_url = "{% url 'quejas_damn_json' %}";
+        var json_proc_url = "{% url 'nomenclador_procedencia_json' %}";
     </script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/validation.functions.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/vendor/awesomplete/awesomplete.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/vendor/jsrender/jsrender.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/jquery.forms.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/procedencia.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/calles_agree.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/damnificados.js' %}"></script>
     <script>
-        DPVQuejas.initForm();
+        jQuery(document).ready(function() {
+            DPVQuejas.initForm();
+            DPVDAmnificado.setAjax(true, setDamnificado);
+            DPVProcedenciaNom.setAjax(true, setProcedencia);
+        });
     </script>
 {% endblock extra_scripts %}
