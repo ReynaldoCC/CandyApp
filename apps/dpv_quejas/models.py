@@ -20,6 +20,23 @@ def scramble_upload_document(instance, filename, subdiretory='quejas'):
     return subdiretory+'/{}.{}'.format(uuid.uuid4(), ext)
 
 
+class Damnificado(LoggerMixin):
+    limit = models.Q(app_label='dpv_persona', model='personanatural') | \
+        models.Q(app_label='dpv_persona', model='personajuridica')
+    tipo_contenido = models.ForeignKey(ContentType, verbose_name=_('Damnificado de la queja'),
+                                       limit_choices_to=limit,
+                                       null=True, blank=True, on_delete=models.CASCADE)
+    id_objecto = models.PositiveIntegerField(verbose_name=_('related object'), null=True)
+    objecto_contenido = GenericForeignKey('tipo_contenido', 'id_objecto')
+
+    class Meta:
+        verbose_name = _("Damnificado")
+        verbose_name_plural = _("Damnificados")
+
+    def __str__(self):
+        return "({}) {}".format(self.tipo_contenido, self.objecto_contenido)
+
+
 class Queja(LoggerMixin):
     dir_num = models.CharField(max_length=15, verbose_name=_('Dirección Número'))
     dir_calle = models.ForeignKey(Calle, verbose_name=_('Dirección Calle'), related_name='queja_calle',
@@ -58,6 +75,7 @@ class Queja(LoggerMixin):
                                               help_text=_("Tiempo en días que tiene de radicada la queja"))
     document = models.FileField(verbose_name=_("Copia digital"), upload_to=scramble_upload_document,
                                 null=True, blank=True, default=None)
+    damnificado = models.ForeignKey(Damnificado, on_delete=models.SET_DEFAULT, null=True, blank=True, default=None)
 
     class Meta:
         verbose_name = _("Queja")
@@ -68,7 +86,7 @@ class Queja(LoggerMixin):
 
     @property
     def get_quejoso(self):
-        return self.damnificado.first().objecto_contenido
+        return self.damnificado
 
     @property
     def get_tecnico_asignado(self):
@@ -80,23 +98,6 @@ class Queja(LoggerMixin):
     @property
     def get_respuesta(self):
         return self.respuesta.filter(rechazada__isnull=True).first()
-
-
-class Damnificado(LoggerMixin):
-    queja = models.ForeignKey(Queja, on_delete=models.CASCADE,
-                              default=None,
-                              related_name='damnificado', null=True)
-    limit = models.Q(app_label='dpv_persona', model='personanatural') | \
-        models.Q(app_label='dpv_persona', model='personajuridica')
-    tipo_contenido = models.ForeignKey(ContentType, verbose_name=_('Damnificado de la queja'),
-                                       limit_choices_to=limit,
-                                       null=True, blank=True, on_delete=models.CASCADE)
-    id_objecto = models.PositiveIntegerField(verbose_name=_('related object'), null=True)
-    objecto_contenido = GenericForeignKey('tipo_contenido', 'id_objecto')
-
-    class Meta:
-        verbose_name = _("Damnificado")
-        verbose_name_plural = _("Damnificados")
 
 
 class AsignaQuejaDpto(LoggerMixin):
