@@ -11,3 +11,4 @@ db.sqlite3
 media/*
 celerybeat-schedule
 envs/production/*
+envs/local/my_env
