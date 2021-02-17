@@ -570,7 +570,7 @@ var DPVDAmnificado = function () {
                 damnificado_form.ajaxSubmit({
                     type: "POST",
                     success: function (response) {
-                        if (is_callable(ajax_callback))
+                        if (typeof ajax_callback === "function")
                             ajax_callback(response);
                     }
                 })
