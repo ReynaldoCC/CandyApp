@@ -5,7 +5,7 @@ from apps.dpv_base.mixins import LoggerMixin
 from apps.dpv_persona.models import PersonaNatural
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from apps.dpv_nomencladores.models import AreaTrabajo, Municipio, Procedencia, Calle, ConsejoPopular, RespuestaAQueja
+from apps.dpv_nomencladores.models import AreaTrabajo, Municipio, Procedencia, Calle, ConsejoPopular, RespuestaAQueja, Lugar
 from .utils import configurar_numero_registro
 import uuid
 import datetime
@@ -69,6 +69,8 @@ class DPVDocumento(LoggerMixin):
                                        on_delete=models.CASCADE, verbose_name=_("Registrado por"))
     archivo_digital = models.FileField(upload_to=scramble_upload_doc, verbose_name=_("Copia en Digital"),
                                        blank=True, help_text=_("Solo puede subir archivos PDF o imagen del documento"))
+    observation = models.TextField(verbose_name=_("Observación"), null=True, blank=True, help_text=_("Observaciones relacionadas con el documento"))
+    lugar = models.ForeignKey(Lugar, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Lugar")
 
     class Meta:
         verbose_name = _("Documento")

@@ -21,7 +21,9 @@ class DPVDocumentoForm(forms.ModelForm):
                   "dir_entrecalle1",
                   "dir_entrecalle2",
                   "respuesta_a",
-                  "archivo_digital", ]
+                  "lugar",
+                  "archivo_digital",
+                  "observation", ]
         widgets = {
             "no_refer": forms.TextInput(attrs={"class": "form-control"}),
             "asunto": forms.TextInput(attrs={"class": "form-control"}),
@@ -37,6 +39,8 @@ class DPVDocumentoForm(forms.ModelForm):
             "dir_entrecalle2": forms.Select(attrs={"class": "form-control"}),
             "respuesta_a": forms.Select(attrs={"class": "form-control"}),
             "archivo_digital": forms.FileInput(attrs={"class": "form-control", "accept": "image/*,application/pdf"}),
+            "observation": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
+            "lugar": forms.Select(attrs={"class": "form-control"}),
         }
 
 
@@ -44,11 +48,12 @@ class DVPDocumentoEditForm(forms.ModelForm):
 
     class Meta:
         model = DPVDocumento
-        fields = ["asunto", "destino", "respuesta_a", ]
+        fields = ["asunto", "destino", "respuesta_a", "observation", ]
         widgets = {
             "asunto": forms.TextInput(attrs={"class": "form-control"}),
             "destino": forms.Select(attrs={"class": "form-control"}),
             "respuesta_a": forms.Select(attrs={"class": "form-control"}),
+            "observation": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
         }
 
 

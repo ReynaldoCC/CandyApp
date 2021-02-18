@@ -22,7 +22,7 @@ var DPVDocumentos = function () {
 
     var _initInputs = function (){
 
-        let $pj_municipio = $("#id_municipio").selectize({
+        var $pj_municipio = $("#id_municipio").selectize({
             create: false,
             placeholder: "Selecione un municipio",
             allowEmptyOption: false,
@@ -128,7 +128,7 @@ var DPVDocumentos = function () {
                 });
             },
         });
-        let $pj_cpopular = $("#id_dir_cpopular").selectize({
+        var $pj_cpopular = $("#id_dir_cpopular").selectize({
             placeholder: "Selecione un Consejo Popular",
             allowEmptyOption: false,
             valueField: 'id',
@@ -139,7 +139,7 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        let $pj_direccion_calle = $("#id_dir_calle").selectize({
+        var $pj_direccion_calle = $("#id_dir_calle").selectize({
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             valueField: 'id',
@@ -150,7 +150,7 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        let $pj_direccion_entrecalle1 = $("#id_dir_entrecalle1").selectize({
+        var $pj_direccion_entrecalle1 = $("#id_dir_entrecalle1").selectize({
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             valueField: 'id',
@@ -161,7 +161,7 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        let $pj_direccion_entrecalle2 = $("#id_dir_entrecalle2").selectize({
+        var $pj_direccion_entrecalle2 = $("#id_dir_entrecalle2").selectize({
             placeholder: "Selecione una calle",
             allowEmptyOption: false,
             valueField: 'id',
@@ -172,14 +172,54 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        $pj_procedencia = $("#id_procedencia").selectize({
+        var $pj_procedencia = $("#id_procedencia").selectize({
             placeholder: "Seleccione ...",
             allowEmptyOption: false,
             selectOnTab: true,
             createOnBlur: true,
             create: false,
+            onChange: function (value){
+                if (!value.length) return;
+
+                $.ajax({
+                    url: '/docs/procedencia/valid_procedencia_in_personal/' + value + '/',
+                    success: function(results) {
+                        var display_direccion = results.display_direccion;
+                        var display_lugar = results.display_lugar;
+                        if(display_direccion){
+                            $("#id_municipio").parent().parent().attr("style", "");
+                            $("#id_municipio").rules( "add", {
+                                required: true,
+                                messages: {
+                                    required: "Este campo es requerido.",
+                                }
+                            });
+                        }else{
+                            $("#id_municipio").parent().parent().attr("style", "display:none;");
+                            $("#id_municipio").rules( "add", {
+                                required: false,
+                            });
+                        }
+                        if(display_lugar){
+                            $("#id_lugar").parent().parent().attr("style", "");
+                            $("#id_lugar").rules( "add", {
+                                required: true,
+                                messages: {
+                                    required: "Este campo es requerido.",
+                                }
+                            });
+                        }else{
+                            $("#id_lugar").parent().parent().attr("style", "display:none;");
+                            $("#id_lugar").rules( "add", {
+                                required: false,
+                            });
+                        }
+                    }
+                });
+
+            },
         });
-        let $pj_destino = $("#id_destino").selectize({
+        var $pj_destino = $("#id_destino").selectize({
             placeholder: "Seleccione ...",
             allowEmptyOption: false,
             valueField: 'id',
@@ -190,7 +230,7 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        let $pj_clasificacion = $("#id_clasificacion").selectize({
+        var $pj_clasificacion = $("#id_clasificacion").selectize({
             create: false,
             placeholder: "Seleccione ...",
             allowEmptyOption: false,
@@ -218,7 +258,7 @@ var DPVDocumentos = function () {
                 });
             },
         });
-        let $pj_promovente = $("#id_promovente").selectize({
+        var $pj_promovente = $("#id_promovente").selectize({
             placeholder: "Seleccione ...",
             allowEmptyOption: false,
             valueField: 'id',
@@ -229,7 +269,7 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        let $pj_respuesta_a = $("#id_respuesta_a").selectize({
+        var $pj_respuesta_a = $("#id_respuesta_a").selectize({
             placeholder: "Seleccione ...",
             allowEmptyOption: false,
             valueField: 'id',
@@ -240,12 +280,20 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        $("#id_dir_cpopular").parent().parent().attr("style","display:none");
-        $("#id_dir_calle").parent().parent().attr("style","display:none");
+        var $pj_lugar = $("#id_lugar").selectize({
+            placeholder: "Seleccione un lugar",
+            allowEmptyOption: false,
+            create: false,
+        });
+
+        $pj_lugar.parent().parent().attr("style", "display:none;");
+        $pj_municipio.parent().parent().attr("style", "display:none;");
+        $pj_cpopular.parent().parent().attr("style","display:none");
+        $pj_direccion_calle.parent().parent().attr("style","display:none");
         $("#id_dir_numero").parent().parent().attr("style","display:none");
-        $("#id_dir_entrecalle1").parent().parent().attr("style","display:none");
-        $("#id_dir_entrecalle2").parent().parent().attr("style","display:none");
-        $("#id_respuesta_a").parent().parent().attr("style","display:none");
+        $pj_direccion_entrecalle1.parent().parent().attr("style","display:none");
+        $pj_direccion_entrecalle2.parent().parent().attr("style","display:none");
+        $pj_respuesta_a.parent().parent().attr("style","display:none");
 
     };
 
