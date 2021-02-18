@@ -1,4 +1,4 @@
-# CandyApp ![Candy App Logo](./static/dpv_base/images/logo.svg?raw=true&v=5&s=50)
+# CandyApp <img src="./static/dpv_base/images/logo.svg" width="40">
 
 Aplicacion de la DPV para informatización de las distintas areas
 
