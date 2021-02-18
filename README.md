@@ -1,5 +1,5 @@
-# <span style="text-align: center"><img src="./static/dpv_base/images/logo.svg" width="90"> </span>
-# |: CandyApp :|
+# <center><img src="./static/dpv_base/images/logo.svg" width="90"> </center>
+# <center>CandyApp</center>
 
 Aplicación de la DPV la Habana para informatización de las distintas áreas de gestión.
 
@@ -34,5 +34,19 @@ $ pip3 install -r <path/to/project/folder>/requeriments.txt
 ```
 
 #### Configurar todos los datos mediante variables de entorno
+
+Ver en el archivo 'envs/local/example_env' ahi se exponen las distintas variable que puede necesitar el sistema para funcionar, la idea es crear un archivo de entorno con los valores para las variables necesarias, una alertnativa puede ser copiar el archivo antes mensionado y a partir de el crear un archivo con las configuracion
+
+* ###### En Ubuntu
+
+```bash
+$ sudo /<path>/<to>/<proyect>/envs/local/example_env /etc/environment.d/candy_app.conf
+```
+
+* ###### En windows
+
+configurar manualmemte las varibles de entorno como se explica [aquí](https://answers.microsoft.com/es-es/windows/forum/windows_10-other_settings/windows-10-variables-de-entorno-windows-10-version/703ea5fa-1db4-46da-8ff7-6261140bf58b)
+
+
 Comando para probar celery en la consola con el log level en debug
 `celery -A locales_viv worker -B -l debug`
