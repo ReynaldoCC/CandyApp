@@ -15,9 +15,9 @@ message_start_number = _("Este campo debe comenzar por un número.")
 # Validators
 def validate_acta_acuerdo(value):
     splited = value.split('/')
-    if len(splited) is not 2:
+    if len(splited) != 2:
         raise ValidationError(message=message_format_bad, code="format_bad")
-    if len(splited[-1]) is not 2 and len(splited[-1]) is not 4:
+    if len(splited[-1]) != 2 and len(splited[-1]) != 4:
         raise ValidationError(message=message_year_bad, code="year_bad")
     try:
         int(splited[-1])
@@ -28,10 +28,11 @@ def validate_acta_acuerdo(value):
     except:
         raise ValidationError(message=message_not_number, code="bad_number")
     splited_year = splited[-1]
-    if len(splited_year) is 2:
+    if len(splited_year) == 2:
         splited_year = '20' + splited_year
     if int(splited_year) > datetime.date.today().year:
         raise ValidationError(message=message_future_year, code="future_year")
     return True
+
 
 start_with_number = RegexValidator('^[0-9]', message=message_start_number)
