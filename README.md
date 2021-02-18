@@ -1,5 +1,5 @@
 # <span style="text-align: center"><img src="./static/dpv_base/images/logo.svg" width="90"> </span>
-# -> CandyApp <-
+# |: CandyApp :|
 
 Aplicación de la DPV la Habana para informatización de las distintas áreas de gestión.
 
