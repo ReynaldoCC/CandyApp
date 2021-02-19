@@ -925,3 +925,16 @@ var setProcedencia = function (response) {
 		}
 	});
 }
+
+var setCalle = function (response) {
+	let modal = $("#popup");
+	let id_select_element = $("#selected[type='hidden']").val();
+	let mun_select = $(':not(#form_calle) select[id$=municipio]');
+	mun_select[0].selectize.setValue(mun_select[0].selectize.getValue());
+	if (response && response.id) {
+		$("#"+id_select_element)[0].selectize.on('load', function() {
+			$("#"+id_select_element)[0].selectize.setValue(response.id);
+		});
+	}
+	modal.modal('hide');
+}
