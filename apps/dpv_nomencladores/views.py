@@ -11,6 +11,7 @@ from apps.dpv_persona.forms import PersonaJuridicaForm, PersonaNaturalForm
 
 from .forms import *
 from .models import *
+from .encoders import CustomNomenclatorEncoder
 
 
 # Create your views here.
@@ -324,16 +325,31 @@ def index_calle(request):
 
 
 @permission_required('dpv_nomencladores.add_calle')
-def add_calle(request):
+def add_calle(request, select_id=None):
     if request.method == 'POST':
         form = CalleForm(request.POST)
         if form.is_valid():
-            model = form.save()
+            nombre_calle = form.cleaned_data.get('nombre')
+            municipios = form.cleaned_data.get('municipios')
+            model, created = Calle.objects.get_or_create(nombre=nombre_calle)
+            if municipios and not municipios in model.municipios.all():
+                if model.municipios.count() == 0:
+                    model.municipios.set(municipios)
+                else:
+                    model.municipios.add(municipios)
             model.perform_log(request=request, af=0)
+
+            if request.is_ajax():
+                data = model_to_dict(model)
+                return JsonResponse(data=data, encoder=CustomNomenclatorEncoder, status=201)
+
+        if request.is_ajax():
+            data = {'errmsg': form.errors}
+            return JsonResponse(data=data, status=400)
         return redirect('nomenclador_calle')
     else:
         form = CalleForm()
-    return render(request, 'dpv_nomencladores/form_calle.html', {'form': form})
+    return render(request, 'dpv_nomencladores/form_calle.html', {'form': form, 'value': select_id, })
 
 
 @permission_required('dpv_nomencladores.add_calle')
@@ -1853,14 +1869,6 @@ def verify_organizacion(request):
 
 @login_required()
 def create_reponder_a_json(request):
-    print(request.method)
-    if request.method == 'POST':
-        form = RespuestaAQuejaForm(request.POST)
-        if form.is_valid():
-            resp = form.save(commit=False)
-            resp.save_and_log(request=request, af=0)
-            data = model_to_dict(resp, fields=['id', 'nombre', ])
-            return JsonResponse(data=data, status=201)
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
