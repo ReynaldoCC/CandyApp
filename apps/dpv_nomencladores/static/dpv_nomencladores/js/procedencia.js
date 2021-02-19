@@ -1263,7 +1263,7 @@ var DPVProcedenciaNom =  function () {
         },
         setAjax: function (is_ajax, callback = null) {
             ajax_request = !!(is_ajax);
-            ajax_callback = callback
+            ajax_callback = callback;
         }
     }
 }();
