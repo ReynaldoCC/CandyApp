@@ -28,6 +28,7 @@ urlpatterns = [
     path('calle/', index_calle, name='nomenclador_calle'),
     path('calle/filter/<int:id_municipio>', filter_by_municipio, name='filter_calle'),
     path('nueva_calle/', add_calle, name='calle_new'),
+    path('nueva_calle/<str:select_id>', add_calle, name='calle_new'),
     path('verify_calle/', verify_calle, name='calle_verify'),
     path('new_calle/', add_calle_on_user, name='calle_new_async'),
     path('agree_calle/<str:select_id>', agree_calle, name='agree_calle'),
