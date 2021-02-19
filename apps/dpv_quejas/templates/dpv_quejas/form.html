@@ -117,7 +117,7 @@
                                     <label class="control-label mb-1">{{ field.label_tag }}</label>
                                     {% if 'calle' in field.name or 'entre' in field.name %}
                                         {% if perms.dpv_nomencladores.add_calle %}
-                                            <button onclick="return abrir_modal('{% url 'agree_calle' field.id_for_label %}')" class="pull-right btn btn-link">
+                                            <button onclick="return abrir_modal('{% url 'calle_new' field.id_for_label %}')" class="pull-right btn btn-link">
                                                 <i class="fa fa-plus text-success"></i>
                                             </button>
                                         {% endif %}
@@ -183,13 +183,14 @@
     <script src="{% static 'dpv_base/js/vendor/jquery.forms.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/procedencia.js' %}"></script>
-    <script src="{% static 'dpv_nomencladores/js/calles_agree.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/calles.js' %}"></script>
     <script src="{% static 'dpv_quejas/js/damnificados.js' %}"></script>
     <script>
         jQuery(document).ready(function() {
             DPVQuejas.initForm();
             DPVDAmnificado.setAjax(true, setDamnificado);
             DPVProcedenciaNom.setAjax(true, setProcedencia);
+            DPVCalleNom.setAjax(true, setCalle);
         });
     </script>
 {% endblock extra_scripts %}
