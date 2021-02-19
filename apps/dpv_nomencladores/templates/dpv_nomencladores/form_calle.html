@@ -1,9 +1,9 @@
 <div class="modal-dialog modal-md">
     <div class="modal-content">
         {% if calle %}
-        <form role="form" action="{% url 'calle_edit' calle.id %}" method="post" id="form_calle">
+        <form role="form" action="{% url 'calle_edit' calle.id %}" method="post" id="form_calle" novalidate>
         {% else %}
-        <form role="form" action="{% url 'calle_new' %}" method="post" id="form_calle">
+        <form role="form" action="{% url 'calle_new' %}" method="post" id="form_calle" novalidate>
         {% endif %}
             <div class="modal-header" >
                 <h4 class="modal-title">Calle</h4>
@@ -12,6 +12,7 @@
                 </div>
              </div>
             <div class="modal-body">
+                <input type="hidden" id="selected" value="{{ value }}">
                 {% csrf_token %}
                 <div class="form-control-sm">
                     {% for field in form %}
