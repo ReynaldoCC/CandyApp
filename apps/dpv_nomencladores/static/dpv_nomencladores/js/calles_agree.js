@@ -3,6 +3,7 @@
 
 var AgreeCalle = function () {
 
+
     var _initialize = function () {
         $("#filter_municipios").on("keyup", function() {
             var value = $(this).val().toLowerCase();
@@ -48,7 +49,6 @@ var AgreeCalle = function () {
         /*
         The functions below will create a header with csrftoken
         */
-
         function csrfSafeMethod(method) {
             // these HTTP methods do not require CSRF protection
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
