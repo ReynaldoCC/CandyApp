@@ -30,7 +30,8 @@ var DPVDAmnificado = function () {
             placeholder: "Selecione el tipo de damnificado",
             allowEmptyOption: false,
             onChange: function(value) {
-                _toggleFormDamnificados(value);
+                let  texto = $("#id_tipo_contenido option:selected").text();
+                _toggleFormDamnificados(texto);
             }
         });
         let $empresas = $("#id_empresas").selectize({
@@ -284,10 +285,10 @@ var DPVDAmnificado = function () {
         //Functions declarations
         //This function show or hide the forms of damnificados depends of param value
         let _toggleFormDamnificados =  function (value) {
-            if (value === "37") {
+            if (value.toLowerCase().indexOf("jur") !== -1) {
                 _hideForms();
                 _showEmpresaForm();
-            } else if (value === "38") {
+            } else if (value.toLowerCase().indexOf("nat") !== -1) {
                 _hideForms();
                 _showPersonaForm();
             } else {
