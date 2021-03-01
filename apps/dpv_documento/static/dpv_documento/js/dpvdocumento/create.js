@@ -173,16 +173,18 @@ var DPVDocumentos = function () {
             create: false,
         });
         var $pj_procedencia = $("#id_procedencia").selectize({
-            placeholder: "Seleccione ...",
-            allowEmptyOption: false,
-            selectOnTab: true,
-            createOnBlur: true,
             create: false,
+            maxItems: 1,
+            valueField: 'id',
+            labelField: 'nombre',
+            searchField: 'nombre',
+            sortField: 'nombre',
+            placeholder: "Selecione una procedencia",
             onChange: function (value){
                 if (!value.length) return;
 
                 $.ajax({
-                    url: '/docs/procedencia/valid_procedencia_in_personal/' + value + '/',
+                    url: '/nomenclador/procedencia/valid_procedencia_in_personal/' + value + '/',
                     success: function(results) {
                         var display_direccion = results.display_direccion;
                         var display_lugar = results.display_lugar;
@@ -917,3 +919,22 @@ var DPVDocumentos = function () {
 jQuery(document).ready(function() {
     DPVDocumentos.init();
 });
+
+var setProcedencia = function (response) {
+	let modal = $("#popup");
+	let procedence_selectize = $("#id_procedencia");
+	let current_value = response;
+	let url = json_proc_url || "/nomenclador/procedencia/json";
+	$.ajax({
+		url: url,
+		success: function (response) {
+			procedence_selectize[0].selectize.clear();
+			procedence_selectize[0].selectize.clearOptions();
+			procedence_selectize[0].selectize.load(function (callback) {
+				callback(response);
+			    procedence_selectize[0].selectize.setValue(current_value.id);
+			});
+			modal.modal('hide');
+		}
+	});
+}
