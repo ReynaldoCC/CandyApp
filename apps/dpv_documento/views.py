@@ -74,6 +74,12 @@ def list_docs(request):
     return render(request, "dpv_documento/dpvdocumento/list.html", {"docs": docs})
 
 
+@permission_required('dpv_documento.change_dpvdocumento')
+def detail_doc(request, doc_id):
+    doc = get_object_or_404(DPVDocumento, pk=doc_id)
+    return render(request, 'dpv_documento/dpvdocumento/detail.html', {"doc": doc})
+
+
 @permission_required('dpv_documento.add_dpvdocumento')
 def create_doc(request):
 

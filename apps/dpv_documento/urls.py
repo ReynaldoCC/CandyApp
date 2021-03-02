@@ -10,6 +10,7 @@ urlpatterns = [
     path('tipos/filter/<int:typedoc_id>/', typedoc_filter_con_respuesta, name='typedoc_filter_con_respuesta'),
     # DOCUMENTOS
     path('', list_docs, name='list_docs'),
+    path('detail/<int:doc_id>/', detail_doc, name='doc_detail'),
     path('add/', create_doc, name='docs_add'),
     path('edit/<int:doc_id>/', update_doc, name='docs_edit'),
     path('setdate/<int:doc_id>/', setdate_doc, name='docs_setdate'),
