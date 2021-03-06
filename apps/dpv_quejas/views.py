@@ -177,7 +177,7 @@ def asignar_queja_tecnico(request, id_queja):
     return render(request, 'dpv_quejas/asignar_tecnico.html', {'form': form, 'queja': id_queja, 'tecs': tecs})
 
 
-# @permission_required('dpv_quejas.', raise_exception=True)
+@permission_required('dpv_quejas.add_respuestaqueja', raise_exception=True)
 def responder_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     if request.user and queja.get_tecnico_asignado:
@@ -204,6 +204,7 @@ def responder_queja(request, id_queja):
     return redirect(reverse_lazy("quejas_list"))
 
 
+@permission_required('dpv_respuesta.add_apruebajefe', raise_exception=True)
 def aprobar_respuesta_tecnico(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     form = ApruebaJefeForm()
@@ -225,6 +226,7 @@ def aprobar_respuesta_tecnico(request, id_queja):
                                                             "reject_form": reject_form})
 
 
+@permission_required('dpv_respuesta.add_apruebadtr', raise_exception=True)
 def aprobar_respuesta_depto(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     form = ApruebaDtrForm()
@@ -246,12 +248,14 @@ def aprobar_respuesta_depto(request, id_queja):
                                                                 "reject_form": reject_form})
 
 
+@permission_required('dpv_quejas.add_quejanotificada', raise_exception=True)
 def notificar_respuesta_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     notify_queja.delay(queja.id)
     return render(request, 'dpv_quejas/notificacion.html')
 
 
+@permission_required('dpv_quejas.add_rechazada', raise_exception=True)
 def rechazar_queja(request, id_queja, level):
     queja = get_object_or_404(Queja, id=id_queja)
     form = ApruebaJefeForm()
@@ -276,11 +280,15 @@ def rechazar_queja(request, id_queja, level):
                                                          "queja": queja})
 
 
+@permission_required('dpv_quejas.add_redirigida', raise_exception=True)
 def redirigir_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     return render(request, 'dpv_quejas/redirigida.html', {"queja": queja})
 
 
+@some_permission_required(('dpv_quejas.view_queja',
+                           'dpv_quejas.view_asignaquejatecnico',
+                           'dpv_quejas.view_respuestaqueja',), raise_exception=True)
 def historia_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
     items = [{"tipo": "queja", "fecha": queja.created_at, "objeto": queja}]
@@ -444,6 +452,7 @@ def list_damnificado(request):
     return render(request, 'dpv_quejas/damnificado/list.html', {'damnificados': damnificados})
 
 
+@permission_required('dpv_quejas.add_damnificado', raise_exception=True)
 def add_damnificado(request):
     """
     View function to add new damnificado to the list of damnificados, this function take three forms to evaluate they
@@ -519,6 +528,7 @@ def add_damnificado(request):
                                                                     "pjform": pjform})
 
 
+@permission_required('dpv_quejas.view_damnificado', raise_exception=True)
 def get_damnificado_detail(request, id_damn):
     """
     View function to get detail about damnificado object, this function take id of damnificado and return the detail of
@@ -537,6 +547,7 @@ def get_damnificado_detail(request, id_damn):
         return render(request, "dpv_quejas/damnificado/detail.html", {"damnificado": damn})
 
 
+@login_required
 def get_damnificados_json(request):
     """
     View function to get the list of damnificados in json with values of id, and nombre, who nombre is the return of
