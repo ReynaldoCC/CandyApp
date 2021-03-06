@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import permission_required
-from django.db.models import Q, When, Case, BooleanField
+from django.contrib.auth.decorators import permission_required, login_required
+from django.db.models import Q, When, Case, BooleanField, Count, F, Value, PositiveIntegerField, CharField
 from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib import messages
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 
 from apps.dpv_respuesta.forms import ApruebaDtrForm, ApruebaJefeForm, RespuestaRechazadaForm
@@ -301,6 +302,123 @@ def historia_queja(request, id_queja):
     return render(request, 'dpv_quejas/history.html', {"items": items, "queja": queja})
 
 
+@permission_required('dpv_quejas.view_queja', raise_exception=True)
+def stats_queja(request):
+    """
+    View function to show general statistic about quejas
+    :param request: Request object
+    :return: A View
+    """
+    today = datetime.datetime.now()
+    if request.user.perfil_usuario.centro_trabajo.oc:
+        result = [queja for queja in Queja.objects
+            .values('dir_municipio__nombre', 'dir_municipio__id')
+            .annotate(asignadadpto=Count('quejadpto', distinct=True),
+                      asignadatec=Count('quejatecnico', distinct=True),
+                      quejarechaza=Count('rechazada', distinct=True),
+                      quejaredirige=Count('redirigida', distinct=True),
+                      quejarespondida=Count(Case(When(Q(respuesta__id__isnull=False,
+                                                        respuesta__rechazada__isnull=True),
+                                                      then=F('id')),
+                                                 default=Value(None),
+                                                 output_field=PositiveIntegerField()), distinct=True),
+                      aprobada_jefe=Count(Case(When(Q(respuesta__id__isnull=False,
+                                                      respuesta__rechazada__isnull=True,
+                                                      respuesta__apruebajefe__isnull=False),
+                                                    then=F('id')),
+                                               default=Value(None),
+                                               output_field=PositiveIntegerField()), distinct=True),
+                      aprobada_dtr=Count(Case(When(Q(respuesta__id__isnull=False,
+                                                     respuesta__rechazada__isnull=True,
+                                                     respuesta__apruebadtr__isnull=False),
+                                                   then=F('id')),
+                                              default=Value(None),
+                                              output_field=PositiveIntegerField()), distinct=True),
+                      menos_30d=Count(Case(When(Q(fecha_radicacion__gt=(today - datetime.timedelta(days=30))),
+                                                then=F('id')),
+                                           default=Value(None),
+                                           output_field=PositiveIntegerField()), distinct=True),
+                      between_30d_60d=Count(Case(When(Q(fecha_radicacion__lt=(today - datetime.timedelta(days=30)),
+                                                        fecha_radicacion__gte=(today - datetime.timedelta(days=60))),
+                                                      then=F('id')),
+                                                 default=Value(None),
+                                                 output_field=PositiveIntegerField()), distinct=True),
+                      between_60d_90d=Count(Case(When(Q(fecha_radicacion__lt=(today - datetime.timedelta(days=60)),
+                                                        fecha_radicacion__gte=(today - datetime.timedelta(days=90))),
+                                                      then=F('id')),
+                                                 default=Value(None),
+                                                 output_field=PositiveIntegerField()), distinct=True),
+                      older_90d=Count(Case(When(Q(fecha_radicacion__lt=(today - datetime.timedelta(days=90))),
+                                                then=F('id')),
+                                           default=Value(None),
+                                           output_field=PositiveIntegerField()), distinct=True),
+                      quejanotificada=Count('notificada'),
+                      type=Value('municipio', output_field=CharField()),
+                      cantquejas=Count('id', distinct=True))]
+    else:
+        return redirect(reverse_lazy('quejas_stats',
+                                     kwargs={'id_municipio': request.user.perfil_usuario.centro_trabajo.municipio.id}))
+    return render(request, 'dpv_quejas/estadistico.html', {'result': result})
+
+
+@permission_required('dpv_quejas.view_queja', raise_exception=True)
+def stats_queja_municipal(request, id_municipio):
+    """
+    View function to show general statistic about quejas of especific municipality
+    :param id_municipio: Int PK of municipality to get quejas about
+    :param request: Request object
+    :return: A View
+    """
+    today = datetime.datetime.now()
+    result = [queja for queja in Queja.objects.filter(dir_municipio__id=id_municipio)
+        .values('dir_cpopular__nombre', 'dir_cpopular__id')
+        .annotate(asignadadpto=Count('quejadpto', distinct=True),
+                  asignadatec=Count('quejatecnico', distinct=True),
+                  quejarechaza=Count('rechazada', distinct=True),
+                  quejaredirige=Count('redirigida', distinct=True),
+                  quejarespondida=Count(Case(When(Q(respuesta__id__isnull=False,
+                                                    respuesta__rechazada__isnull=True),
+                                                  then=F('id')),
+                                             default=Value(None),
+                                             output_field=PositiveIntegerField()), distinct=True),
+                  aprobada_jefe=Count(Case(When(Q(respuesta__id__isnull=False,
+                                                  respuesta__rechazada__isnull=True,
+                                                  respuesta__apruebajefe__isnull=False),
+                                                then=F('id')),
+                                           default=Value(None),
+                                           output_field=PositiveIntegerField()), distinct=True),
+                  aprobada_dtr=Count(Case(When(Q(respuesta__id__isnull=False,
+                                                 respuesta__rechazada__isnull=True,
+                                                 respuesta__apruebadtr__isnull=False),
+                                               then=F('id')),
+                                          default=Value(None),
+                                          output_field=PositiveIntegerField()), distinct=True),
+                  menos_30d=Count(Case(When(Q(fecha_radicacion__gt=(today - datetime.timedelta(days=30))),
+                                            then=F('id')),
+                                       default=Value(None),
+                                       output_field=PositiveIntegerField()), distinct=True),
+                  between_30d_60d=Count(Case(When(Q(fecha_radicacion__lt=(today - datetime.timedelta(days=30)),
+                                                    fecha_radicacion__gte=(today - datetime.timedelta(days=60))),
+                                                  then=F('id')),
+                                             default=Value(None),
+                                             output_field=PositiveIntegerField()), distinct=True),
+                  between_60d_90d=Count(Case(When(Q(fecha_radicacion__lt=(today - datetime.timedelta(days=60)),
+                                                    fecha_radicacion__gte=(today - datetime.timedelta(days=90))),
+                                                  then=F('id')),
+                                             default=Value(None),
+                                             output_field=PositiveIntegerField()), distinct=True),
+                  older_90d=Count(Case(When(Q(fecha_radicacion__lt=(today - datetime.timedelta(days=90))),
+                                            then=F('id')),
+                                       default=Value(None),
+                                       output_field=PositiveIntegerField()), distinct=True),
+                  quejanotificada=Count('notificada'),
+                  type=Value('cpopular', output_field=CharField()),
+                  municipio=F('dir_municipio__id'),
+                  cantquejas=Count('id', distinct=True))]
+    return render(request, 'dpv_quejas/estadistico.html', {'result': result})
+
+
+@permission_required('dpv_quejas.view_damnificado', raise_exception=True)
 def list_damnificado(request):
     """
     View function to show the the list of damnificados of quejas paginated
