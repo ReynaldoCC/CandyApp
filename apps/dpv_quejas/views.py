@@ -96,12 +96,14 @@ def index(request):
                                                 output_field=BooleanField()),
                               ) \
                     .distinct("id")
-        except:
+        except ObjectDoesNotExist:
             messages.warning(request,
-                             "No se mostraran las quejas ya que el usuario no tiene centro de trabajo asociado, si cree que es un error contacte con la administración del sistema")
-    except:
+                             """No se mostraran las quejas ya que el usuario no tiene centro de trabajo asociado, si 
+                             cree que es un error contacte con la administración del sistema""")
+    except ObjectDoesNotExist:
         messages.warning(request,
-                         "No se mostraran las quejas ya que el usuario no tiene perfil asociado, si cree que es un error contacte con la administración del sistema")
+                         """No se mostraran las quejas ya que el usuario no tiene perfil asociado, si cree que 
+                         es un error contacte con la administración del sistema""")
     return render(request, 'dpv_quejas/list.html', {'quejas': quejas})
 
 
@@ -125,7 +127,8 @@ def agregar_queja(request):
 @permission_required('dpv_quejas.view_queja', raise_exception=True)
 def detalle_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
-    if request.user.perfil_usuario.centro_trabajo.oc or request.user.perfil_usuario.centro_trabajo.municipio == queja.dir_municipio:
+    if request.user.perfil_usuario.centro_trabajo.oc or \
+            request.user.perfil_usuario.centro_trabajo.municipio == queja.dir_municipio:
         return render(request, 'dpv_quejas/detail.html', {'queja': queja})
     return HttpResponseForbidden()
 
@@ -195,7 +198,8 @@ def responder_queja(request, id_queja):
                                  message="Existen errores en el fomrulario de respuesta por lo que no se pudo guardar.")
         return render(request, 'dpv_quejas/response_form.html', {"form": form, "queja": queja})
     messages.warning(request,
-                     "Puede existir un error del sistema pero al parecer está intentando responder una queja que no le ha sido asignada")
+                     """Puede existir un error del sistema pero al parecer está intentando 
+                     responder una queja que no le ha sido asignada""")
     return redirect(reverse_lazy("quejas_list"))
 
 
@@ -273,7 +277,7 @@ def rechazar_queja(request, id_queja, level):
 
 def redirigir_queja(request, id_queja):
     queja = get_object_or_404(Queja, id=id_queja)
-    return render(request, 'dpv_quejas/redirigida.html')
+    return render(request, 'dpv_quejas/redirigida.html', {"queja": queja})
 
 
 def historia_queja(request, id_queja):
