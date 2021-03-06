@@ -891,7 +891,165 @@ var DPVQuejas = function () {
 				},
 			});
 		}
-
+		if (dataGraph && dataGraph.count > 0) {
+            $(window).on('load', function () {
+                var canvas = $('#Graph_result');
+                let stepSizeCalc = function () {
+                	let max = 0
+					dataGraph.cantquejas.map(function (num) {
+						if (num > max) {
+							max = num;
+						}
+					})
+					return (max / 5 >= 1)?Math.floor(max / 5):1;
+				}
+				let stepSize = stepSizeCalc()
+				let MaxCalc = function() {
+                	let max = 0
+					dataGraph.cantquejas.map(function (num) {
+						if (num > max) {
+							max = num;
+						}
+					})
+					return max;
+				}
+				let Max = MaxCalc() + 3 * stepSize;
+                new Chart(canvas, {
+                    type: 'bar',
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: true,
+                            position: 'top',
+                            text: 'Gráfico de Quejas'
+                        },
+                        scales: {
+                            yAxes: [{
+                                id: 'left',
+                                type: 'linear',
+                                position: 'left',
+                                ticks: {
+                                    min: 0,
+									max: Max,
+									stepSize: stepSize,
+                                }
+                            }, {
+                                id: 'right',
+                                type: 'linear',
+                                position: 'right',
+                                ticks: {
+                                    min: 0,
+									max: Max,
+									stepSize: stepSize,
+                                }
+                            }]
+                        }
+                    },
+                    data: {
+                        labels: dataGraph.columns,
+                        datasets: [{
+                            label: 'Total',
+                            yAxisID: 'right',
+                            data: dataGraph.cantquejas,
+                            backgroundColor: "#007bff",
+                            borderColor: "#007bff",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Asignadas a Dpto',
+                            yAxisID: 'right',
+                            data: dataGraph.asignadadpto,
+                            backgroundColor: "#28a745",
+                            borderColor: "#28a745",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Asignada a Técnico',
+                            yAxisID: 'right',
+                            data: dataGraph.asignadatec,
+                            backgroundColor: "#ffc107",
+                            borderColor: "#ffc107",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Con Respuesta',
+                            yAxisID: 'right',
+                            data: dataGraph.quejarespondida,
+                            backgroundColor: "#dc3545",
+                            borderColor: "#dc3545",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Con Respuesta Aprobada J',
+                            yAxisID: 'right',
+                            data: dataGraph.aprobada_jefe,
+                            backgroundColor: "#753ede",
+                            borderColor: "#753ede",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Con Respuesta Aprobada D',
+                            yAxisID: 'right',
+                            data: dataGraph.aprobada_dtr,
+                            backgroundColor: "#de933e",
+                            borderColor: "#de933e",
+                            borderWidth: 1,
+                        }, {
+                            label: 'Rechazada',
+                            yAxisID: 'left',
+                            data: dataGraph.quejarechaza,
+                            type: 'line',
+                            backgroundColor: "#fff",
+                            borderColor: "#007bff",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Redirigida',
+                            yAxisID: 'left',
+                            data: dataGraph.quejaredirige,
+                            type: 'line',
+                            backgroundColor: "#fff",
+                            borderColor: "#28a745",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Notificada',
+                            yAxisID: 'left',
+                            data: dataGraph.quejanotificada,
+                            type: 'line',
+                            backgroundColor: "#fff",
+                            borderColor: "#ffc107",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Menos de 30 Dias',
+                            yAxisID: 'left',
+                            data: dataGraph.menos_30d,
+                            type: 'line',
+                            backgroundColor: "#fff",
+                            borderColor: "#dc3545",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Entre 30 y 60 Dias',
+                            yAxisID: 'left',
+                            data: dataGraph.between_30d_60d,
+                            type: 'line',
+                            backgroundColor: "#fff",
+                            borderColor: "#f07932",
+                            borderWidth: 3,
+                        }, {
+                            label: 'Entre 60 y 90 Dias',
+                            yAxisID: 'left',
+                            data: dataGraph.between_60d_90d,
+                            type: 'line',
+                            backgroundColor: "#fff",
+                            borderColor: "#df0202",
+                            borderWidth: 3,
+                        },{
+                            label: 'Más de 90 Dias',
+                            yAxisID: 'left',
+                            data: dataGraph.older_90d,
+                            type: 'line',
+                            backgroundColor: "#fff",
+                            borderColor: "#753ede",
+                            borderWidth: 3,
+                        }]
+                    },
+                });
+            });
+        }
 	}
 
     return {

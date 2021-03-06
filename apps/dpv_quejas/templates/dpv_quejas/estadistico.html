@@ -6,15 +6,16 @@
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/dataTables.fixedColumns.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/fixedColumns.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/lib/Chartjs/dist/Chart.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Estadistico de Quejas {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% if '/quejas/stats' == request.path %}
+    {% if '/quejas/stats/' == request.path %}
     <li class="active">Estadístico</li>
     {% else %}
-        {% if result|is_list %}
+        {% if '/quejas/stats/' in request.path %}
         <li>
             <a href="{% url 'quejas_stats' %}">
                 Estadístico
@@ -23,21 +24,7 @@
         <li class="active">
             Municipal
         </li>
-        {% else %}
-        <li>
-            <a href="{% url 'quejas_stats' %}">
-                Estadístico
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'quejas_stats' %}">
-            Municipal
-            </a>
-        </li>
-        <li class="active">
-            Consejo Popular
-        </li>
-        {% endif %}
+            {% endif %}
     {% endif %}
 {% endblock breadcrumbs %}
 {% block content_page %}
@@ -155,8 +142,44 @@
             "next": "{% trans 'Siguiente' %}",
             "previous": "{% trans 'Anterior' %}"
         };
+        var stats_graph = {
+            "columns": [],
+            "cantquejas": [],
+            "asignadadpto": [],
+            "asignadatec": [],
+            "quejarespondida": [],
+            "aprobada_jefe": [],
+            "aprobada_dtr": [],
+            "quejarechaza": [],
+            "quejaredirige": [],
+            "quejanotificada": [],
+            "menos_30d": [],
+            "between_30d_60d": [],
+            "between_60d_90d": [],
+            "older_90d": [],
+            "count": 0,
+        };
+        {% if result|is_list %}
+            {% for e in result %}
+                stats_graph.columns[stats_graph.count] = "{{ e.nombre }}";
+                stats_graph.cantquejas[stats_graph.count] = {{ e.cantquejas|valuetoint }};
+                stats_graph.asignadadpto[stats_graph.count] = {{ e.asignadadpto|valuetoint }};
+                stats_graph.asignadatec[stats_graph.count] = {{ e.asignadatec|valuetoint }};
+                stats_graph.quejarespondida[stats_graph.count] = {{ e.quejarespondida|valuetoint }};
+                stats_graph.aprobada_jefe[stats_graph.count] = {{ e.aprobada_jefe|valuetoint }};
+                stats_graph.aprobada_dtr[stats_graph.count] = {{ e.aprobada_dtr|valuetoint }};
+                stats_graph.quejarechaza[stats_graph.count] = {{ e.quejarechaza|valuetoint }};
+                stats_graph.quejaredirige[stats_graph.count] = {{ e.quejaredirige|valuetoint }};
+                stats_graph.quejanotificada[stats_graph.count] = {{ e.quejanotificada|valuetoint }};
+                stats_graph.menos_30d[stats_graph.count] = {{ e.menos_30d|valuetoint }};
+                stats_graph.between_30d_60d[stats_graph.count] = {{ e.between_30d_60d|valuetoint }};
+                stats_graph.between_60d_90d[stats_graph.count] = {{ e.between_60d_90d|valuetoint }};
+                stats_graph.older_90d[stats_graph.count] = {{ e.older_90d|valuetoint }};
+                stats_graph.count++;
+            {% endfor %}
+        {% endif %}
         $(document).ready(function() {
-            DPVQuejas.initStats(translations_datatables);
+            DPVQuejas.initStats(translations_datatables, stats_graph);
         } );
     </script>
 {% endblock extra_scripts %}
