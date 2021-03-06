@@ -1,0 +1,162 @@
+{% extends "dpv_quejas/list.html" %}
+{% load locale_tags i18n static %}
+{% block page_title %} | Estadistico Quejas {% endblock page_title %}
+{% load static i18n %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/dataTables.fixedColumns.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/fixedColumns.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_quejas/css/quejas.css' %}">
+{% endblock extra_style %}
+{% block breadcrumb_title %} Estadistico de Quejas {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/quejas/stats' == request.path %}
+    <li class="active">Estadístico</li>
+    {% else %}
+        {% if result|is_list %}
+        <li>
+            <a href="{% url 'quejas_stats' %}">
+                Estadístico
+            </a>
+        </li>
+        <li class="active">
+            Municipal
+        </li>
+        {% else %}
+        <li>
+            <a href="{% url 'quejas_stats' %}">
+                Estadístico
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'quejas_stats' %}">
+            Municipal
+            </a>
+        </li>
+        <li class="active">
+            Consejo Popular
+        </li>
+        {% endif %}
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+        <div class="col-md-12 overrided-width">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Estadístico de Quejas</strong>
+                </div>
+                <div class="card-body">
+                    {% if result %}
+                    <div class="table-responsive">
+                        <table id="stats-table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th nowrap="">{% if result.first.type == "municipio" %}Municipio{% elif result.first.type == "cpopular" %}Consejo Popular{% endif %}</th>
+                                    <th nowrap="">Total</th>
+                                    <th nowrap="">Asignadas a Dpto</th>
+                                    <th nowrap="">Asignada a Técnico</th>
+                                    <th nowrap="">Con Respuesta</th>
+                                    <th nowrap="">Con Respuesta Aprobada J</th>
+                                    <th nowrap="">Con Respuesta Aprobada D</th>
+                                    <th nowrap="">Rechazada</th>
+                                    <th nowrap="">Redirigida</th>
+                                    <th nowrap="">Notificada</th>
+                                    <th nowrap="">Con menos de 30 Dias</th>
+                                    <th nowrap="">Entre 30 y 60 Dias</th>
+                                    <th nowrap="">Entre 60 y 90 Dias</th>
+                                    <th nowrap="">Más de 90 Dias</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for res in result %}
+                                <tr>
+                                    <td nowrap="">
+                                        {% if res.type == 'municipio' %}
+                                        <a href="{% url 'quejas_stats' res.dir_municipio__id %}">
+                                            {{ res.dir_municipio__nombre | capfirst }}
+                                        </a>
+                                        {% elif res.type == 'cpopular' %}
+                                        <a href="">
+                                            {{ res.dir_cpopular__nombre | capfirst }}
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ res.cantquejas }}</td>
+                                    <td>{{ res.asignadadpto }}</td>
+                                    <td>{{ res.asignadatec }}</td>
+                                    <td>{{ res.quejarespondida }}</td>
+                                    <td>{{ res.aprobada_jefe }}</td>
+                                    <td>{{ res.aprobada_dtr }}</td>
+                                    <td>{{ res.quejarechaza }}</td>
+                                    <td>{{ res.quejaredirige }}</td>
+                                    <td>{{ res.quejanotificada }}</td>
+                                    <td>{{ res.menos_30d }}</td>
+                                    <td>{{ res.between_30d_60d }}</td>
+                                    <td>{{ res.between_60d_90d }}</td>
+                                    <td>{{ res.older_90d }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <h2 class="text-center">No hay Estadisticas que mostrar</h2>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% if result|is_list %}
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Gráfica Estadístico</strong>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <canvas id="Graph_result"></canvas>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
+    <script src="{% static 'dpv_quejas/js/quejas.js' %}"></script>
+    <script type="text/javascript">
+        const translations_datatables = {
+            "emptyTable": "{% trans 'No hay registros que mostrar' %}",
+            "info_init": "{% trans 'Mostrando' %}",
+            "info_end": "{% trans 'Registros' %}",
+            "infoEmpty": "{% trans 'Mostrando 0 a 0 de 0 Registros' %}",
+            "infoFiltered_init": "{% trans 'Filtrado de' %}",
+            "infoFiltered_end": "{% trans 'total registros' %}",
+            "lengthMenu_init": "{% trans 'Mostrar' %}",
+            "lengthMenu_end": "{% trans 'Registros' %}",
+            "loadingRecords": "{% trans 'Cargando...' %}",
+            "processing": "{% trans 'Procesando...' %}",
+            "search": "{% trans 'Buscar:' %}",
+            "zeroRecords": "{% trans 'Sin registros coincidentes encontrados' %}",
+            "first": "{% trans 'Primero' %}",
+            "last": "{% trans 'Ultimo' %}",
+            "next": "{% trans 'Siguiente' %}",
+            "previous": "{% trans 'Anterior' %}"
+        };
+        $(document).ready(function() {
+            DPVQuejas.initStats(translations_datatables);
+        } );
+    </script>
+{% endblock extra_scripts %}
