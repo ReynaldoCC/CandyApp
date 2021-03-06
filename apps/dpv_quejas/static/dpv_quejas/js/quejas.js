@@ -858,6 +858,41 @@ var DPVQuejas = function () {
             })
         })
     };
+	var _initStats = function (translations = null, dataGraph = null) {
+		if (translations) {
+			$('#stats-table').DataTable({
+				responsive: true,
+				order: [ 0, 'desc' ],
+				pageLength: 20,
+				lengthMenu: [[20, 30, 50 , -1], [20, 30, 50 , "Todos"]],
+				sScrollX: "100%",
+				// fixedColumns:   {
+				// 	leftColumns: 1,
+				// },
+				language: {
+					"decimal": "",
+					"emptyTable": translations.emptyTable,
+					"info": translations.info_init + " _START_ a _END_ de _TOTAL_ " + translations.info_end,
+					"infoEmpty": translations.infoEmpty,
+					"infoFiltered": "(" + translations.infoFiltered_init + " _MAX_ " + translations.infoFiltered_end + ")",
+					"infoPostFix": "",
+					"thousands": ",",
+					"lengthMenu": translations.lengthMenu_init + " _MENU_ " + translations.lengthMenu_end,
+					"loadingRecords": translations.loadingRecords,
+					"processing": translations.processing,
+					"search":  translations.search,
+					"zeroRecords": translations.zeroRecords,
+					"paginate": {
+							"first": translations.first,
+							"last": translations.last,
+							"next": translations.next,
+							"previous": translations.previous,
+					}
+				},
+			});
+		}
+
+	}
 
     return {
         init: function () {
@@ -878,6 +913,9 @@ var DPVQuejas = function () {
         },
         initAprueba: function () {
             _initApruebaForm();
+        },
+        initStats: function (translations = null, dataGraph = null) {
+            _initStats(translations, dataGraph);
         },
     };
 }();
