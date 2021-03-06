@@ -231,22 +231,12 @@
         $(document).ready(function() {
             var table = $('#queja-table').DataTable({
                 responsive: true,
-                //scrollX: 850,
-                // scrollX: true,
-                // scrollCollapse: true,
                 order: [ 0, 'desc' ],
   		        sScrollX: "100%",
- 		        // sScrollXInner: "150%",
                 fixedColumns:   {
                     leftColumns: 2,
                     rightColumns: 1,
                 },
-                // dom:
-                //         "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                //         "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>" +
-                //         "<'row'<'col-sm-12'tr>>" +
-                //         "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                //         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // read more: https://datatables.net/examples/basic_init/dom.html
                 language: {
                     "decimal": "",
                     "emptyTable": "{% trans 'No hay Quejas que mostrar' %}",
