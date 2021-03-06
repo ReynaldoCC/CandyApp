@@ -31,6 +31,10 @@ class Damnificado(LoggerMixin):
     def __str__(self):
         return "({}) {}".format(self.tipo_contenido, self.objecto_contenido)
 
+    @property
+    def get_tipo(self):
+        return self.tipo_contenido.__str__()
+
 
 class Queja(LoggerMixin):
     dir_num = models.CharField(max_length=15, verbose_name=_('Dirección Número'))
