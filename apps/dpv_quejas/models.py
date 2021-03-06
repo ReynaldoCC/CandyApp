@@ -1,9 +1,4 @@
-from django.db import models
-from django.core.validators import MinLengthValidator, MaxLengthValidator
-from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.signals import post_save, pre_save
-from django.dispatch import receiver
 from apps.dpv_nomencladores.validators import *
 from apps.dpv_nomencladores.models import *
 from apps.dpv_respuesta.models import *
@@ -53,7 +48,8 @@ class Queja(LoggerMixin):
     asunto = models.ForeignKey(CodificadorAsunto, verbose_name=_('Asunto Código'),
                                on_delete=models.CASCADE, blank=True, default='')
     asunto_texto = models.CharField(max_length=300, verbose_name=_("Asunto"), default='', blank=True)
-    tipo = models.ForeignKey(TipoQueja, related_name="tipo_queja", on_delete=models.CASCADE, blank=True, default='', verbose_name=_("Tipo"))
+    tipo = models.ForeignKey(TipoQueja, related_name="tipo_queja", on_delete=models.CASCADE,
+                             blank=True, default='', verbose_name=_("Tipo"))
     numero = models.CharField(max_length=14, verbose_name=_('Número Queja'))
     codigo_numero = models.CharField(max_length=10, default='', blank=True)
     procedencia = models.ForeignKey(Procedencia, related_name="quejas",
@@ -373,13 +369,6 @@ def set_queja_noti_state(sender, **kwargs):
     if kwargs.get('instance'):
         instance = kwargs.get('instance')
         instance.queja.save()
-
-
-# @receiver(post_save, sender=RespuestaAQueja)
-# def set_queja_resp_state(sender, **kwargs):
-#     if kwargs.get('instance'):
-#         instance = kwargs.get('instance')
-#         instance.queja.save()
 
 
 @receiver(post_save, sender=QuejaRedirigida)
