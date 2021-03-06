@@ -88,23 +88,38 @@
                             <strong class="card-title">{% trans "Aquejado" %}</strong>
                         </div>
                         <div class="card-body">
-                        {% if not queja.get_quejoso or not queja.get_quejoso.ci %}
+                        {% if not queja.get_quejoso %}
                             <div class="alert alert-danger" role="alert">
                                 <h4 class="alert-heading">{% trans "Alerta" %}</h4>
                                 <hr>
                                 <p class="mb-0">{% blocktrans %}No hay datos sobre la persona que se queja esto debe ser un error, si así lo cree por favor contacte con la administración del sistema{% endblocktrans %}</p>
                             </div>
                         {% else %}
-                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.get_quejoso.nombre }} {{ queja.get_quejoso.apellidos }}</p>
-                            <p class="card-text"><strong>{% trans "CI" %}: </strong>{{ queja.get_quejoso.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Sexo:</strong>{{ queja.get_quejoso.genero }}</p>
-                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.get_quejoso.email_address %}{{ queja.get_quejoso.email_address}}{% else %}{% trans "No especificado" %}{% endif %}</p>
-                            <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if queja.get_quejoso.telefono %}{{ queja.get_quejoso.telefono}}{% else %}{% trans "No especificado" %}{% endif %}</p>
-                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.get_quejoso.movil %}{{ queja.get_quejoso.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
-                                {% if queja.get_quejoso.direccion_calle %}
-                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.get_quejoso.direccion_calle }} #{{ queja.get_quejosodireccion_numero }} entre {{ queja.get_quejoso.direccion_entrecalle1 }} y {{ queja.get_quejoso.direccion_entrecalle2 }}, en el consejo popular {{ queja.get_quejoso.cpopular}} del municipio {{ queja.get_quejoso.municipio }}.</p>
+                            {% if queja.get_quejoso.get_tipo == 'Persona Natural' %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.get_quejoso.objecto_contenido.nombre | capfirst }} {{ queja.get_quejoso.objecto_contenido.apellidos | capfirst }}</p>
+                            <p class="card-text"><strong>{% trans "CI" %}: </strong>{{ queja.get_quejoso.objecto_contenido.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{% trans "Sexo" %}: </strong>{{ queja.get_quejoso.objecto_contenido.genero }}</p>
+                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.get_quejoso.objecto_contenido.email_address %}{{ queja.get_quejoso.objecto_contenido.email_address}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if queja.get_quejoso.objecto_contenido.telefono %}{{ queja.get_quejoso.objecto_contenido.telefono}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.get_quejoso.objecto_contenido.movil %}{{ queja.get_quejoso.objecto_contenido.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                                {% if queja.get_quejoso.objecto_contenido.direccion_calle %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.get_quejoso.objecto_contenido.direccion_calle }} #{{ queja.get_quejoso.objecto_contenido.direccion_numero }} entre {{ queja.get_quejoso.objecto_contenido.direccion_entrecalle1 }} y {{ queja.get_quejoso.objecto_contenido.direccion_entrecalle2 }}, en el consejo popular {{ queja.get_quejoso.objecto_contenido.cpopular}} del municipio {{ queja.get_quejoso.objecto_contenido.municipio }}.</p>
                                 {% else %}
                             <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
                                 {% endif %}
+
+                            {% elif queja.get_quejoso.get_tipo == 'Persona Júridica' %}
+                            <p class="card-text"><strong>{% trans "Nombre" %}: </strong>{{ queja.get_quejoso.objecto_contenido.nombre }} {{ queja.get_quejoso.objecto_contenido.sigla }}</p>
+                            <p class="card-text"><strong>{% trans "Código NiT" %}: </strong>{{ queja.get_quejoso.objecto_contenido.ci }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{% trans "Código Reuup" %}: </strong>{{ queja.get_quejoso.objecto_contenido.genero }}</p>
+                            <p class="card-text"><strong>{% trans "Email" %}: </strong>{% if queja.get_quejoso.objecto_contenido.email_address %}{{ queja.get_quejoso.objecto_contenido.email_address}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Teléfono" %}: </strong>{% if queja.get_quejoso.objecto_contenido.telefono %}{{ queja.get_quejoso.objecto_contenido.telefono}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Movil" %}: </strong>{% if queja.get_quejoso.objecto_contenido.movil %}{{ queja.get_quejoso.objecto_contenido.movil}}{% else %}{% trans "No especificado" %}{% endif %}</p>
+                            <p class="card-text"><strong>{% trans "Nombre de contacto" %}: </strong>{{ queja.get_quejoso.objecto_contenido.nombre_contacto | capfirst }}</p>
+                                {% if queja.get_quejoso.direccion_calle %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{{ queja.get_quejoso.objecto_contenido.direccion_calle }} #{{ queja.get_quejoso.objecto_contenido.direccion_numero }} entre {{ queja.get_quejoso.objecto_contenido.direccion_entrecalle1 }} y {{ queja.get_quejoso.objecto_contenido.direccion_entrecalle2 }}, en el consejo popular {{ queja.get_quejoso.objecto_contenido.cpopular}} del municipio {{ queja.get_quejoso.objecto_contenido.municipio }}.</p>
+                                {% else %}
+                            <p class="card-text"><strong>{% trans "Dirección" %}: </strong>{% trans "No especificada" %}</p>
+                                {% endif %}
+                            {% endif %}
                         {% endif %}
                         </div>
                     </div>
