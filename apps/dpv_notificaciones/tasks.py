@@ -37,7 +37,7 @@ def make_notification(data):
     """
     if user.perfil_usuario.notificacion_email:
         message_body = """
-        Te ha llegado una nueva notificación que se ha genardo debido ha algún evento del sistema que te involucra,
+        Te ha llegado una nueva notificación que se ha generado debido ha algún evento del sistema que te involucra,
         puedes ver todas las notificaciones desde este enlace 
         """ + url("notifies")
         send_mail(_("Tienes una nueva notificación"),
