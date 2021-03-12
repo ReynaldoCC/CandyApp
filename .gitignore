@@ -13,3 +13,4 @@ celerybeat-schedule
 envs/production/*
 envs/local/my_env
 .env
+envs/local/.env

@@ -1,0 +1,249 @@
+{% extends 'layouts/dashboard.html' %}
+{% block page_title %} | Documentos {% endblock page_title %}
+{% load static i18n %}
+{% block extra_style %}{% endblock extra_style %}
+{% block breadcrumb_title %} Gestión de Documentos {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/docs/detail/' == request.path %}
+    <li>
+        <a href="{% url 'list_docs' %}">
+            Documentos
+        </a>
+    </li>
+    <li class="active">Detalle del Documento</li>
+    {% else %}
+    <li>
+        <a href="{% url 'list_docs' %}">
+            Documentos
+        </a>
+    </li>
+    <li class="active">
+        Detalle del Documento
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    <div class="col-md-12 overrided-width">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Detalle del Documento</strong>
+                <span class="pull-right">
+                {% if perms.dpv_documento.add_dpvdocumento %}
+                    <a href="{% url 'docs_edit' doc.id %}" type="button" class="pull-right btn btn-warning btn-sm"><i class="fa fa-pencil"></i> Editar Documento</a>
+                {% endif %}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="animated fadeIn">
+                    <div class="row">
+
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-one">
+                                        <div class="stat-content dib">
+                                            <div class="stat-text">Fecha en Sistema</div>
+                                            <div class="stat-digit">{{ doc.fecha_registro|date:"d/m/Y" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-one">
+                                        <div class="stat-content dib">
+                                            <div class="stat-text">Número de Registro</div>
+                                            <div class="stat-digit">{{ doc.no_registro }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-one">
+                                        <div class="stat-content dib">
+                                            <div class="stat-text">Número de Referencia</div>
+                                            <div class="stat-digit">{{ doc.no_refer }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-one">
+                                        <div class="stat-content dib">
+                                            <div class="stat-text">Fecha de Entrega</div>
+                                            <div class="stat-digit">{{ doc.fecha_entrega|date:"d/m/Y" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-four">
+                                        <div class="stat-icon dib">
+                                            <i class="ti-target text-muted"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-heading">Asunto</div>
+                                                <div class="stat-text">{{ doc.asunto }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-four">
+                                        <div class="stat-icon dib">
+                                            <i class="ti-direction-alt text-muted"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-heading">Destino</div>
+                                                <div class="stat-text">{{ doc.destino }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-four">
+                                        <div class="stat-icon dib">
+                                            <i class="ti-user text-muted"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-heading">Promovente</div>
+                                                <div class="stat-text">{{ doc.promovente|truncatewords:3 }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if doc.procedencia %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card">
+                                <div class="p-0 clearfix">
+                                    <i class="fa fa-road bg-primary p-4 font-2xl mr-3 float-left text-light"></i>
+                                    <div class="h5 text-primary mb-0 pt-3">{{ doc.procedencia }}</div>
+                                    <div class="text-muted text-uppercase font-weight-bold font-xs small">Procedencia</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if doc.clasificacion %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card">
+                                <div class="card-body p-0 clearfix">
+                                    <i class="fa fa-sitemap bg-info p-4 font-2xl mr-3 float-left text-light"></i>
+                                    <div class="h5 text-info mb-0 pt-3">{{ doc.clasificacion }}</div>
+                                    <div class="text-muted text-uppercase font-weight-bold font-xs small">Clasificación</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if doc.respuesta_a %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card">
+                                <div class="p-0 clearfix">
+                                    <i class="fa fa-comment bg-warning p-4 font-2xl mr-3 float-left text-light"></i>
+                                    <div class="h5 text-warning mb-0 pt-3">{{ doc.respuesta_a }}</div>
+                                    <div class="text-muted text-uppercase font-weight-bold font-xs small">Ofrecer respuesta a:</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if doc.direccion %}
+                        <div class="col-lg-8 col-md-6">
+                            <div class="card">
+                                <div class="p-0 clearfix">
+                                    <i class="fa fa-location-arrow bg-dark p-4 font-2xl mr-3 float-left text-light"></i>
+                                    <div class="h5 text-dark mb-0 pt-3">{{ doc.direccion }}</div>
+                                    <div class="text-muted text-uppercase font-weight-bold font-xs small">Dirección:</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if doc.observation %}
+                        <div class="col-lg-8 col-md-6">
+                            <div class="card">
+                                <div class="p-0 clearfix">
+                                    <i class="fa fa-info bg-danger  p-4 font-2xl mr-3 float-left text-light"></i>
+                                    <div class="h5 text-danger mb-0 pt-3">{{ doc.observation }}</div>
+                                    <div class="text-muted text-uppercase font-weight-bold font-xs small">Observaciones:</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if doc.fecha_termino %}
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-one">
+                                        <div class="stat-content dib">
+                                            <div class="stat-text">Fecha de Terminación</div>
+                                            <div class="stat-digit">{{ doc.fecha_termino|date:"d/m/Y" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if doc.archivo_digital %}
+                        <div class="col-lg-12 col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <object data="http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf" type="application/pdf" width="100%" height="100%">
+
+{#                                    <p>Tu navegador no tiene el plugin para previsualizar documentos pdf.</p>#}
+                                    <p>Puedes descargar el archivo digital desde <a href="/media/{{ doc.archivo_digital }}" target="_blank"><b>aquí</b></a></p>
+
+                                    </object>
+{#                                    <embed src="/media/{{ doc.archivo_digital }}" type="application/pdf" width="100%" height="600px" />#}
+{#                                    <iframe src="/media/{{ doc.archivo_digital }}" frameborder="0" width="100%" height="100%"></iframe>#}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade modal-show" id="popup" role="dialog">
+    </div>
+{% endblock content_page %}
+{% block extra_scripts %}{% endblock extra_scripts %}

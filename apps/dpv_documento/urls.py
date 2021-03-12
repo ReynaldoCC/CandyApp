@@ -1,18 +1,5 @@
 from django.urls import path
-from .views import (
-    list_typedocs,
-    create_typedocs,
-    update_typedocs,
-    delete_typedocs,
-    list_docs,
-    create_doc,
-    update_doc,
-    setdate_doc,
-    delete_docs,
-    typedoc_filter_con_respuesta,
-    create_procedencia,
-    valid_procedencia_in_personal,
-)
+from .views import *
 
 urlpatterns = [
     # TIPO DE DOCUMENTOS
@@ -23,12 +10,9 @@ urlpatterns = [
     path('tipos/filter/<int:typedoc_id>/', typedoc_filter_con_respuesta, name='typedoc_filter_con_respuesta'),
     # DOCUMENTOS
     path('', list_docs, name='list_docs'),
+    path('detail/<int:doc_id>/', detail_doc, name='doc_detail'),
     path('add/', create_doc, name='docs_add'),
     path('edit/<int:doc_id>/', update_doc, name='docs_edit'),
     path('setdate/<int:doc_id>/', setdate_doc, name='docs_setdate'),
     path('remove/<int:doc_id>/', delete_docs, name='docs_delete'),
-    # PROCEDENCIA
-    path('procedencia/add/', create_procedencia, name='create_procedencia'),
-    path('procedencia/valid_procedencia_in_personal/<int:procedencia_id>/', valid_procedencia_in_personal, name='valid_procedencia_in_personal'),
-
 ]

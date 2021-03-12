@@ -97,6 +97,7 @@ urlpatterns = [
     path('procedencia/json', get_procedencias_json, name='nomenclador_procedencia_json'),
     path('nuevo_procedencia/', add_procedencia, name='procedencia_new'),
     path('eliminar_procedencia/<int:id_procedencia>', delete_procedencia, name='procedencia_delete'),
+    path('procedencia/valid_procedencia_in_personal/<int:procedencia_id>/', valid_procedencia_in_personal, name='valid_procedencia_in_personal'),
 
     path('tipoprocedencia/', index_tipoprocedencia, name='nomenclador_tipoprocedencia'),
     path('nuevo_tipoprocedencia/', add_tipoprocedencia, name='tipoprocedencia_new'),

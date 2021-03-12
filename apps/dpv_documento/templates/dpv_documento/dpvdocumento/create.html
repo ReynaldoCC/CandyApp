@@ -5,8 +5,6 @@
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_documento/css/dpvdocumento/dpvdocumento.css' %}">
-    <link rel="stylesheet" href="{% static 'dpv_documento/css/fixedColumns.dataTables.scss' %}">
-    <link rel="stylesheet" href="{% static 'dpv_documento/css/fixedColumns.bootstrap.scss' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Gestión de Documentos {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -91,25 +89,29 @@
     </div>
 {% endblock content_page %}
 {% block extra_scripts %}
+    <script>
+    var json_proc_url = "{% url 'nomenclador_procedencia_json' %}";
+    </script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/buttons.bootstrap.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/jszip.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/pdfmake.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/vfs_fonts.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/buttons.html5.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/buttons.print.min.js' %}"></script>
-    <script src="{% static 'dpv_base/js/lib/data-table/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/lib/data-table/datatables-init.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
+    <script src="{% static 'dpv_nomencladores/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/lib/jquery-ui/js/jquery-ui.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
     <script src="{% static 'dpv_base/js/vendor/selectize.js/js/standalone/selectize.min.js' %}"></script>
+    <script src="{% static 'dpv_base/js/vendor/jquery.forms.js' %}"></script>
     <script src="{% static 'dpv_documento/js/dpvdocumento/create.js' %}"></script>
     <script src="{% static 'dpv_documento/js/dpvdocumento/agree_calle.js' %}"></script>
     <script src="{% static 'dpv_documento/js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'dpv_documento/js/validation.functions.js' %}"></script>
     <script src="{% static 'dpv_nomencladores/js/procedencia.js' %}"></script>
     <script>
-        DPVProcedenciaNom.setAjax(true);
+        jQuery(document).ready(function() {
+            DPVProcedenciaNom.setAjax(true, setProcedencia);
+        });
     </script>
 {% endblock extra_scripts %}
 {% block init_jquery %} {% endblock init_jquery %}

@@ -16,10 +16,21 @@ function cerrar_modal()
     return false;
 }
 
-var DPVCalleNom =  function () {
+var DPVCalleNom = function () {
     let calle_form;
     let validator_form;
+    let ajax_request = false;
+    let ajax_callback = null;
 
+    let _make_alert = function (type, text) {
+        Swal.fire({
+            position: 'top-end',
+            icon: type || 'success',
+            title: text || 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 2500
+        })
+    }
     const _initCallePane = function (translations) {
         $('#calle-table').DataTable({
             responsive: true,
@@ -48,7 +59,7 @@ var DPVCalleNom =  function () {
             },
         });
     };
-    const _initCalleForm =  function () {
+    const _initCalleForm = function () {
         $("#filter_municipios").on("keyup", function() {
             var value = $(this).val().toLowerCase();
                 $("#id_municipios span").filter(function() {
@@ -64,19 +75,30 @@ var DPVCalleNom =  function () {
                 return;
             create_post(true);
         });
+        $('#form_calle').on('submit', function (e) {
+            if (ajax_request) {
+                e.preventDefault();
+                $(this).ajaxSubmit({
+                    type: "POST",
+                    success: function (response) {
+                        if (typeof ajax_callback === "function")
+                            ajax_callback(response);
+                    }
+                });
+            }
+        })
 
         var error_do = function (xhr,errmsg,err) {
             $('#results').html("<div class='alert-box alert radius' data-alert>Oops! Hemos encontrado un error: "+errmsg+
                 " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-              // console.log(xhr);
-            toastr.error(xhr.responseJSON.errmsg.nombre[0], '<h3>Error</h3>');
+            _make_alert('error', 'No se ha popido agregar la calle');
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         };
         var success_agree = function (json) {
             $('#id_nombre').val("");
-            toastr.success('La calle ha sido agregada con exito', '<h3>Todo bien</h3>');
+            _make_alert('success', 'La calle ha sido agregada con exito');
         };
-        var create_post = function (save_more=false) {
+        var create_post = function () {
 
             let form_data = $("#form_calle").serialize();
             $.ajax({
@@ -149,5 +171,9 @@ var DPVCalleNom =  function () {
             calle_form = $('#form_calle');
             _initCalleForm();
         },
+        setAjax: function (is_ajax, callback = null) {
+            ajax_request = !!(is_ajax);
+            ajax_callback = callback;
+        }
     }
 }();

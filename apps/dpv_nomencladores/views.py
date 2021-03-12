@@ -1276,6 +1276,20 @@ def get_procedencias_json(request):
     procendencias = list({"id": proc.id, "nombre": proc.__str__() }for proc in Procedencia.objects.all())
     return JsonResponse(data=procendencias, safe=False, status=200)
 
+
+@login_required()
+def valid_procedencia_in_personal(request, procedencia_id):
+
+    try:
+        procedencia = Procedencia.objects.get(pk=procedencia_id)
+    except:
+        return JsonResponse({"error": "Invalid id value"})
+    else:
+        display_direccion = True if procedencia.tipo.nombre in ("Personal") else False
+        display_lugar = True if procedencia.tipo.nombre in ("Organización", "Gobierno", "Organismo", "Empresa") else False
+
+        return JsonResponse({'display_direccion': display_direccion, 'display_lugar': display_lugar}, safe=False, status=200)
+
 # ------------------------------------------- TipoProcedencia ----------------------------------------------------------
 @permission_required('dpv_nomencladores.view_tipoprocedencia', raise_exception=True)
 def index_tipoprocedencia(request):

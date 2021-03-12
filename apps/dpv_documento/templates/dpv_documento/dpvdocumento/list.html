@@ -96,7 +96,8 @@
                                 <td class="text-nowrap">{{ doc.observation|default:"" }}</td>
                                 <td class="text-nowrap">
                                     {% if perms.dpv_documento.view_dpvdocumento and doc.archivo_digital %}
-                                        <a href="/media/{{ doc.archivo_digital }}" target="_blank" type="button" class="btn btn-primary btn-sm" title="Ver documento digital"><i class="fa fa-eye"></i></a>
+                                        <a href="{% url 'doc_detail' doc.id %}" type="button" class="btn btn-secondary btn-sm" title="Ver detalle"><i class="fa fa-eye"></i></a>
+                                        <a href="/media/{{ doc.archivo_digital }}" target="_blank" type="button" class="btn btn-primary btn-sm" title="Ver documento digital"><i class="fa fa-file-o"></i></a>
                                     {% endif %}
                                     {% if perms.dpv_documento.change_dpvdocumento %}
                                         <a href="{% url 'docs_edit' doc.id %}" type="button" class="btn btn-warning btn-sm" title="Editar documento"><i class="fa fa-pencil"></i></a>

@@ -12,6 +12,7 @@ class DPVDocumentoForm(forms.ModelForm):
                   "asunto",
                   "procedencia",
                   "destino",
+                  "lugar",
                   "clasificacion",
                   "promovente",
                   "municipio",
@@ -20,8 +21,7 @@ class DPVDocumentoForm(forms.ModelForm):
                   "dir_numero",
                   "dir_entrecalle1",
                   "dir_entrecalle2",
-                  "respuesta_a",
-                  "lugar",
+                  # "respuesta_a",
                   "archivo_digital",
                   "observation", ]
         widgets = {
@@ -29,6 +29,7 @@ class DPVDocumentoForm(forms.ModelForm):
             "asunto": forms.TextInput(attrs={"class": "form-control"}),
             "procedencia": forms.Select(attrs={"class": "form-control"}),
             "destino": forms.Select(attrs={"class": "form-control"}),
+            "lugar": forms.Select(attrs={"class": "form-control"}),
             "clasificacion": forms.Select(attrs={"class": "form-control"}),
             "promovente": forms.Select(attrs={"class": "form-control"}),
             "municipio": forms.Select(attrs={"class": "form-control"}),
@@ -37,10 +38,9 @@ class DPVDocumentoForm(forms.ModelForm):
             "dir_numero": forms.TextInput(attrs={"class": "form-control"}),
             "dir_entrecalle1": forms.Select(attrs={"class": "form-control"}),
             "dir_entrecalle2": forms.Select(attrs={"class": "form-control"}),
-            "respuesta_a": forms.Select(attrs={"class": "form-control"}),
+            # "respuesta_a": forms.Select(attrs={"class": "form-control"}),
             "archivo_digital": forms.FileInput(attrs={"class": "form-control", "accept": "image/*,application/pdf"}),
             "observation": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
-            "lugar": forms.Select(attrs={"class": "form-control"}),
         }
 
 
