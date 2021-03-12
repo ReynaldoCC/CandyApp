@@ -52,3 +52,7 @@ ul.errorlist {
         width: 100% !important;
     }
 }
+.modal-dialog.modal-vlg {
+    margin-top: 17rem;
+    max-width: 1000px;
+}
