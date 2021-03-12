@@ -1,4 +1,4 @@
-import logging
+# import logging
 
 # import sentry_sdk
 # from sentry_sdk.integrations.django import DjangoIntegration
@@ -63,18 +63,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # MEDIA
 # ------------------------------------------------------------------------------
-
-# TEMPLATES
-# ------------------------------------------------------------------------------
-TEMPLATES[-1]["OPTIONS"]["loaders"] = [
-    (
-        "django.template.loaders.cached.Loader",
-        [
-            "django.template.loaders.filesystem.Loader",
-            "django.template.loaders.app_directories.Loader",
-        ],
-    )
-]
 
 # EMAIL
 # ------------------------------------------------------------------------------
