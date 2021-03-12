@@ -17,5 +17,6 @@ ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
 sys.path.append(str(ROOT_DIR / "apps"))
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings.production')
+os.environ.setdefault('DJANGO_READ_DOT_ENV_FILE', 'True')
 
 application = get_wsgi_application()
