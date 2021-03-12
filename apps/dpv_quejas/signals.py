@@ -1,8 +1,10 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from apps.dpv_nomencladores.models import AreaTrabajo, Estado
+from apps.dpv_notificaciones.tasks import make_notification
 
 from .models import Queja, AsignaQuejaDpto, AsignaQuejaTecnico, QuejaNotificada, QuejaRedirigida, RespuestaQueja
 
@@ -22,7 +24,7 @@ def configurar_numero_queja(instancia=None, sender=None):
             if len(ultimo_numero) >= 10:
                 try:
                     consecutivo = str(int(ultimo_numero[10:])+1).zfill(4)
-                except:
+                except ValueError:
                     consecutivo = '0001'
             else:
                 try:
@@ -194,6 +196,13 @@ def set_queja_asigtec_state(sender, **kwargs):
     if kwargs.get('instance'):
         instance = kwargs.get('instance')
         instance.quejatecnico.save()
+        data = {
+            'user_id': instance.tecnico.id,
+            'text': _('Le ha sido asignada la queja no. ' + instance.quejatecnico.numero +
+                      ' por el usuario ' + instance.asignador.get_full_name()),
+            'level': 1,
+        }
+        make_notification.delay(data)
 
 
 @receiver(post_save, sender=AsignaQuejaDpto)
