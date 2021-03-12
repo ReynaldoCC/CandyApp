@@ -7,7 +7,9 @@ from main.celery import celery_app
 from celery.schedules import crontab
 import datetime
 
-from .models import Queja, TipoProcedencia
+from apps.dpv_nomencladores.models import TipoProcedencia
+
+from .models import Queja
 
 
 logger = get_task_logger(__name__)
@@ -38,7 +40,7 @@ def notify_queja(id_queja):
             if not email:
                 return
             send_mail("Ya esta la respuesta de la queja que nos ha entregado",
-                      "Corre de aviso que tenemos la respuesta a su queja",
+                      "Correo de aviso que tenemos la respuesta a su queja",
                       settings.EMAIL_FROM_USER,
                       [email, ])
 
