@@ -13,20 +13,28 @@
              </div>
             <div class="modal-body">
                 {% csrf_token %}
-                <div class="form-control-sm">
-                    <label>Nombre</label>
-                    {{ form.non_field_errors }}
-                    {{ form.nombre }}
-                </div>
-                <div class="form-control-sm">
-                    <label>Días en proceso</label>
-                    {{ form.non_field_errors }}
-                    {{ form.dias_proceso }}
-                </div>
-                <div class="form-control-sm">
-                    <label>Con Respuesta?</label>
-                    {{ form.non_field_errors }}
-                    {{ form.con_respuesta }}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            {{ form.non_field_errors }}
+                            {{ form.nombre }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Días en proceso</label>
+                            {{ form.non_field_errors }}
+                            {{ form.dias_proceso }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Con Respuesta?</label>
+                            {{ form.non_field_errors }}
+                            {{ form.con_respuesta }}
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="return cerrar_modal()">Cancelar</button>
