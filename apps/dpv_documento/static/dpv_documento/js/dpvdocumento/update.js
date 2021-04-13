@@ -32,19 +32,19 @@ var DPVDocumentos = function () {
             createOnBlur: true,
             create: false,
         });
-        $("#id_respuesta_a").selectize({
-            placeholder: "Seleccione ...",
-            allowEmptyOption: false,
-            valueField: 'id',
-            labelField: 'nombre',
-            searchField: 'nombre',
-            sortField: 'nombre',
-            selectOnTab: true,
-            createOnBlur: true,
-            create: false,
-        });
-        if($("#id_respuesta_a").val() !== '')
-            $("#id_respuesta_a").parent().parent().attr("style","display:none");
+        // $("#id_respuesta_a").selectize({
+        //     placeholder: "Seleccione ...",
+        //     allowEmptyOption: false,
+        //     valueField: 'id',
+        //     labelField: 'nombre',
+        //     searchField: 'nombre',
+        //     sortField: 'nombre',
+        //     selectOnTab: true,
+        //     createOnBlur: true,
+        //     create: false,
+        // });
+        // if($("#id_respuesta_a").val() !== '')
+        //     $("#id_respuesta_a").parent().parent().attr("style","display:none");
 
     };
 

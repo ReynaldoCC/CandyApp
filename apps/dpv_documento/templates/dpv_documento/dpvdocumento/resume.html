@@ -1,0 +1,86 @@
+{% extends 'layouts/dashboard.html' %}
+{% block page_title %} | Resumen {% endblock page_title %}
+{% load static i18n %}
+{% block extra_style %}{% endblock extra_style %}
+{% block breadcrumb_title %} Resumen {% endblock breadcrumb_title %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if '/docs/' == request.path %}
+    <li>
+        <a href="{% url 'list_docs' %}">
+            Documentos
+        </a>
+    </li>
+    {% else %}
+    <li>
+        <a href="{% url 'list_docs' %}">
+            Documentos
+        </a>
+    </li>
+    <li class="active">
+        Resumen
+    </li>
+    {% endif %}
+{% endblock breadcrumbs %}
+{% block content_page %}
+    {% csrf_token %}
+
+    <div id="id_resume_first_targets"></div>
+
+    <div class="col-xl-9 col-lg-9">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="chart-wrapper mt-4" >
+                    <canvas id="chartDocsClass" style="height:200px;" height="200"></canvas>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="id_resume_second_targets"></div>
+
+    <div class="col-xl-9 col-lg-9">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="chart-wrapper mt-4" >
+                    <canvas id="chartDocsOrig" style="height:200px;" height="200"></canvas>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-9 col-lg-9">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="chart-wrapper mt-4" >
+                    <canvas id="chartDocsAnswers" style="height:200px;" height="200"></canvas>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-9 col-lg-9">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="chart-wrapper mt-4" >
+                    <canvas id="chartDocsTime" style="height:200px;" height="200"></canvas>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content_page %}
+{% block extra_scripts %}
+    <script src="{% static '/dpv_base/js/lib/chart-js/Chart.bundle.js' %}"></script>
+    <script src="{% static '/dpv_documento/js/dpvdocumento/resume.js' %}"></script>
+{% endblock extra_scripts %}
+{% block init_jquery %} {% endblock init_jquery %}

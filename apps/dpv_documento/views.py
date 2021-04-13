@@ -1,20 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
-from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from apps.dpv_nomencladores.models import TipoProcedencia, Procedencia, PrensaEscrita, Telefono, Email, \
-    Organizacion
-from apps.dpv_persona.models import PersonaNatural, PersonaJuridica
-from apps.dpv_quejas.forms import QPrensaEscritaForm, AQPersonaNaturalForm, QTelefonoForm, QEmailForm, \
-    QPersonaJuridicaForm, QOrganizationForm, QAnonimoForm
 from .models import TipoDPVDocumento, DPVDocumento
-from django.forms.models import model_to_dict
-from .forms import TipoDPVDocumentoForm, DPVDocumentoForm, DVPDocumentoEditForm, DVPDocumentoFechaEntregaForm, DocsProcedenciaForm
+from .forms import TipoDPVDocumentoForm, DPVDocumentoForm, DVPDocumentoEditForm, DVPDocumentoFechaEntregaForm
+from apps.dpv_documento.resume import resume_first_targets, resume_second_targets, resume_documents_by_classification, \
+    resume_documents_by_origin, resume_documents_with_answers, resume_documents_in_time
 
 
-# Create your views here.
 def list_typedocs(request):
     typedocs = TipoDPVDocumento.objects.all()
     return render(request, "dpv_documento/tipodpvdocumento/list.html", {"typedocs": typedocs})
@@ -146,3 +140,19 @@ def delete_docs(request, doc_id):
         doc.delete()
         return redirect('list_docs')
     return render(request, 'dpv_documento/dpvdocumento/delete.html', {'doc': doc})
+
+
+@permission_required('dpv_documento.view_dpvdocumento')
+def resume_docs(request):
+
+    if request.is_ajax():
+        return JsonResponse({
+            "first_targets": resume_first_targets(request),
+            "second_targets": resume_second_targets(request),
+            "chartDocsClass": resume_documents_by_classification(request),
+            "chartDocsOrig": resume_documents_by_origin(request),
+            "chartDocsAnswers": resume_documents_with_answers(request),
+            "chartDocsTime": resume_documents_in_time(request)
+        }, status=200, safe=False)
+
+    return render(request, "dpv_documento/dpvdocumento/resume.html")
