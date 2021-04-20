@@ -240,21 +240,21 @@ var DPVDocumentos = function () {
                 $.ajax({
                     url: '/docs/tipos/filter/' + value + '/',
                     success: function(results) {
-                        let display = results.display;
-                        if (display){
-                            $("#id_respuesta_a").parent().parent().attr("style", "");
-                            $("#id_respuesta_a").rules( "add", {
-                                required: true,
-                                messages: {
-                                    required: "Este campo es requerido.",
-                                }
-                            });
-                        }else{
-                            $("#id_respuesta_a").parent().parent().attr("style", "display:none;");
-                            $("#id_respuesta_a").rules( "add", {
-                                required: false,
-                            });
-                        }
+                        // let display = results.display;
+                        // if (display){
+                        //     $("#id_respuesta_a").parent().parent().attr("style", "");
+                        //     $("#id_respuesta_a").rules( "add", {
+                        //         required: true,
+                        //         messages: {
+                        //             required: "Este campo es requerido.",
+                        //         }
+                        //     });
+                        // }else{
+                        //     $("#id_respuesta_a").parent().parent().attr("style", "display:none;");
+                        //     $("#id_respuesta_a").rules( "add", {
+                        //         required: false,
+                        //     });
+                        // }
 
                     }
                 });

@@ -1,10 +1,13 @@
 {% extends 'layouts/dashboard.html' %}
 {% block page_title %} | Tipos de Docuementos {% endblock page_title %}
-{% load static %}
 {% load static i18n %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'dpv_base/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'dpv_documento/css/tipodpvdocumento/tipodpvdocumento.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/dataTables.fixedColumns.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dpv_base/js/lib/datatables/extensions/FixedColumns/css/fixedColumns.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/sweetalert2/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'dpv_base/js/vendor/selectize.js/css/selectize.css' %}">
 {% endblock extra_style %}
 {% block breadcrumb_title %} Gestión de Tipos de Documentos {% endblock breadcrumb_title %}
 {% block breadcrumbs %}
@@ -80,10 +83,9 @@
             </div>
         </div>
     </div>
+    <div class="modal fade modal-show modal-center" id="popup" role="dialog">
 
-<div class="modal fade modal-show" id="popup" role="dialog">
-
-</div>
+    </div>
 {% endblock content_page %}
 {% block extra_scripts %}
     <script src="{% static 'dpv_base/js/lib/data-table/datatables.min.js' %}"></script>

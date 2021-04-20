@@ -1,7 +1,6 @@
 from django.utils import timezone
 
 
-# Utils functionalities
 def configurar_numero_registro(instancia=None, sender=None):
     if instancia and instancia.id:
         ultimo_doc = sender.objects.exclude(id=instancia.id)\

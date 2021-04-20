@@ -15,6 +15,9 @@
             <li class="{% if '/docs/' in request.path %} active {% endif %}">
                 <a href="{% url 'list_docs' %}"><i class="fa fa-file-text-o"></i>Documentos</a>
             </li>
+            <li class="{% if '/docs/' in request.path %} active {% endif %}">
+                <a href="{% url 'resume_docs' %}"><i class="fa fa-bar-chart-o"></i>Resumen</a>
+            </li>
             {% endif %}
 
         </ul>

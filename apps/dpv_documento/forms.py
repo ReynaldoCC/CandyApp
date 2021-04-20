@@ -48,11 +48,10 @@ class DVPDocumentoEditForm(forms.ModelForm):
 
     class Meta:
         model = DPVDocumento
-        fields = ["asunto", "destino", "respuesta_a", "observation", ]
+        fields = ["asunto", "destino", "observation", ]
         widgets = {
             "asunto": forms.TextInput(attrs={"class": "form-control"}),
             "destino": forms.Select(attrs={"class": "form-control"}),
-            "respuesta_a": forms.Select(attrs={"class": "form-control"}),
             "observation": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
         }
 
