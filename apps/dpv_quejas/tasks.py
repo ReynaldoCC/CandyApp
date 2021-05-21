@@ -30,7 +30,7 @@ def notify_queja(id_queja):
     queja = Queja.objects.filter(id=id_queja)
     if queja:
         queja = queja.first()
-        anonimo = TipoProcedencia.objects.filter(nombre_icontains="anonimo").first()
+        anonimo = TipoProcedencia.objects.filter(nombre__icontains__unaccent="anonimo").first()
         if queja.procedencia and queja.procedencia.tipo:
             if not queja.procedencia.tipo.enviar:
                 return
