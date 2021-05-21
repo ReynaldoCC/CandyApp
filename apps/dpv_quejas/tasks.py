@@ -39,7 +39,7 @@ def notify_queja(id_queja):
             email = queja.procedencia.objecto_contenido.get_email
             if not email:
                 return
-            send_mail("Ya esta la respuesta de la queja que nos ha entregado",
+            send_mail("Ya está la respuesta de la queja que nos ha entregado",
                       "Correo de aviso que tenemos la respuesta a su queja",
                       settings.EMAIL_FROM_USER,
                       [email, ])
