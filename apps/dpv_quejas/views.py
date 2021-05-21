@@ -23,6 +23,19 @@ DEFAULT_SHOW_ITEMS = 20
                            'dpv_quejas.view_asignaquejatecnico',
                            'dpv_quejas.view_respuestaqueja',), raise_exception=True)
 def index(request):
+    """
+    Funcion de index de quejas, esta vista muestra las quejas en dependencia de los los permisos del usuario y el centro
+    de trabajo que el usuario tiene configurado en el perfil. Segun el centro de trabajo el usuario podra, si el centro
+    de trabajo es OC, ver todas las quejas de las unidades de dicho centro de trabajo, si el centro de trabajo no es OC
+    entonces solo podra ver las quejas de su centro de trabajo. Segun los permisos asignado al usuario el usuario podra:
+        - 'view_queja': visualizar todas las quejas
+        - 'view_asignaquejatecnico': visualizar todas las asignadas al departamento al que pertence el usuario segun su
+        perfil.
+        - 'view_respuestaqueja': visualizar solo las quejas a le han sido asignadas para dar su respuesta
+
+    :param request: objeto request
+    :return:
+    """
     quejas = Queja.objects.none()
     try:
         perfil = request.user.perfil_usuario
@@ -110,6 +123,11 @@ def index(request):
 
 @permission_required('dpv_quejas.add_queja', raise_exception=True)
 def agregar_queja(request):
+    """
+    Funcion de vista para agregar quejas.
+    :param request: objeto request
+    :return:
+    """
     form = QuejaForm(prefix='queja')
     if request.method == "POST":
         form = QuejaForm(request.POST, request.FILES, prefix='queja')
@@ -127,6 +145,12 @@ def agregar_queja(request):
 
 @permission_required('dpv_quejas.view_queja', raise_exception=True)
 def detalle_queja(request, id_queja):
+    """
+    Funcion de vista para visualizar los detalles de una queja
+    :param request: objeto request
+    :param id_queja: Entero PK de la queja que se quiere ver el detalle
+    :return:
+    """
     queja = get_object_or_404(Queja, id=id_queja)
     if request.user.perfil_usuario.centro_trabajo.oc or \
             request.user.perfil_usuario.centro_trabajo.municipio == queja.dir_municipio:
@@ -136,12 +160,24 @@ def detalle_queja(request, id_queja):
 
 @permission_required('dpv_quejas.delete_queja', raise_exception=True)
 def eliminar_queja(request, id_queja):
+    """
+    Funcion de vista para eliminar una queja
+    :param request: objeto request
+    :param id_queja: Entero PK de la queja que se quiere eliminar
+    :return:
+    """
     queja = get_object_or_404(Queja, id=id_queja)
     return render(request, 'dpv_quejas/delete.html', {'queja': queja})
 
 
 @permission_required('dpv_quejas.add_asignaquejadpto', raise_exception=True)
 def asignar_queja_depto(request, id_queja):
+    """
+    Funcion de vista para asignar una queja a un departamento para que sea dada respuesta a la queja
+    :param request: objeto request
+    :param id_queja: Entero PK de la queja que se quiere asignar al departamento
+    :return:
+    """
     depto = AsignaQuejaDpto()
     depto.quejadpto = Queja.objects.filter(id=id_queja).first()
     form = AsignaQuejaDptoForm(instance=depto)
@@ -160,6 +196,12 @@ def asignar_queja_depto(request, id_queja):
 
 @permission_required('dpv_quejas.add_asignaquejatecnico', raise_exception=True)
 def asignar_queja_tecnico(request, id_queja):
+    """
+    Funcion de vista para asignar una queja a un tecnico
+    :param request: objeto request
+    :param id_queja: Entero PK de la queja que se quiere asignar al tecnico
+    :return:
+    """
     tecnico = AsignaQuejaTecnico()
     tecnico.quejatecnico = get_object_or_404(Queja, id=id_queja)
     form = AsignaQuejaTecnicoForm(instance=tecnico)
@@ -179,6 +221,13 @@ def asignar_queja_tecnico(request, id_queja):
 
 @permission_required('dpv_quejas.add_respuestaqueja', raise_exception=True)
 def responder_queja(request, id_queja):
+    """
+    Funcion de vista para dar respuesta a una queja, esta funcion valida que el usuario que quiere dar respuesta a la
+    queja es el mismo al que se le ha asignado la queja para dar respuesta
+    :param request: objeto request
+    :param id_queja: Entero PK de la queja que se quiere dar respuesta
+    :return:
+    """
     queja = get_object_or_404(Queja, id=id_queja)
     if request.user and queja.get_tecnico_asignado:
         if request.user != queja.get_tecnico_asignado.profile.datos_usuario:
@@ -206,6 +255,13 @@ def responder_queja(request, id_queja):
 
 @permission_required('dpv_respuesta.add_apruebajefe', raise_exception=True)
 def aprobar_respuesta_tecnico(request, id_queja):
+    """
+    Funcion de vista para aprobar una respuesta a una queja dada por un tecnico, esta funcion otorga un primer nivel de
+    aprbacion de la respuesta, son necesarios 2 niveles de aprobacion.
+    :param request:
+    :param id_queja: Entero PK de la queja  que tiene la respuesta que se quiere aprobar
+    :return:
+    """
     queja = get_object_or_404(Queja, id=id_queja)
     form = ApruebaJefeForm()
     reject_form = RespuestaRechazadaForm()
@@ -228,6 +284,14 @@ def aprobar_respuesta_tecnico(request, id_queja):
 
 @permission_required('dpv_respuesta.add_apruebadtr', raise_exception=True)
 def aprobar_respuesta_depto(request, id_queja):
+    """
+    Funcion de vista para aprobar una respuesta a una queja dada por un tecnico y revisada y aprobada por un usuario
+    jefe de depto, esta funcion otorga el segundo nivel de aprobacion de la respuesta, son necesarios 2 niveles de
+    aprobacion.
+    :param request: objeto request
+    :param id_queja: Entero PK de la queja  que tiene la respuesta que se quiere aprobar
+    :return:
+    """
     queja = get_object_or_404(Queja, id=id_queja)
     form = ApruebaDtrForm()
     reject_form = RespuestaRechazadaForm()
@@ -250,6 +314,13 @@ def aprobar_respuesta_depto(request, id_queja):
 
 @permission_required('dpv_quejas.add_quejanotificada', raise_exception=True)
 def notificar_respuesta_queja(request, id_queja):
+    """
+    Funcion de vista para aprobar una respuesta a una queja dada por un tecnico, esta funcion otorga un primer nivel de
+    aprbacion de la respuesta, son necesarios 2 niveles de aprobacion.
+    :param request: objeto request
+    :param id_queja: Entero PK de la queja  que tiene la respuesta que se quiere aprobar
+    :return:
+    """
     queja = get_object_or_404(Queja, id=id_queja)
     notify_queja.delay(queja.id)
     return render(request, 'dpv_quejas/notificacion.html')
@@ -257,6 +328,12 @@ def notificar_respuesta_queja(request, id_queja):
 
 @permission_required('dpv_quejas.add_rechazada', raise_exception=True)
 def rechazar_queja(request, id_queja, level):
+    """
+    Funcion de vista para rechazar una respuesta dada
+    :param request: objeto request
+    :param id_queja: Entero PK de la queja  que tiene la respuesta que se quiere rechazar
+    :return:
+    """
     queja = get_object_or_404(Queja, id=id_queja)
     form = ApruebaJefeForm()
     reject_form = RespuestaRechazadaForm()
