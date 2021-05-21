@@ -372,7 +372,12 @@ def redirigir_queja(request, id_queja):
                            'dpv_quejas.view_asignaquejatecnico',
                            'dpv_quejas.view_respuestaqueja',), raise_exception=True)
 def historia_queja(request, id_queja):
-    queja = get_object_or_404(Queja, id=id_queja)
+    query = Q(id=id_queja)
+    if request.user.has_perm('dpv_quejas.view_asignaquejatecnico'):
+        query = Q(id=id_queja, )
+    elif request.user.has_perm('dpv_quejas.view_respuestaqueja'):
+        query = Q(id=id_queja, )
+    queja = get_object_or_404(Queja, query)
     items = [{"tipo": "queja", "fecha": queja.created_at, "objeto": queja}]
     for item in queja.quejadpto.all():
         items.append({"tipo": "asignadepto", "fecha": item.fecha_asignacion, "objeto": item})
