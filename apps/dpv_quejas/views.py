@@ -403,9 +403,11 @@ def historia_queja(request, id_queja):
 @permission_required('dpv_quejas.view_queja', raise_exception=True)
 def stats_queja(request):
     """
-    View function to show general statistic about quejas
-    :param request: Request object
-    :return: A View
+    Funcion de vista para visualizar estadisticas generales sobre las quejas, para ello tiene en cuenta si el usuario
+    pertence a una unidad que sea OC o no lo sea para mostrar las estadisticas en base a la todatidad de las quejas o
+    solo referente a las quejas de la unidad a donde pertence el usuario
+    :param request: objeto request
+    :return:
     """
     today = datetime.datetime.now()
     if request.user.perfil_usuario.centro_trabajo.oc:
