@@ -167,6 +167,11 @@ def eliminar_queja(request, id_queja):
     :return:
     """
     queja = get_object_or_404(Queja, id=id_queja)
+    if request.method == "POST":
+        if request.user.perfil_usuario.centro_trabajo == queja.radicado_por.perfil_usuario.centro_trabajo:
+            queja.delete()
+            messages.info(request, message=_("La queja ha sido eliminada satisfactoriamente"))
+            return redirect(reverse_lazy('quejas_list'))
     return render(request, 'dpv_quejas/delete.html', {'queja': queja})
 
 
