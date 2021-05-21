@@ -8,6 +8,8 @@ django-timezone-field==4.0
 uvicorn[standard]==0.13.3
 psycopg2-binary==2.8.6
 
+pdfkit==0.6.1
+
 django==2.2.2
 django-environ==0.4.5
 django-redis==4.12.1
