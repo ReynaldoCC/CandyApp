@@ -15,3 +15,6 @@ class DpvQuejaConfig(AppConfig):
     name_data = 'Quejas Registradas'  # Nombre o texto a mostrar del sisginificado de dichos registros
     route_data = 'quejas_list'  # ruta principal del modulo
     main_permission = 'dpv_quejas.view_queja'
+
+    def ready(self):
+        from . import signals
