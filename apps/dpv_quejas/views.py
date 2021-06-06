@@ -1,10 +1,15 @@
 import datetime
+import pdfkit
+import os
 
+from django.template import Context
+from django.conf import settings
+from django.template.loader import get_template
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Q, When, Case, BooleanField, Count, F, Value, PositiveIntegerField, CharField
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.contrib import messages
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -650,3 +655,33 @@ def get_damnificados_json(request):
     # TODO Make the query inside db server and not python treatment
     damnificados = list({"id": damn.id, "nombre": damn.__str__()} for damn in Damnificado.objects.all())
     return JsonResponse(data=damnificados, safe=False, status=200)
+
+
+@permission_required('dpv_quejas.view_quejanotificada')
+def get_pdf_response(request, id_queja):
+    queja = get_object_or_404(Queja, id=id_queja)
+    options = {
+        'page-size': 'Letter',
+        'margin-top': '0.75in',
+        'margin-right': '0.75in',
+        'margin-bottom': '0.75in',
+        'margin-left': '0.75in',
+        'encoding': "UTF-8",
+        'custom-header': [
+            ('Accept-Encoding', 'gzip')
+        ],
+        'cookie': [
+            ('cookie-name1', 'cookie-value1'),
+            ('cookie-name2', 'cookie-value2'),
+        ],
+        'no-outline': None
+    }
+    template = get_template("dpv_quejas/printed.html")
+    context = {"data": queja}
+    html = template.render(context)
+    css = os.path.join(settings.STATIC_ROOT, "dpv_quejas", "css", "print.css")
+    pdf_file_name = os.path.join(settings.MEDIA_ROOT, 'respuestas', 'quejas', queja.__str__() + ".pdf")
+    pdfkit.from_string(html, pdf_file_name, options=options, css=css)
+    pdf = open(pdf_file_name, "rb")
+    response = HttpResponse(pdf.read(), content_type="application/pdf")
+    return response
