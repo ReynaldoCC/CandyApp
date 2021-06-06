@@ -27,4 +27,5 @@ urlpatterns = [
    path('damnificados/json', get_damnificados_json, name='quejas_damn_json'),
    path('damnificados/add', add_damnificado, name='quejas_damnadd'),
    path('damnificados/<int:id_damn>', get_damnificado_detail, name='quejas_damndetail'),
+   path('pdf/<int:id_queja>', get_pdf_response, name='quejas_redirct'),
 ]
